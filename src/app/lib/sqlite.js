@@ -18,8 +18,8 @@ const DATA_ENC_ID = 'userConfig'
 // Prefix added to stored strings to mark them as encrypted
 const ENC_PREFIX = 'enc:'
 
-function createDb (appPath, defaultUserName, { enc, dec } = {}) {
-  const appDataPath = process.env.DATA_PATH || resolve(appPath, 'b-shell')
+function createDb (appPath, defaultUserName, { enc, dec } = {}, dataPath) {
+  const appDataPath = process.env.DATA_PATH || dataPath || resolve(appPath, 'b-shell')
 
   if (!fs.existsSync(appDataPath)) {
     fs.mkdirSync(appDataPath, { recursive: true })
@@ -100,15 +100,19 @@ function createDb (appPath, defaultUserName, { enc, dec } = {}) {
     if (!row) return null
     const shouldDec = dec && shouldEncForRow(dbName, row._id)
     const raw = shouldDec ? decryptData(row.data) : row.data
-    let r = {}
     try {
-      r = JSON.parse(raw || '{}')
+      return {
+        ...JSON.parse(raw || '{}'),
+        _id: row._id
+      }
     } catch (e) {
-      console.error(`Error parsing JSON for row ${row._id}:`, e.message)
-    }
-    return {
-      ...r,
-      _id: row._id
+      // A row we cannot read must not turn into a `{ _id }` stub: the UI would
+      // render it as an empty "本地" bookmark that silently does nothing.
+      // Report it and leave it out, so the next import overwrites it.
+      console.error(
+        `[db] cannot read ${dbName}/${row._id}: ${e.message}`
+      )
+      return null
     }
   }
 

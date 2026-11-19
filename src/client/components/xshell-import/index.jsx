@@ -152,13 +152,13 @@ export default function XshellImportModal (props) {
   const importNow = (payload) => {
     const target = payload || data
     if (!target || !target.bookmarks.length) {
-      return { added: 0, skipped: 0 }
+      return { added: 0, skipped: 0, repaired: 0 }
     }
     const res = store.importXshellSessions(target, { includePassword })
     notification.success({
       message: txt('doneTitle'),
       description: fill('doneDesc', {
-        added: res.added,
+        added: res.added + (res.repaired || 0),
         skipped: res.skipped
       })
     })
@@ -181,8 +181,8 @@ export default function XshellImportModal (props) {
     // Dropping or picking a backup should land in the bookmarks right away:
     // the preview list is a confirmation, not a required extra click.
     if (auto && res.bookmarks && res.bookmarks.length) {
-      const { added } = importNow(res)
-      if (added) {
+      const { added, repaired } = importNow(res)
+      if (added || repaired) {
         onClose()
       }
     }

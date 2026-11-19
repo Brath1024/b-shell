@@ -94,7 +94,7 @@ export default Store => {
     }
     const includePassword = opts.includePassword !== false
     const existingBookmarks = store.bookmarks || []
-    const existingBookmarkIds = new Set(existingBookmarks.map(b => b.id))
+    const existingBookmarkMap = new Map(existingBookmarks.map(b => [b.id, b]))
     const existingGroupMap = new Map(
       (store.bookmarkGroups || []).map(g => [g.id, g])
     )
@@ -133,9 +133,16 @@ export default Store => {
       }
     }
     const bookmarksToAdd = []
+    const bookmarksToRepair = []
     let skipped = 0
     for (const bookmark of data.bookmarks) {
-      if (existingBookmarkIds.has(bookmark.id)) {
+      const existing = existingBookmarkMap.get(bookmark.id)
+      // A bookmark without a title/host is a broken row from an older database
+      // (decryption failed once, the renderer got `{ id }` back). Importing the
+      // same session again is the natural way to restore it, so repair those
+      // instead of counting them as "already imported" and skipping forever.
+      const isBroken = existing && !existing.title && !existing.host
+      if (existing && !isBroken) {
         skipped++
         continue
       }
@@ -161,8 +168,12 @@ export default Store => {
         item.term = 'xterm-256color'
       }
       const group = groupMap.get(bookmark.xshellGroupId)
-      if (group) {
+      if (group && group.bookmarkIds.indexOf(item.id) === -1) {
         group.bookmarkIds.push(item.id)
+      }
+      if (isBroken) {
+        bookmarksToRepair.push(item)
+        continue
       }
       bookmarksToAdd.push(item)
     }
@@ -190,10 +201,14 @@ export default Store => {
     if (bookmarksToAdd.length) {
       store.addItems(bookmarksToAdd, 'bookmarks')
     }
+    for (const item of bookmarksToRepair) {
+      store.editItem(item.id, item, 'bookmarks')
+    }
     store.fixBookmarkGroups()
     return {
       added: bookmarksToAdd.length,
       skipped,
+      repaired: bookmarksToRepair.length,
       groupsAdded: newGroups.length
     }
   }
