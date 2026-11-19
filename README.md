@@ -25,7 +25,7 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 
 ## 下载与安装
 
-最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载（GitHub 镜像仓库的 Releases 同步同一批资产）。
+最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载。GitHub 镜像只同步源码，不提供发行包。
 
 当前版本 **5.11.8-bshell.2**：<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.2>
 

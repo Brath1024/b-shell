@@ -15,7 +15,7 @@
   - **Xshell 一键导入**（会话 + 分组 + 密码 + 私钥，支持 `.xts` 备份；支持拖拽与首屏引导弹窗）；
   - **AI 供应商预设**：DeepSeek 官方（`https://api.deepseek.com`，`deepseek-flash` / `deepseek-v4-pro`，请求体默认 `thinking: { type: 'disabled' }`）与 OpenCodeGo（`https://opencode.ai/inference/go/openai/v1`，需真实 UA + `x-opencode-session`）；
   - **终端矩阵水印** `Brath Shell`（canvas，常驻背景，不拦截鼠标）；
-  - 品牌图标复用荔枝宇宙 logo。
+  - 品牌图标是自绘的「荔枝红底 + 终端窗口 + 绿色提示符」，由 `_tools/gen-terminal-icon.py` 生成 PNG/ICO/ICNS 与手写 `bshell.svg`（改图标只改这个脚本，不要再拿荔枝原图）。
 
 技术栈：Electron + React + Vite + Ant Design（渲染进程）、Node.js（主进程）、NeDB / SQLite（本地库）、`@electerm/ssh2`（SSH）、node-pty（终端）。
 
