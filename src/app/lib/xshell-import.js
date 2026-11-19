@@ -286,10 +286,10 @@ function buildBookmark (session, identity) {
   if (!ini) {
     return null
   }
-  const connection = ini['CONNECTION'] || {}
+  const connection = ini.CONNECTION || {}
   const auth = ini['CONNECTION:AUTHENTICATION'] || {}
   const ssh = ini['CONNECTION:SSH'] || {}
-  const terminal = ini['TERMINAL'] || {}
+  const terminal = ini.TERMINAL || {}
   const windowOpts = ini['TERMINAL:WINDOW'] || {}
   const ftp = ini['CONNECTION:FTP'] || {}
 

@@ -1,4 +1,4 @@
 #!/bin/bash
-cd `dirname $0`
-cd ../../../
+# Run the linter before pushing, no matter where this hook is installed from.
+cd "$(git rev-parse --show-toplevel)" || exit 1
 npm run lint
