@@ -4,23 +4,28 @@
 
 b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户端。相比上游 Electerm，b-shell 针对长期使用 Xshell 的用户做了迁移优化：读取本机 Xshell 的 `.xsh` 会话文件，把主机、端口、用户名、密码和文件夹结构一次性导入，导入后可以直接连接，不需要逐个重建会话。
 
-[![GitHub issues](https://img.shields.io/badge/repo-gitee.com%2FGuoqing--Li%2Fb--shell-c71d23)](https://gitee.com/Guoqing-Li/b-shell)
+[![Gitee](https://img.shields.io/badge/repo-gitee.com%2FGuoqing--Li%2Fb--shell-c71d23)](https://gitee.com/Guoqing-Li/b-shell)
+[![GitHub](https://img.shields.io/badge/mirror-github.com%2FBrath1024%2Fb--shell-24292f)](https://github.com/Brath1024/b-shell)
+
+> 代码同时托管在 Gitee（主）与 GitHub（镜像），两个仓库保持同一提交进度。
 
 ---
 
 ## 功能
 
-- **Xshell 一键导入**：自动扫描 Xshell 5 - 9 的会话目录，解密密码（RC4 + SHA-256 校验），还原分组目录，重复导入自动去重。详见 [Xshell 导入文档](docs/xshell-import.md)。
+- **Xshell 一键导入**：自动扫描 Xshell 5 - 9 的会话目录，解密密码（RC4 + SHA-256 校验），还原分组目录，重复导入自动去重；首屏会主动提示，也可以把 `.xts` 备份直接拖进窗口，松手即解析、即写入书签。详见 [Xshell 导入文档](docs/xshell-import.md)。
 - 多协议：SSH、SFTP、Telnet、Serial Port、RDP、VNC、Spice、FTP、本地终端。
 - 书签与分组：无限层级分组、拖拽整理、颜色/图标标记、批量打开。
 - SSH 隧道、跳板机（connection hopping）、X11 转发、Agent 转发、多套认证配置。
 - 快捷命令、命令自动补全、触发器、全局搜索、分屏、标签页批量操作。
-- 内置 AI 助手（可选）、同步（可选）、主题与字体自定义。
+- 内置 AI 助手：OpenAI 兼容接口，内置 **DeepSeek 官方 API** 与 **OpenCodeGo** 预设，也支持任意自建端点。
+- 终端背景常驻 **矩阵水印（Brath Shell）**，视觉上区分 b-shell 与其他终端窗口，不影响命令输出与复制。
+- 品牌图标完全复用荔枝宇宙（Litchi Universe）的标识。
 - Windows（安装包 / 免安装便携版）与 macOS（dmg）构建。
 
 ## 下载与安装
 
-最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载。
+最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载（GitHub 镜像仓库的 Releases 同步同一批资产）。
 
 > Gitee 单个资产上限 100 MB，安装包（119 MB）与 `.tar.gz`（151 MB）超出限制，因此发行版提供压缩后的免安装包与分卷安装包，二者都是完整可用的程序。
 
@@ -55,7 +60,11 @@ npm run dist:linux # Linux
 
 ## 把 Xshell 数据迁移过来
 
-打开 b-shell → 左侧书签面板工具栏 → 点击 **Windows 图标按钮**（「从 Xshell 导入」）→ 确认扫描结果 → 「一键导入」。
+三种入口，任选一种：
+
+1. 首次启动 b-shell 时，首页会弹出「从 Xshell 一键搬家」，点「开始导入」即可；
+2. 把 `xbackup*.xts` 备份（或整个 `Sessions` 目录）**直接拖进窗口**，松手后自动解析并写入书签；
+3. 左侧书签面板工具栏 → 点击 **Windows 图标按钮**（「从 Xshell 导入」）→ 确认扫描结果 → 「一键导入」。
 
 - 自动扫描：`文档\NetSarang Computer\<版本>\Xshell\Sessions`、OneDrive 文档目录、`%APPDATA%\NetSarang\Xshell\Sessions`
 - 备份文件：点「选择备份文件」直接选 Xshell 导出的 `xbackup*.xts`（或 `.zip`），无需解压、无需装回 Xshell
@@ -96,6 +105,9 @@ Xshell 导入相关代码：
 - IPC 注册：[src/app/lib/ipc.js](src/app/lib/ipc.js)（`loadXshellSessions`）
 - 渲染层 store：[src/client/store/bookmark.js](src/client/store/bookmark.js)（`loadXshellSessions` / `importXshellSessions`）
 - 导入向导：[src/client/components/xshell-import/index.jsx](src/client/components/xshell-import/index.jsx)
+- 首屏迁移提示：[src/client/components/xshell-import/quick-import.jsx](src/client/components/xshell-import/quick-import.jsx)
+- 终端矩阵水印：[src/client/components/terminal/matrix-watermark.jsx](src/client/components/terminal/matrix-watermark.jsx)
+- AI 供应商预设：[src/client/components/ai/ai-presets.js](src/client/components/ai/ai-presets.js)
 - 工具栏入口：[src/client/components/tree-list/bookmark-toolbar.jsx](src/client/components/tree-list/bookmark-toolbar.jsx)
 
 ## 测试

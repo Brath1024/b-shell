@@ -11,7 +11,7 @@
 
 | 项目 | 值 |
 | --- | --- |
-| 仓库 | `git@gitee.com:Guoqing-Li/b-shell.git`，分支 `main` |
+| 仓库 | `git@gitee.com:Guoqing-Li/b-shell.git`（主） + `git@github.com:Brath1024/b-shell.git`（镜像），分支 `main`，两仓同进度 |
 | 本地路径 | `D:\DeskStop\BrathInfo\brath-shell\b-shell` |
 | 版本 | `5.11.8-bshell.1` |
 | Tag | `v5.11.8-bshell.1` |
@@ -23,6 +23,19 @@
 ---
 
 ## 1. 本次交付内容
+
+### 5.11.8-bshell.2 新增（相对 bshell.1）
+
+| 变更 | 位置 |
+| --- | --- |
+| AI 供应商预设改为 **DeepSeek 官方**（`https://api.deepseek.com`，`deepseek-flash` / `deepseek-v4-pro`）与新增 **OpenCodeGo**（`https://opencode.ai/inference/go/openai/v1`，12 个模型） | `src/client/components/ai/ai-presets.js` |
+| 供应商专属请求头与请求体：OpenCodeGo 带真实 `User-Agent` + `x-opencode-session`；DeepSeek 默认 `thinking: { type: 'disabled' }` | `src/app/lib/ai.js`（`providerHeaders` / `applyProviderBody`） |
+| 终端背景常驻矩阵水印 `Brath Shell` | `src/client/components/terminal/matrix-watermark.jsx` + `terminal.styl` / `terminal.jsx` |
+| 首屏「从 Xshell 一键搬家」引导弹窗（可直接拖 `.xts` 进来） | `src/client/components/xshell-import/quick-import.jsx` + `main.jsx` |
+| 导入向导支持拖拽 / 上传 `.xts`，解析后立即持久化到书签 | `src/client/components/xshell-import/index.jsx`（`onDrop` / `scan(..., { auto: true })`） |
+| 品牌图标改用荔枝宇宙（Litchi Universe）logo，重出全部尺寸 | `_tools/gen-litchi-icons.py` → `src/client/views/images/`、`src/build/resources/` |
+| 修复中文环境导入向导显示英文（`window.getLang()` 返回字典对象） | `src/client/components/xshell-import/index.jsx` |
+| 新增 GitHub 镜像仓库并保持双仓同步 | `git@github.com:Brath1024/b-shell.git` |
 
 ### 代码
 

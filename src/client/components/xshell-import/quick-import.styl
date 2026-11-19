@@ -1,0 +1,46 @@
+.xshell-quick-modal
+  .xshell-quick
+    display flex
+    flex-direction column
+    gap 10px
+  .xshell-quick-lead
+    display flex
+    gap 10px
+    align-items flex-start
+    line-height 1.6
+    opacity 0.92
+  .xshell-quick-icon
+    color #22d3ee
+    font-size 20px
+    margin-top 2px
+  .xshell-quick-point
+    display flex
+    gap 8px
+    align-items flex-start
+    line-height 1.5
+    .ant-tag
+      margin-inline-end 0
+      min-width 22px
+      text-align center
+  .xshell-quick-drop
+    margin-top 6px
+    padding 14px
+    border 1px dashed rgba(34, 211, 238, 0.4)
+    border-radius 6px
+    text-align center
+    font-size 12px
+    opacity 0.85
+    background rgba(34, 211, 238, 0.04)
+    transition border-color 0.15s, background 0.15s
+    .anticon
+      margin-inline-end 6px
+      color #22d3ee
+  &.xshell-quick-dragging
+    .xshell-quick-drop
+      border-color #22d3ee
+      background rgba(34, 211, 238, 0.14)
+      opacity 1
+  .xshell-quick-footer
+    display flex
+    justify-content flex-end
+    gap 8px

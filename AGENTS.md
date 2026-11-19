@@ -9,9 +9,13 @@
 ## 1. 这个项目是什么
 
 - **b-shell** 是基于 [Electerm](https://github.com/electerm/electerm) **5.11.8** 源码的 Windows / macOS 终端管理工具，品牌、协议、数据目录、可执行文件名都已改为 b-shell。
-- 仓库：`git@gitee.com:Guoqing-Li/b-shell.git`（分支 `main`），本地路径 `D:\DeskStop\BrathInfo\brath-shell\b-shell`。
+- 仓库：`git@gitee.com:Guoqing-Li/b-shell.git`（分支 `main`，主仓），GitHub 镜像 `git@github.com:Brath1024/b-shell.git`，本地路径 `D:\DeskStop\BrathInfo\brath-shell\b-shell`。**两边保持同一提交进度**，每次推送 Gitee 后同步推 GitHub。
 - 上游源码快照在 `D:\DeskStop\BrathInfo\brath-shell\electerm-master`，只用于对照，**不要在那边改代码**。
-- 已经在 Electerm 之上新增的核心能力：**Xshell 一键导入**（会话 + 分组 + 密码 + 私钥，支持 `.xts` 备份）。
+- 已经在 Electerm 之上新增的核心能力：
+  - **Xshell 一键导入**（会话 + 分组 + 密码 + 私钥，支持 `.xts` 备份；支持拖拽与首屏引导弹窗）；
+  - **AI 供应商预设**：DeepSeek 官方（`https://api.deepseek.com`，`deepseek-flash` / `deepseek-v4-pro`，请求体默认 `thinking: { type: 'disabled' }`）与 OpenCodeGo（`https://opencode.ai/inference/go/openai/v1`，需真实 UA + `x-opencode-session`）；
+  - **终端矩阵水印** `Brath Shell`（canvas，常驻背景，不拦截鼠标）；
+  - 品牌图标复用荔枝宇宙 logo。
 
 技术栈：Electron + React + Vite + Ant Design（渲染进程）、Node.js（主进程）、NeDB / SQLite（本地库）、`@electerm/ssh2`（SSH）、node-pty（终端）。
 

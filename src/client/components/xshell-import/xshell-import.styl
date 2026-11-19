@@ -2,6 +2,30 @@
   .xshell-import-intro
     margin-bottom 12px
     opacity 0.8
+  .xshell-dropzone
+    display flex
+    flex-direction column
+    align-items center
+    gap 4px
+    padding 18px 12px
+    margin-bottom 12px
+    border 1px dashed rgba(34, 211, 238, 0.45)
+    border-radius 6px
+    background rgba(34, 211, 238, 0.04)
+    text-align center
+    transition border-color 0.15s, background 0.15s
+  .xshell-dropzone-icon
+    font-size 22px
+    color #22d3ee
+  .xshell-dropzone-title
+    font-weight 500
+  .xshell-dropzone-hint
+    font-size 12px
+    opacity 0.65
+  &.xshell-import-dragging
+    .xshell-dropzone
+      border-color #22d3ee
+      background rgba(34, 211, 238, 0.12)
   .xshell-import-path
     display flex
     margin-bottom 12px

@@ -5,6 +5,7 @@ import FileInfoModal from '../sftp/file-info-modal'
 import FileCompareModal from '../sftp/file-compare-modal'
 import UpdateCheck from './upgrade'
 import SettingModal from '../setting-panel/setting-modal'
+import XshellQuickImport from '../xshell-import/quick-import'
 import TextEditor from '../text-editor/text-editor-entry'
 import Sidebar from '../sidebar'
 import CssOverwrite from '../bg/css-overwrite'
@@ -346,6 +347,7 @@ export default auto(function Index (props) {
         <FileInfoModal />
         <FileCompareModal />
         <SettingModal store={store} />
+        <XshellQuickImport store={store} />
         <MoveItemModal store={store} />
         <div
           id='outside-context'

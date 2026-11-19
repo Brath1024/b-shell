@@ -85,6 +85,47 @@ exports.abortAIRequest = (requestId) => {
   return { aborted: true }
 }
 
+// Some gateways require headers beyond the auth one, keyed off the endpoint:
+//   - OpenCodeGo wants one stable `x-opencode-session` per session (routing and
+//     prompt cache) plus a real User-Agent, generic SDK agents are rejected;
+//   - DeepSeek defaults `thinking` to enabled, which is slower and pricier for
+//     short command suggestions, so the request body turns it off.
+const OPENCODE_HOST = 'opencode.ai'
+const DEEPSEEK_HOST = 'api.deepseek.com'
+
+let opencodeSessionId = ''
+
+const hostFromURL = (url) => {
+  try {
+    return new URL(url).hostname.toLowerCase()
+  } catch (e) {
+    return ''
+  }
+}
+
+const providerHeaders = (baseURL) => {
+  const host = hostFromURL(baseURL)
+  if (!host.endsWith(OPENCODE_HOST)) {
+    return null
+  }
+  if (!opencodeSessionId) {
+    const { randomUUID } = require('crypto')
+    opencodeSessionId = `bshell-${randomUUID()}`
+  }
+  return {
+    'User-Agent': 'b-shell/5.11 (Electron; Brath)',
+    'x-opencode-session': opencodeSessionId
+  }
+}
+
+const applyProviderBody = (baseURL, body) => {
+  const host = hostFromURL(baseURL)
+  if (host.endsWith(DEEPSEEK_HOST) && body && body.model) {
+    body.thinking = { type: 'disabled' }
+  }
+  return body
+}
+
 const createAIClient = (baseURL, apiKey, proxy, authHeaderName, extraHeaders) => {
   // Lazy: axios is only needed once the user actually talks to an AI provider,
   // and this module is pulled in by ipc.js, which loads before the window is
@@ -104,6 +145,7 @@ const createAIClient = (baseURL, apiKey, proxy, authHeaderName, extraHeaders) =>
     headers: {
       'Content-Type': 'application/json',
       [headerKey]: headerValue,
+      ...(providerHeaders(baseURL) || {}),
       ...(extraHeaders || {})
     }
   }
@@ -173,12 +215,12 @@ exports.AIchatWithTools = async (messages, model, baseURL, path, apiKey, proxy, 
   try {
     const fmt = detectFormat(path, format)
     const client = createAIClient(baseURL, apiKey, proxy, authHeaderName, headersForFormat(fmt))
-    const requestData = buildRequest(fmt, {
+    const requestData = applyProviderBody(baseURL, buildRequest(fmt, {
       model,
       messages,
       tools,
       stream: false
-    })
+    }))
     const response = await client.post(
       path,
       requestData,
@@ -241,11 +283,11 @@ exports.AIchat = async (
       }
     ]
 
-    const requestData = buildRequest(fmt, {
+    const requestData = applyProviderBody(baseURL, buildRequest(fmt, {
       model,
       messages: requestMessages,
       stream: useStream
-    })
+    }))
 
     if (useStream) {
       // For streaming responses, initiate streaming and return session info

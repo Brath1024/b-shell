@@ -21,6 +21,17 @@
 .term-wrap
   background var(--main)
   position absolute
+  // Background watermark: the xterm canvas is transparent, so a canvas painted
+  // underneath shows through the terminal text. It must never take pointer
+  // events, or text selection inside the pane breaks.
+  .term-matrix
+    position absolute
+    left 0
+    top 0
+    z-index 1
+    pointer-events none
+    opacity 1
+    contain strict
 
 .vertical
   .term-wrap.not-first-term

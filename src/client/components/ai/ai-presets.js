@@ -89,11 +89,52 @@ export const defaultAIPresets = [
   {
     id: 'deepseek',
     nameAI: 'DeepSeek',
-    baseURLAI: 'https://api.deepseek.com/v1',
+    // Official docs use `https://api.deepseek.com` and append
+    // `/chat/completions`; `/v1` is only an OpenAI-compatible alias.
+    baseURLAI: 'https://api.deepseek.com',
+    baseURLAIs: [
+      'https://api.deepseek.com',
+      'https://api.deepseek.com/v1'
+    ],
     apiPathAI: '/chat/completions',
-    modelAI: 'deepseek-chat',
+    // `deepseek-flash` is the current cheap model id (DeepSeek-V4.1-Flash-1017
+    // behind it); `deepseek-v4-pro` is the stronger one. Product names are not
+    // valid ids and must never be sent as `model`.
+    modelAI: 'deepseek-flash',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://platform.deepseek.com/api_keys?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
+    siteUrl: 'https://platform.deepseek.com/api_keys?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell',
+    modelAIs: [
+      { value: 'deepseek-flash' },
+      { value: 'deepseek-v4-pro' }
+    ],
+    ignoreCachedModels: true
+  },
+  {
+    id: 'opencode-go',
+    nameAI: 'OpenCodeGo',
+    // OpenCode Go splits its protocols under /inference/go/*; the OpenAI
+    // compatible chat entry is /openai/v1 (not https://opencode.ai/v1).
+    // Requests also need a stable session id and a real User-Agent header,
+    // both injected in src/app/lib/ai.js from the base URL.
+    baseURLAI: 'https://opencode.ai/inference/go/openai/v1',
+    apiPathAI: '/chat/completions',
+    modelAI: 'deepseek-v4.1-flash',
+    authHeaderNameAI: 'Authorization: Bearer',
+    siteUrl: 'https://opencode.ai/console',
+    modelAIs: [
+      { value: 'deepseek-v4.1-flash' },
+      { value: 'deepseek-v4-pro' },
+      { value: 'glm-5.3' },
+      { value: 'kimi-k3' },
+      { value: 'qwen3.8-max' },
+      { value: 'gpt-6-luna' },
+      { value: 'claude-haiku-5-5' },
+      { value: 'grok-4.7' },
+      { value: 'minimax-m3' },
+      { value: 'mimo-v2.6-pro' },
+      { value: 'longcat-2.0' },
+      { value: 'step-5-preview' }
+    ]
   },
   {
     id: 'openai',

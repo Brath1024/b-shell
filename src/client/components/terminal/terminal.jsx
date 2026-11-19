@@ -22,6 +22,7 @@ import RemoteFloatControl from '../common/remote-float-control'
 import SessionStatusOverlay from './session-status-overlay.jsx'
 import TerminalErrorHandle from './terminal-error-handle.jsx'
 import DropFileModal from './drop-file-modal.jsx'
+import MatrixWatermark from './matrix-watermark.jsx'
 import TerminalSelectText from './terminal-select-text.jsx'
 import { StartupQueue } from './startup-queue.js'
 import { detectRemoteShell } from './shell-detect.js'
@@ -475,6 +476,7 @@ class Term extends Component {
         <div
           {...prps1}
         >
+          <MatrixWatermark active={isActive} />
           <div
             {...prps3}
           />

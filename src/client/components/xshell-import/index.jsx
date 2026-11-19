@@ -97,6 +97,16 @@ const DICT = {
   doneDesc: [
     '新增 {added} 个会话，跳过 {skipped} 个已存在的会话。',
     'Added {added} sessions, skipped {skipped} existing sessions.'
+  ],
+  dropTitle: ['把 .xts 备份拖到这里', 'Drop the .xts backup here'],
+  dropHint: [
+    '松开鼠标即自动解析并写入书签；也可以直接把 Xshell 的 Sessions 目录拖进来。',
+    'Release to parse it and write the sessions into your bookmarks. A whole Xshell Sessions folder works too.'
+  ],
+  dropActive: ['松手即可导入', 'Release to import'],
+  autoImported: [
+    '已自动导入 {added} 个会话',
+    'Imported {added} sessions automatically'
   ]
 }
 
@@ -126,14 +136,36 @@ function fill (key, values) {
 }
 
 export default function XshellImportModal (props) {
-  const { open, onClose } = props
+  const {
+    open,
+    onClose,
+    initialFile = '',
+    autoImport = false
+  } = props
   const { store } = window
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState(null)
   const [root, setRoot] = useState('')
   const [includePassword, setIncludePassword] = useState(true)
+  const [dragging, setDragging] = useState(false)
 
-  const scan = async (target = '') => {
+  const importNow = (payload) => {
+    const target = payload || data
+    if (!target || !target.bookmarks.length) {
+      return { added: 0, skipped: 0 }
+    }
+    const res = store.importXshellSessions(target, { includePassword })
+    notification.success({
+      message: txt('doneTitle'),
+      description: fill('doneDesc', {
+        added: res.added,
+        skipped: res.skipped
+      })
+    })
+    return res
+  }
+
+  const scan = async (target = '', { auto = false } = {}) => {
     setLoading(true)
     const res = await store.loadXshellSessions(
       target && target.trim() ? { root: target.trim() } : {}
@@ -145,6 +177,14 @@ export default function XshellImportModal (props) {
     setData(res)
     if (!target && res.root) {
       setRoot(res.root)
+    }
+    // Dropping or picking a backup should land in the bookmarks right away:
+    // the preview list is a confirmation, not a required extra click.
+    if (auto && res.bookmarks && res.bookmarks.length) {
+      const { added } = importNow(res)
+      if (added) {
+        onClose()
+      }
     }
   }
 
@@ -167,30 +207,61 @@ export default function XshellImportModal (props) {
         return
       }
       setRoot(file)
-      await scan(file)
+      await scan(file, { auto: true })
     } catch (e) {
       window.store.onError(e)
     }
   }
 
+  // Electron 32+ removed File.path, the preload bridge resolves real paths
+  // through webUtils.getPathForFile.
+  const pathFromDrop = (evt) => {
+    const dt = evt.dataTransfer
+    if (!dt || !dt.files || !dt.files.length) {
+      return ''
+    }
+    const file = dt.files[0]
+    const path = window.api && window.api.getPathForFile
+      ? window.api.getPathForFile(file)
+      : ''
+    return path || ''
+  }
+
+  const onDrop = async (evt) => {
+    evt.preventDefault()
+    evt.stopPropagation()
+    setDragging(false)
+    const path = pathFromDrop(evt)
+    if (!path) {
+      return
+    }
+    setRoot(path)
+    await scan(path, { auto: true })
+  }
+
+  const onDragOver = (evt) => {
+    evt.preventDefault()
+    evt.stopPropagation()
+    if (!dragging) {
+      setDragging(true)
+    }
+  }
+
   useEffect(() => {
     if (open) {
-      scan(root)
+      const target = initialFile || root
+      if (initialFile) {
+        setRoot(initialFile)
+      }
+      scan(target, { auto: autoImport && !!initialFile })
     }
-  }, [open])
+  }, [open, initialFile])
 
   const handleImport = () => {
     if (!data || !data.bookmarks.length) {
       return
     }
-    const res = store.importXshellSessions(data, { includePassword })
-    notification.success({
-      message: txt('doneTitle'),
-      description: fill('doneDesc', {
-        added: res.added,
-        skipped: res.skipped
-      })
-    })
+    importNow(data)
     onClose()
   }
 
@@ -291,8 +362,20 @@ export default function XshellImportModal (props) {
   return (
     <Modal {...modProps}>
       <Spin spinning={loading} tip={txt('scanning')}>
-        <div className='xshell-import'>
+        <div
+          className={'xshell-import' + (dragging ? ' xshell-import-dragging' : '')}
+          onDragOver={onDragOver}
+          onDragLeave={() => setDragging(false)}
+          onDrop={onDrop}
+        >
           <div className='xshell-import-intro'>{txt('intro')}</div>
+          <div className='xshell-dropzone'>
+            <FileZipOutlined className='xshell-dropzone-icon' />
+            <div className='xshell-dropzone-title'>
+              {dragging ? txt('dropActive') : txt('dropTitle')}
+            </div>
+            <div className='xshell-dropzone-hint'>{txt('dropHint')}</div>
+          </div>
           <Space.Compact className='xshell-import-path'>
             <Input
               value={root}
