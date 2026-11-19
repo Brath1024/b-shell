@@ -1,7 +1,8 @@
 # AGENTS.md — 接手 b-shell 二次开发前请先读这篇
 
 本文件写给 AI agent（也写给人类开发者）：读完可以直接开始改代码、跑测试、出包。
-用户可见的说明在 [README.md](README.md)，Xshell 迁移细节在 [docs/xshell-import.md](docs/xshell-import.md)。
+用户可见的说明在 [README.md](README.md)，Xshell 迁移细节在 [docs/xshell-import.md](docs/xshell-import.md)，
+**本次交付做到哪一步、证据与遗留项**在 [docs/handover.md](docs/handover.md)（接手先看那一篇，再看本篇的规范）。
 
 ---
 
@@ -145,15 +146,28 @@ node --test src/test/unit-ci/*.spec.js               # 全量，正常 3 分钟�
 
 ## 8. 发布到 Gitee
 
+当前已发布版本：`v5.11.8-bshell.1`（发行版 id `1328508`，<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.1>）。
+完整复现步骤、耗时与踩坑记录见 [docs/handover.md](docs/handover.md) 第 3 节。
+
 ```powershell
+# 1. 改版本号（package.json + package-lock.json），同步 README 下载表
 node D:\software\nvmbin\nodejs\node_modules\npm\bin\npm-cli.js run dist:win
-# 产物在 dist/：b-shell-<version>-win-x64-installer.exe / .tar.gz / .appx
-git tag v<version>-bshell.N && git push origin v<version>-bshell.N
+# 产物在 dist/：b-shell-<version>-win-x64-installer.exe / .tar.gz / .blockmap（appx 已移除）
+# 2. 打 tag 并一次推送 main + tag（pre-push 只跑一次 lint）
+git tag -a v<version> -m "b-shell <version>"
+git push origin main v<version>
+# 3. Gitee API v5 创建发行版 + 上传资产，见下
 ```
 
 - Gitee 的「发行版」需要在网页或 API 里创建并上传 `dist/` 里的安装包；仅推 tag 不会自动生成发行版。
+- API 创建：`POST https://gitee.com/api/v5/repos/Guoqing-Li/b-shell/releases`，表单 `access_token` / `tag_name` / `target_commitish=main` / `name` / `body`。
+- API 上传：`POST .../releases/{id}/attach_files`，multipart 字段名 `file`，**`access_token` 必须放 query string**（放表单里会 401 `登录失效`）。
+- Token 在 Git Credential Manager 里（`git credential fill` 可取出 32 位 token），**不要打印、不要提交**。
 - `src/build/electron-builder.json` 里每个平台的 `publish` 都请用 `--publish never`（或已移除 provider），**不要**让 electron-builder 往 GitHub 推。
-- 版本号在 `package.json`，上游是 5.11.8；发版时建议 `5.11.8-bshell.<N>` 并在 `README.md` 的下载表里同步。
+- 版本号在 `package.json`，上游是 5.11.8；发版用 `5.11.8-bshell.<N>` 并在 `README.md` 的下载表里同步。
+- 在 PowerShell 里跑 `dist:win` 时 stderr 的 DeprecationWarning 会让任务以 exit code 1 收尾，但产物完整；判断成功以 `dist/` 产物与 `b-shell.exe` 文件版本为准。
+- 出包前清空 `dist/`，否则旧版本产物会混在一起，上传时容易传错文件。
+- **Gitee 发行版单个资产上限 100 MB**：installer 119 MB / tar.gz 151 MB 会被 400 拒绝。按需压成 `.7z`（`7z a -t7z -mx=9`）或 `-v95m` 分卷后上传；改发行版说明用 `PATCH /releases/{id}`，`tag_name` 必填。
 
 ---
 

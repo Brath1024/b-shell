@@ -20,13 +20,18 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 
 ## 下载与安装
 
-目前请从仓库 Release 或自行构建：
+最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载。
+
+> Gitee 单个资产上限 100 MB，安装包（119 MB）与 `.tar.gz`（151 MB）超出限制，因此发行版提供压缩后的免安装包与分卷安装包，二者都是完整可用的程序。
 
 | 平台 | 产物 |
 | --- | --- |
-| Windows x64 | `b-shell-<version>-win-x64-installer.exe`（安装包）、`b-shell-<version>-win-x64.tar.gz`（免安装） |
+| Windows x64（免安装，推荐） | `b-shell-<version>-win-x64.7z` —— 解压到任意目录，双击 `b-shell.exe` |
+| Windows x64（安装版） | `b-shell-<version>-win-x64-installer.exe.7z.001` + `.002` —— 两个分卷都下载后，用 7-Zip 对 `.001` 解压得到安装包 |
 | macOS | `b-shell-<version>-mac-*.dmg` |
 | Linux | `b-shell-<version>-linux-*.AppImage` / `.deb` |
+
+Windows 上的 7-Zip / Bandizip / NanaZip 均可解压 `.7z` 与 `.001` 分卷。校验和见发行版说明。
 
 ## 从源码构建
 
@@ -59,7 +64,7 @@ npm run dist:linux # Linux
 - 私钥：会话使用的 `UserKey` 会自动从 `com\SECSH\UserKeys` 找到并转换为 OpenSSH 格式内嵌到书签，换机器不用再拷贝密钥文件
 - 重复导入：按会话文件路径去重，随时可以再导入增量会话
 
-完整字段映射、手动导入（JSON / ssh config / 快速连接）与常见问题见 **[docs/xshell-import.md](docs/xshell-import.md)**。二次开发（构建流程、命名约定、导入实现细节）见 **[AGENTS.md](AGENTS.md)**。
+完整字段映射、手动导入（JSON / ssh config / 快速连接）与常见问题见 **[docs/xshell-import.md](docs/xshell-import.md)**。二次开发（构建流程、命名约定、导入实现细节）见 **[AGENTS.md](AGENTS.md)**，本次交付的验证证据与遗留项见 **[docs/handover.md](docs/handover.md)**。
 
 ## 与上游 Electerm 的差异
 
