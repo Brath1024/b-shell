@@ -23,3 +23,14 @@ const to = resolve(
 
 rm('-rf', to)
 cp('-r', from, to)
+
+// brand images referenced by index.pug and the runtime icon paths
+const imgFrom = resolve(
+  __dirname,
+  '../../../src/client/views/images'
+)
+const imgTo = resolve(
+  __dirname,
+  '../../../work/app/assets/images'
+)
+cp('-r', imgFrom + '/*', imgTo)

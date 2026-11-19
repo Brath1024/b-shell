@@ -32,7 +32,7 @@ function installDesktopFile () {
   // module transparently reads from inside app.asar)
   const srcIconPath = path.join(
     process.resourcesPath,
-    'app.asar', 'assets', 'images', 'electerm-round-128x128.png'
+    'app.asar', 'assets', 'images', 'bshell-round-128x128.png'
   )
 
   const desktopContent = [

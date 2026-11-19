@@ -3,9 +3,9 @@
  */
 import { isMacJs } from './platform.js'
 import { defaultThemeId, defaultThemeLightId } from './theme-defaults.js'
-import logoPath1Ref from '@electerm/electerm-resource/res/imgs/electerm-round-128x128.png'
-import logoPath2Ref from '@electerm/electerm-resource/res/imgs/electerm.png'
-import logoPath3Ref from '@electerm/electerm-resource/res/imgs/electerm-watermark.png'
+import logoPath1Ref from '../views/images/bshell-round-128x128.png'
+import logoPath2Ref from '../views/images/bshell.png'
+import logoPath3Ref from '../views/images/bshell-watermark.png'
 export const packInfo = typeof window.et.packInfo === 'undefined' ? window.pre.packInfo : window.et.packInfo
 const buildConst = (props) => {
   return props.reduce((prev, key) => {

@@ -85,9 +85,9 @@ exports.patchAppImage = function patchAppImage () {
 
   // Copy icon for desktop integration (outside asar, accessible at runtime)
   const iconSrc = resolve(
-    __dirname, '../../../node_modules/@electerm/electerm-resource/res/imgs/electerm-round-128x128.png'
+    __dirname, '../../../src/client/views/images/bshell-round-128x128.png'
   )
-  const iconDst = resolve(workAssets, 'electerm-round-128x128.png')
+  const iconDst = resolve(workAssets, 'bshell-round-128x128.png')
   if (fs.existsSync(iconSrc)) {
     fs.copyFileSync(iconSrc, iconDst)
   }
