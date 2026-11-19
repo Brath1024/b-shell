@@ -150,7 +150,7 @@ node --test src/test/unit-ci/*.spec.js               # 全量，正常 3 分钟�
 
 ## 8. 发布到 Gitee
 
-当前已发布版本：`v5.11.8-bshell.2`（发行版 id `1328710`，<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.2>）。
+当前已发布版本：`v5.11.8-bshell.3`（单文件 87.8 MB：`b-shell-5.11.8-bshell.3-win-x64-portable.7z`，SHA256 `FDA66E9895455325CE3DCA995858A8015B083BB00DAE2764B74A61A451C32BE9`）。上一版 `v5.11.8-bshell.2`（分卷）仍保留。
 完整复现步骤、耗时与踩坑记录见 [docs/handover.md](docs/handover.md) 第 3 节。
 
 ```powershell
@@ -171,7 +171,31 @@ git push origin main v<version>
 - 版本号在 `package.json`，上游是 5.11.8；发版用 `5.11.8-bshell.<N>` 并在 `README.md` 的下载表里同步。
 - 在 PowerShell 里跑 `dist:win` 时 stderr 的 DeprecationWarning 会让任务以 exit code 1 收尾，但产物完整；判断成功以 `dist/` 产物与 `b-shell.exe` 文件版本为准。
 - 出包前清空 `dist/`，否则旧版本产物会混在一起，上传时容易传错文件。
-- **Gitee 发行版单个资产上限 100 MB**：installer 119 MB / tar.gz 151 MB 会被 400 拒绝。按需压成 `.7z`（`7z a -t7z -mx=9`）或 `-v95m` 分卷后上传；改发行版说明用 `PATCH /releases/{id}`，`tag_name` 必填。
+- **Gitee 发行版单个资产上限 100 MB**：installer 119 MB / tar.gz 151 MB 会被 400 拒绝。按需压成 `.7z` 或 `-v95m` 分卷后上传；改发行版说明用 `PATCH /releases/{id}`，`tag_name` 必填。
+
+### 8.1 出「单文件 ≤100 MB」的精简包（5.11.8-bshell.3 起采用）
+
+```powershell
+# 0. 只出 win-unpacked，不跑 nsis/tar.gz；注意配置要先复制到仓库根
+Copy-Item src\build\electron-builder.json .\electron-builder.json -Force   # pb 做的事
+$env:NODE_OPTIONS='--use-system-ca'
+node node_modules/electron-builder/cli.js --win --x64 --dir
+
+# 1. 删运行时里用不到的东西（省约 40 MB 原始体积）
+cd dist\win-unpacked
+Remove-Item dxcompiler.dll,dxil.dll,vk_swiftshader.dll,vk_swiftshader_icd.json,vulkan-1.dll -Force
+#   → 已不再需要手删 app.asar 内的 arm64/sourcemap/RDP wasm：
+#     electron-builder.json 的 files 里已排除（见下）
+
+# 2. 用 64 位 7-Zip 压，命名同一个顶层目录，用户解压后就是一个文件夹
+& "$env:TEMP\7z24\7z.exe" a -t7z -mx=9 -md=256m -mfb=273 -mmt=on <产物>.7z b-shell-<version>-win-x64
+```
+
+- `src/build/electron-builder.json` 的 `files` 已排除：`**/*.map`、`node-pty/prebuilds/win32-arm64/**`、`@serialport/bindings-cpp/prebuilds/darwin-*/**`、`assets/assets/rdp_client_bg-*.wasm`（4.9 MB，只有 RDP 会话才用）。**改 `files` 后必须重新 `--dir`**，否则 asar 不变。
+- **本机 `D:\software\7-Zip\7z.exe` 是 32 位的 9.20**，`-md=256m` 会报 `Can't allocate required memory!`；用官方 64 位包静默装到 `%TEMP%\7z24`：`& "$env:TEMP\7z2409-x64.exe" /S "/D=$env:TEMP\7z24"`。
+- 压缩参数实测（311 MB 输入）：`-md=64m` 91.6 MB → `-md=256m` **87.8 MB** → `-md=512m` 87.85 MB（无收益）；`-mlc=0 -mlp=0 -mpb=0` 反而 88.6 MB；BCJ2 比默认 BCJ 差。
+- **体积下限**（实测单文件压缩后）：`b-shell.exe` 60.8 MB + `resources.pak` 11.75 MB（几乎不可压缩，raw 11.86）+ `icudtl.dat` 3.21 + `app.asar` 3.07 + 各种 pak/DLL ≈ **84 MB**。所以 Electron 44 的单文件包做不到 80 MB，别围着这个数字反复试。
+- 精简后必须冒烟：`python _tools\ppt\verify_b3_slim.py`（支持 `BSHELL_EXE` / `BSHELL_UD`），确认能起窗、26 条书签全部有标题；RDP 背景图与软件渲染回退在这版是**有意缺失**的，报障时先排除这两点。
 
 ---
 

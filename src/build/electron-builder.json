@@ -8,6 +8,13 @@
   "electronLanguages": [
     "en-US"
   ],
+  "files": [
+    "**/*",
+    "!**/*.map",
+    "!**/node_modules/node-pty/prebuilds/win32-arm64/**",
+    "!**/node_modules/@serialport/bindings-cpp/prebuilds/darwin-*/**",
+    "!assets/assets/rdp_client_bg-*.wasm"
+  ],
   "asar": true,
   "asarUnpack": [
     "node_modules/node-pty/build/Release/**"

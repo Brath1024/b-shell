@@ -27,18 +27,19 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 
 最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载。GitHub 镜像只同步源码，不提供发行包。
 
-当前版本 **5.11.8-bshell.2**：<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.2>
+当前版本 **5.11.8-bshell.3**：<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.3>
 
-> Gitee 单个资产上限 100 MB，安装包（120 MB）与 `.tar.gz`（151 MB）超出限制，因此发行版提供分卷压缩后的免安装包与安装包，二者都是完整可用的程序。
+> 发行版只提供**一个文件**（87.8 MB，未分包）：`b-shell-5.11.8-bshell.3-win-x64-portable.7z`。Gitee 单个资产上限 100 MB，这一版已经压到限制以内，不再需要分卷。
 
 | 平台 | 产物 |
 | --- | --- |
-| Windows x64（免安装，推荐） | `b-shell-5.11.8-bshell.2-win-x64.7z.001` + `.002` —— 两个分卷都下载后，用 7-Zip 对 `.001` 解压到任意目录，双击 `b-shell.exe` |
-| Windows x64（安装版） | `b-shell-5.11.8-bshell.2-win-x64-installer.7z.001` + `.002` —— 两个分卷都下载后，用 7-Zip 对 `.001` 解压得到安装包 |
+| Windows x64（免安装，推荐） | `b-shell-5.11.8-bshell.3-win-x64-portable.7z`（87.8 MB，单文件）—— 用 7-Zip 解压到任意目录，双击 `b-shell.exe` |
 | macOS | `b-shell-<version>-mac-*.dmg` |
 | Linux | `b-shell-<version>-linux-*.AppImage` / `.deb` |
 
-Windows 上的 7-Zip / Bandizip / NanaZip 均可解压 `.7z` 与 `.001` 分卷。校验和见发行版说明。
+Windows 上的 7-Zip / Bandizip / NanaZip 均可解压 `.7z`。校验和见发行版说明。
+
+关于体积：Electron 44 的运行时（`b-shell.exe` 单文件 235 MB）本身就占了压缩后的大头，即使按最省的方式打包（去掉 RDP 背景 wasm、ARM64 预编译、Vulkan/SwiftShader 回退、sourcemap）也仍需 ~88 MB；要再小就只能裁掉 Chromium 的 `resources.pak`（11.8 MB，不可再压缩）或 GPU DLL，会牺牲兼容性，因此不做。
 
 ## 从源码构建
 

@@ -1,7 +1,7 @@
 {
   "name": "b-shell",
   "productName": "b-shell",
-  "version": "5.11.8-bshell.2",
+  "version": "5.11.8-bshell.3",
   "description": "b-shell - Brath 终端管理工具(Windows/macOS)，基于 Electerm 二次开发，支持 SSH/SFTP/Telnet/串口/RDP/VNC/Spice/FTP，并内置 Xshell 配置一键导入。",
   "main": "app.js",
   "scripts": {
