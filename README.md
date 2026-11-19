@@ -27,12 +27,14 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 
 最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载（GitHub 镜像仓库的 Releases 同步同一批资产）。
 
-> Gitee 单个资产上限 100 MB，安装包（119 MB）与 `.tar.gz`（151 MB）超出限制，因此发行版提供压缩后的免安装包与分卷安装包，二者都是完整可用的程序。
+当前版本 **5.11.8-bshell.2**：<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.2>
+
+> Gitee 单个资产上限 100 MB，安装包（120 MB）与 `.tar.gz`（151 MB）超出限制，因此发行版提供分卷压缩后的免安装包与安装包，二者都是完整可用的程序。
 
 | 平台 | 产物 |
 | --- | --- |
-| Windows x64（免安装，推荐） | `b-shell-<version>-win-x64.7z` —— 解压到任意目录，双击 `b-shell.exe` |
-| Windows x64（安装版） | `b-shell-<version>-win-x64-installer.exe.7z.001` + `.002` —— 两个分卷都下载后，用 7-Zip 对 `.001` 解压得到安装包 |
+| Windows x64（免安装，推荐） | `b-shell-5.11.8-bshell.2-win-x64.7z.001` + `.002` —— 两个分卷都下载后，用 7-Zip 对 `.001` 解压到任意目录，双击 `b-shell.exe` |
+| Windows x64（安装版） | `b-shell-5.11.8-bshell.2-win-x64-installer.7z.001` + `.002` —— 两个分卷都下载后，用 7-Zip 对 `.001` 解压得到安装包 |
 | macOS | `b-shell-<version>-mac-*.dmg` |
 | Linux | `b-shell-<version>-linux-*.AppImage` / `.deb` |
 

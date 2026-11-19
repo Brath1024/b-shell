@@ -150,7 +150,7 @@ node --test src/test/unit-ci/*.spec.js               # 全量，正常 3 分钟�
 
 ## 8. 发布到 Gitee
 
-当前已发布版本：`v5.11.8-bshell.1`（发行版 id `1328508`，<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.1>）。
+当前已发布版本：`v5.11.8-bshell.2`（发行版 id `1328710`，<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.2>）。
 完整复现步骤、耗时与踩坑记录见 [docs/handover.md](docs/handover.md) 第 3 节。
 
 ```powershell

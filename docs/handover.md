@@ -13,9 +13,9 @@
 | --- | --- |
 | 仓库 | `git@gitee.com:Guoqing-Li/b-shell.git`（主） + `git@github.com:Brath1024/b-shell.git`（镜像），分支 `main`，两仓同进度 |
 | 本地路径 | `D:\DeskStop\BrathInfo\brath-shell\b-shell` |
-| 版本 | `5.11.8-bshell.1` |
-| Tag | `v5.11.8-bshell.1` |
-| 发行版 | <https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.1> |
+| 版本 | `5.11.8-bshell.2` |
+| Tag | `v5.11.8-bshell.2` |
+| 发行版 | <https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.2>（id `1328710`） |
 | 功能提交 | `bcd0909 feat(xshell): import Xshell .xts backups, session passwords and user keys` |
 | 发版提交 | `bfcaa5f chore(release): prepare b-shell 5.11.8-bshell.1 windows build` |
 | 构建环境 | Windows 10 19045 / Node v24.9.0 / npm 11.6.0 / electron-builder 26.15.7 / Electron 44.7.0 |
@@ -225,7 +225,7 @@ Invoke-RestMethod -Uri 'https://gitee.com/api/v5/repos/Guoqing-Li/b-shell/releas
 4. 自动更新刻意关闭（`disableUpgradeCheck: true`）。
 5. 只验证了 Windows 出包；macOS 的 `icons.icns` 已就绪但没在真机跑 `dist:mac`。
 6. 安装包 exe 的 `CompanyName` 仍是上游 `ZHAO Xudong`（来自 `package.json` 的 `author`），要改需调整 `author`/`win.legalTrademarks` 后重新出包。
-7. 已发布的 `5.11.8-bshell.1` 里，导入向导对中文环境仍显示英文（见 §4 第 7 条）；代码已修，但**要下个构建**（如 `5.11.8-bshell.2`）才会进入安装包，`docs/ppt` 里的截图因此是英文向导。
+7. `5.11.8-bshell.1` 的导入向导对中文环境显示英文（见 §4 第 7 条），已在 `5.11.8-bshell.2` 修复；`docs/ppt` 里的截图仍来自 bshell.1，所以向导部分是英文。
 
 ---
 
