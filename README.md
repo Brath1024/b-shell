@@ -16,7 +16,7 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 - SSH 隧道、跳板机（connection hopping）、X11 转发、Agent 转发、多套认证配置。
 - 快捷命令、命令自动补全、触发器、全局搜索、分屏、标签页批量操作。
 - 内置 AI 助手（可选）、同步（可选）、主题与字体自定义。
-- Windows（安装包 / 便携版 / MSIX）与 macOS（dmg）构建。
+- Windows（安装包 / 免安装便携版）与 macOS（dmg）构建。
 
 ## 下载与安装
 
@@ -24,7 +24,7 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 
 | 平台 | 产物 |
 | --- | --- |
-| Windows x64 | `b-shell-<version>-win-x64.exe`（安装包）、`b-shell-<version>-win-x64.tar.gz`（免安装） |
+| Windows x64 | `b-shell-<version>-win-x64-installer.exe`（安装包）、`b-shell-<version>-win-x64.tar.gz`（免安装） |
 | macOS | `b-shell-<version>-mac-*.dmg` |
 | Linux | `b-shell-<version>-linux-*.AppImage` / `.deb` |
 
@@ -65,7 +65,7 @@ npm run dist:linux # Linux
 
 - 产品名、应用标识、安装包名、可执行文件名、协议前缀（`b-shell://`）、数据目录改为 b-shell 自有标识，可与官方 Electerm 同时安装、互不干扰。
 - 新增 Xshell 会话导入（主进程解析 + 密码解密 + 私钥转换 + `.xts` 备份读取 + 渲染层导入向导），详见 [docs/xshell-import.md](docs/xshell-import.md)。
-- 自绘 b-shell 品牌图标（应用图标、窗口水印、托盘图标、Windows `.ico`、macOS `.icns`、Linux 多尺寸 PNG、MSIX 磁贴），资源不再依赖上游 npm 包。
+- 自绘 b-shell 品牌图标（应用图标、窗口水印、托盘图标、Windows `.ico`、macOS `.icns`、Linux 多尺寸 PNG），资源不再依赖上游 npm 包。
 - 移除上游的自动发布与赞助相关配置，构建目标指向本仓库。
 - 其余功能与上游保持一致，上游更新可以继续合并：本仓库基于 Electerm `5.11.8`。
 
@@ -80,7 +80,7 @@ src/
 docs/          使用文档（Xshell 导入）
 ```
 
-界面使用的图标源文件在 [src/client/views/images](src/client/views/images)，打包/安装器用图标在 [src/build/resources](src/build/resources)（含 Windows `.ico`、macOS `.icns`、Linux 多尺寸 PNG 与 MSIX 磁贴）。
+界面使用的图标源文件在 [src/client/views/images](src/client/views/images)，打包/安装器用图标在 [src/build/resources](src/build/resources)（含 Windows `.ico`、macOS `.icns`、Linux 多尺寸 PNG）。
 
 Xshell 导入相关代码：
 
