@@ -24,6 +24,16 @@
 
 ## 1. 本次交付内容
 
+### 5.11.8-bshell.3 新增（相对 bshell.2）
+
+| 变更 | 位置 |
+| --- | --- |
+| 发行版改为**单文件 87.8 MB**（`b-shell-5.11.8-bshell.3-win-x64-portable.7z`），不再分卷 | Gitee 发行版 id `1334046` |
+| 打包瘦身：排除 RDP 背景 wasm（4.9 MB）、ARM64 预编译、sourcemap | `src/build/electron-builder.json` 的 `files` |
+| 打包瘦身：删除 Vulkan/SwiftShader 回退与 DirectX 着色器编译 DLL（约 6 MB） | 构建后处理 `dist/win-unpacked` |
+| 用 64 位 7-Zip `-mx=9 -md=256m` 固实压缩（32 位 9.20 分配不出大字典） | `%TEMP%\7z24\7z.exe` |
+| 体积分析写入 README/AGENTS：Electron 44 单文件下限约 84 MB | `README.md`、`AGENTS.md` §8.1 |
+
 ### 5.11.8-bshell.2 新增（相对 bshell.1）
 
 | 变更 | 位置 |
