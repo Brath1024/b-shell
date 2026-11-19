@@ -55,7 +55,7 @@ src/client/         渲染进程（React）
 src/build/          构建脚本（vite-build、copy、pug、prepare、electron-builder.json）
 src/build/resources/ 图标资源（icons-win.ico、icons.icns、build-res/…）
 src/test/unit-ci/   node --test 单测（xshell-import.spec.js 在这里）
-docs/               用户文档（xshell-import.md）
+docs/               用户文档（xshell-import.md）与演示材料（ppt/b-shell-guide.pptx|pdf）
 work/               构建中间产物（work/app），不要提交
 dist/               electron-builder 输出，不要提交
 ```
@@ -118,7 +118,7 @@ node --test src/test/unit-ci/xshell-import.spec.js
 4. 用户密钥 `.pri` 是 NSSSH 容器：`---- BEGIN NSSSH PRIVATE KEY ----`（4 个短横线）、`Comment:`、`Key: n, <type>`，base64 = SSH 公钥 blob + `nsssh-key-v6\0` 私有载荷。私有载荷 = `checkint`×2 + `string(私钥 64 字节 = seed||pub)` + `string(注释)` + 填充；**kdf 字段必须从载荷区（`rest`）读取，不是整个 buffer**（这是曾经导致“密钥不可用”的 bug）。
 5. 转 OpenSSH 时必须写标准结构（`openssh-key-v1\0` + cipher/kdf/options + 1 个 pubBlob + 私钥段 + `1,2,3…` 填充到 8 字节倍数），`@electerm/ssh2` 会校验尾部填充序列，`ssh-rsa/ssh-dss` 的 NSSSH 载荷结构不同，直接标 `unsupported` 别硬解。
 
-**渲染层约束**：向导必须走 `window.pre.runGlobalAsync`（IPC 白名单在 `src/app/lib/ipc.js` 的 `asyncGlobals`），新增主进程能力要同步在那里注册，否则打包后静默失败。文案用组件内 `DICT` + `window.getLang()`，仓库里已有 i18n 目录但本功能刻意做成自带双语，避免动多语言文件。
+**渲染层约束**：向导必须走 `window.pre.runGlobalAsync`（IPC 白名单在 `src/app/lib/ipc.js` 的 `asyncGlobals`），新增主进程能力要同步在那里注册，否则打包后静默失败。文案用组件内 `DICT` + **`window.store.config.language`** 判断中英文（值形如 `zh_cn`）；**不要用 `window.getLang()` 判断语言**——它返回的是语言字典对象，不是语言码，早期这里导致中文环境永远显示英文向导。仓库里已有 i18n 目录但本功能刻意做成自带双语，避免动多语言文件。
 
 ---
 

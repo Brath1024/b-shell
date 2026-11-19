@@ -59,6 +59,15 @@
 - 安装包分卷 `…-installer.exe.7z.001` + `.002`（`7z a -v95m`），对 `.001` 解压即得原 installer（`7z t .001` 校验 CRC 通过）。
 - 原始 installer / tar.gz 仍保留在本机 `dist/`，需要时可改传到其他存储或提供源码构建。
 
+### 文档与演示
+
+| 文件 | 说明 |
+| --- | --- |
+| `docs/ppt/b-shell-guide.pptx` | 15 页中文演示：新建连接、连接服务器、传文件、配置 AI、用 AI 操作命令、从 Xshell 导出与导入、分发给用户 |
+| `docs/ppt/b-shell-guide.pdf` | 同上的 PDF 版（直接发给同事看） |
+| `docs/xshell-import.md` | Xshell 字段映射与导入说明（面向使用者） |
+| `docs/handover.md` | 本文档（面向接手开发的人） |
+
 ---
 
 ## 2. 验证证据（可复现）
@@ -121,6 +130,17 @@ app\b-shell.exe <脚本>   # require('<…>/resources/app.asar/lib/xshell-import
 
 > 注意：在本机 DSH 里做这个冒烟测试要先 `Remove-Item Env:ELECTRON_RUN_AS_NODE`，否则 `b-shell.exe` 会以 Node 模式运行并报 `bad option: --user-data-dir`。
 
+### 2.6 演示材料（`docs/ppt/`）
+
+`b-shell-guide.pptx` / `.pdf` 里的每一张界面图都来自**真实运行的应用**，不是手绘示意图：
+
+1. `dist/win-unpacked/b-shell.exe --user-data-dir=%TEMP%\bshell-ppt --remote-debugging-port=9333` 启动（先清 `ELECTRON_RUN_AS_NODE`）。
+2. `python -m playwright ... connect_over_cdp('http://127.0.0.1:9333')` 操作界面并 `page.screenshot()`，视口 1920×1040（无标题栏，可直接贴版）。
+3. 真实主机名/IP 用 Pillow 做 GaussianBlur 脱敏后再入稿；表单示例改用 `192.168.1.100` 这类假地址。
+4. 用 python-pptx 组装（16:9、深色 `#12151A`、青色 `#22D3EE`），再 `office_render` 逐页检查排版。
+
+截图与生成脚本留在仓库外的 `D:\DeskStop\BrathInfo\brath-shell\_tools\ppt\`（`build_deck.py`、`crop.py`、`mask.py`、`shot_*.py`），需要改版时在那里改，产出再复制进 `docs/ppt/`。
+
 ---
 
 ## 3. 构建与发布怎么再做一次
@@ -179,6 +199,8 @@ Invoke-RestMethod -Uri 'https://gitee.com/api/v5/repos/Guoqing-Li/b-shell/releas
 4. 书签 id 由会话相对路径哈希生成（`xshell-b-<hash>`），所以重复导入天然去重；分组 id `xshell-g-<hash>`，根组 `xshell-g-root`。
 5. 元数据字段（`passwordStatus`、`xshellPath`、`xshellUserKey` …，见 `XSHELL_META_FIELDS`）只在渲染层用，落库前必须剥离。
 6. 新增主进程能力必须同步注册到 `src/app/lib/ipc.js` 的 `asyncGlobals`，否则开发模式正常、打包后静默失败。
+7. **语言判断不要用 `window.getLang()`**：它返回的是当前语言字典对象（`src/client/entry/basic.js:55`），不是语言码。导入向导早期写成 `/^zh/i.test(window.getLang())`，对对象恒为 false，中文用户永远看到英文向导。正确做法是读 `window.store.config.language`（值形如 `zh_cn`），非字符串时回落 `en_us`。
+8. 演示截图走真实应用：以 `--user-data-dir=<临时目录> --remote-debugging-port=9333` 启动 `dist/win-unpacked/b-shell.exe`，再用 Playwright `connect_over_cdp('http://127.0.0.1:9333')` 操作与截图；真实主机名/IP 先 GaussianBlur 再入稿。注意 DSH 注入的 `ELECTRON_RUN_AS_NODE=1` 会导致 exe 进入 Node 模式，启动前要清掉。
 
 ---
 
@@ -190,6 +212,7 @@ Invoke-RestMethod -Uri 'https://gitee.com/api/v5/repos/Guoqing-Li/b-shell/releas
 4. 自动更新刻意关闭（`disableUpgradeCheck: true`）。
 5. 只验证了 Windows 出包；macOS 的 `icons.icns` 已就绪但没在真机跑 `dist:mac`。
 6. 安装包 exe 的 `CompanyName` 仍是上游 `ZHAO Xudong`（来自 `package.json` 的 `author`），要改需调整 `author`/`win.legalTrademarks` 后重新出包。
+7. 已发布的 `5.11.8-bshell.1` 里，导入向导对中文环境仍显示英文（见 §4 第 7 条）；代码已修，但**要下个构建**（如 `5.11.8-bshell.2`）才会进入安装包，`docs/ppt` 里的截图因此是英文向导。
 
 ---
 

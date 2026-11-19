@@ -103,9 +103,13 @@ const DICT = {
 function txt (key) {
   let lang = 'en_us'
   try {
-    lang = (window.getLang && window.getLang()) ||
-      (window.store && window.store.config && window.store.config.language) ||
-      'en_us'
+    // window.getLang() returns the translated dictionary, not the language
+    // code, so the config language is what tells us which pair to use.
+    const cfg = window.store && window.store.config
+    lang = (cfg && cfg.language) || window.initLanguage || 'en_us'
+    if (typeof lang !== 'string') {
+      lang = 'en_us'
+    }
   } catch (e) {
     lang = 'en_us'
   }

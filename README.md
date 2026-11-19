@@ -66,6 +66,8 @@ npm run dist:linux # Linux
 
 完整字段映射、手动导入（JSON / ssh config / 快速连接）与常见问题见 **[docs/xshell-import.md](docs/xshell-import.md)**。二次开发（构建流程、命名约定、导入实现细节）见 **[AGENTS.md](AGENTS.md)**，本次交付的验证证据与遗留项见 **[docs/handover.md](docs/handover.md)**。
 
+想直接看「怎么用」：**[docs/ppt/b-shell-guide.pdf](docs/ppt/b-shell-guide.pdf)**（15 页图解：新建连接、连接服务器、传文件、配置 AI、用 AI 操作命令、从 Xshell 迁移、分发给用户），可编辑版是 [b-shell-guide.pptx](docs/ppt/b-shell-guide.pptx)。
+
 ## 与上游 Electerm 的差异
 
 - 产品名、应用标识、安装包名、可执行文件名、协议前缀（`b-shell://`）、数据目录改为 b-shell 自有标识，可与官方 Electerm 同时安装、互不干扰。
