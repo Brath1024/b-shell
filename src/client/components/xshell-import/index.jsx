@@ -20,6 +20,7 @@ import {
   Tag
 } from 'antd'
 import {
+  FileZipOutlined,
   FolderOpenOutlined,
   ReloadOutlined,
   WindowsOutlined
@@ -31,13 +32,15 @@ import './xshell-import.styl'
 const DICT = {
   title: ['从 Xshell 导入', 'Import from Xshell'],
   intro: [
-    '读取 Xshell 的会话文件(.xsh)，把主机、端口、用户名、密码和目录结构一次性导入 b-shell。已存在的会话会自动跳过，可以重复导入。',
-    'Reads Xshell session files (.xsh) and imports hosts, ports, user names, passwords and the folder tree at once. Existing sessions are skipped, so the import can be re-run safely.'
+    '读取 Xshell 的会话文件(.xsh)，或直接读取 Xshell 备份文件(.xts)，把主机、端口、用户名、密码、私钥和目录结构一次性导入 b-shell。已存在的会话会自动跳过，可以重复导入。',
+    'Reads Xshell session files (.xsh) or a full Xshell backup (.xts) and imports hosts, ports, user names, passwords, private keys and the folder tree at once. Existing sessions are skipped, so the import can be re-run safely.'
   ],
   rootPlaceholder: [
-    'Xshell 会话目录，例如 C:\\Users\\you\\Documents\\NetSarang Computer\\8\\Xshell\\Sessions',
-    'Xshell sessions folder, e.g. C:\\Users\\you\\Documents\\NetSarang Computer\\8\\Xshell\\Sessions'
+    'Xshell 会话目录或备份文件(.xts)，例如 C:\\Users\\you\\Documents\\NetSarang Computer\\8\\Xshell\\Sessions',
+    'Xshell sessions folder or backup file (.xts), e.g. C:\\Users\\you\\Documents\\NetSarang Computer\\8\\Xshell\\Sessions'
   ],
+  pickArchive: ['选择备份文件', 'Pick backup'],
+  archiveTitle: ['选择 Xshell 备份文件', 'Choose an Xshell backup file'],
   rescan: ['重新扫描', 'Rescan'],
   scanning: ['正在扫描 Xshell 会话...', 'Scanning Xshell sessions...'],
   found: ['发现 {n} 个会话', '{n} sessions found'],
@@ -46,6 +49,16 @@ const DICT = {
   passwordLocked: ['需重新输入密码 {n}', 'Passwords to re-enter {n}'],
   passwordOkShort: ['密码已解密', 'password saved'],
   passwordLockedShort: ['需重录密码', 'password needed'],
+  keyImported: ['密钥已导入 {n}', 'Keys imported {n}'],
+  keyEncrypted: ['密钥已加密 {n}', 'Encrypted keys {n}'],
+  keyTag: ['私钥', 'private key'],
+  keyMissing: ['缺私钥', 'key missing'],
+  keyMissingWarn: [
+    '有 {n} 个会话使用 Xshell 私钥，但私钥文件不在备份里(或已被口令加密)，导入后需要手动补充私钥。',
+    '{n} sessions use an Xshell private key that is missing from the backup (or encrypted with a passphrase). Add the key manually after import.'
+  ],
+  archiveLabel: ['备份文件: ', 'Backup: '],
+  scanFailed: ['读取失败: ', 'Cannot read: '],
   unsupported: ['暂不支持 {n}', 'Unsupported {n}'],
   lockedWarn: [
     '有 {n} 个会话的密码被 Xshell 主密码保护，b-shell 无法解密，导入后首次连接时需要重新输入密码。',
@@ -57,8 +70,8 @@ const DICT = {
     'No Xshell session file found'
   ],
   guide1: [
-    '请在 Xshell 中确认会话已保存，或在上面的输入框填入会话目录后重新扫描。',
-    'Save some sessions in Xshell, or fill in the sessions folder above and rescan.'
+    '请在 Xshell 中确认会话已保存，或在上面的输入框填入会话目录/备份文件后重新扫描。',
+    'Save some sessions in Xshell, or fill in the sessions folder / backup file above and rescan.'
   ],
   guide2: [
     '默认扫描位置: 文档\\NetSarang Computer\\<版本>\\Xshell\\Sessions',
@@ -67,6 +80,10 @@ const DICT = {
   guide3: [
     '也可以用环境变量 XSHELL_SESSION_PATH 指定目录(多个目录用分号分隔)。',
     'You can also set the XSHELL_SESSION_PATH environment variable (several folders separated by semicolons).'
+  ],
+  guide4: [
+    '换电脑时点「选择备份文件」导入 Xshell 备份(.xts)即可，密码和私钥会一起迁移。',
+    'Moving to another machine? Use "Pick backup" and import the Xshell .xts backup with passwords and keys included.'
   ],
   includePassword: ['导入密码(本地解密)', 'Import passwords (decrypted locally)'],
   includePasswordHint: [
@@ -127,6 +144,31 @@ export default function XshellImportModal (props) {
     }
   }
 
+  const pickArchive = async () => {
+    try {
+      const files = await window.api.openDialog({
+        title: txt('archiveTitle'),
+        properties: [
+          'openFile',
+          'showHiddenFiles',
+          'dontAddToRecent'
+        ],
+        filters: [{
+          name: 'Xshell backup',
+          extensions: ['xts', 'zip']
+        }]
+      })
+      const file = Array.isArray(files) && files.length ? files[0] : ''
+      if (!file) {
+        return
+      }
+      setRoot(file)
+      await scan(file)
+    } catch (e) {
+      window.store.onError(e)
+    }
+  }
+
   useEffect(() => {
     if (open) {
       scan(root)
@@ -154,6 +196,9 @@ export default function XshellImportModal (props) {
 
   const stats = (data && data.stats) || {}
   const bookmarks = (data && data.bookmarks) || []
+  const missingKeys = bookmarks.filter(
+    item => item.xshellUserKey && !item.privateKey
+  ).length
   const groups = {}
   if (data && Array.isArray(data.groups)) {
     data.groups.forEach(g => {
@@ -174,6 +219,12 @@ export default function XshellImportModal (props) {
     return names.join(' / ')
   }
   const renderStatus = (bookmark) => {
+    if (bookmark.privateKey) {
+      return <Tag color='geekblue'>{txt('keyTag')}</Tag>
+    }
+    if (bookmark.xshellUserKey) {
+      return <Tag color='red'>{txt('keyMissing')}</Tag>
+    }
     if (bookmark.passwordStatus === 'ok') {
       return <Tag color='green'>{txt('passwordOkShort')}</Tag>
     }
@@ -192,6 +243,7 @@ export default function XshellImportModal (props) {
               <div>{txt('guide1')}</div>
               <div>{txt('guide2')}</div>
               <div>{txt('guide3')}</div>
+              <div>{txt('guide4')}</div>
             </div>
           }
         />
@@ -246,6 +298,14 @@ export default function XshellImportModal (props) {
               allowClear
             />
             <Button
+              icon={<FileZipOutlined />}
+              onClick={pickArchive}
+              disabled={loading}
+              title={txt('pickArchive')}
+            >
+              {txt('pickArchive')}
+            </Button>
+            <Button
               icon={<ReloadOutlined />}
               onClick={() => scan(root)}
               disabled={loading}
@@ -253,6 +313,27 @@ export default function XshellImportModal (props) {
               {txt('rescan')}
             </Button>
           </Space.Compact>
+          {
+            data && data.error
+              ? (
+                <Alert
+                  type='error'
+                  showIcon
+                  className='mg1b'
+                  message={txt('scanFailed') + data.error}
+                />
+                )
+              : null
+          }
+          {
+            data && data.source && data.source.type === 'archive'
+              ? (
+                <div className='xshell-import-source'>
+                  {txt('archiveLabel') + data.source.path}
+                </div>
+                )
+              : null
+          }
           {
             data && stats.sessions > 0
               ? (
@@ -272,6 +353,16 @@ export default function XshellImportModal (props) {
                       : null
                   }
                   {
+                    stats.withKey
+                      ? <Tag color='geekblue'>{fill('keyImported', { n: stats.withKey })}</Tag>
+                      : null
+                  }
+                  {
+                    data.keyStats && data.keyStats.encrypted
+                      ? <Tag color='orange'>{fill('keyEncrypted', { n: data.keyStats.encrypted })}</Tag>
+                      : null
+                  }
+                  {
                     stats.unsupported
                       ? <Tag>{fill('unsupported', { n: stats.unsupported })}</Tag>
                       : null
@@ -288,6 +379,18 @@ export default function XshellImportModal (props) {
                   showIcon
                   className='mg1b'
                   message={fill('lockedWarn', { n: stats.lockedPassword })}
+                />
+                )
+              : null
+          }
+          {
+            missingKeys > 0
+              ? (
+                <Alert
+                  type='warning'
+                  showIcon
+                  className='mg1b'
+                  message={fill('keyMissingWarn', { n: missingKeys })}
                 />
                 )
               : null

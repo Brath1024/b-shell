@@ -30,7 +30,7 @@ const maxNameLength = 60
 const { TextArea } = Input
 const e = window.translate
 
-const wiki = 'https://gitee.com/Guoqing-Li/b-shell/wiki/Create-quick-command-by-AI'
+const wiki = 'https://github.com/electerm/electerm/wiki/Create-quick-command-by-AI'
 
 /**
  * build the prompt that asks the AI for one quick command definition

@@ -225,7 +225,7 @@ export default function ThemeAiEditor (props) {
           <Button {...generateBtnProps}>
             {e('submit')}
           </Button>
-          <HelpIcon link='https://gitee.com/Guoqing-Li/b-shell/wiki/Create-theme-by-AI' />
+          <HelpIcon link='https://github.com/electerm/electerm/wiki/Create-theme-by-AI' />
         </Space>
       </div>
     </div>

@@ -28,7 +28,27 @@ b-shell 是 [Electerm](https://github.com/electerm/electerm) 的二次开发版�
 
 在左侧书签面板的工具栏上，点击 **Windows 图标按钮**（提示文字为「从 Xshell 导入」），也可以在工具栏右侧的 `…` 菜单里选择「从 Xshell 导入」。
 
-### 2.2 自动扫描的位置
+### 2.2 用 Xshell 备份文件（`.xts`）一键导入（最省事）
+
+Xshell 菜单「文件 → 导出」可以生成一个 `.xts` 完整备份，里面已经包含全部会话、分组和用户密钥。b-shell 可以直接读取这个文件，**不需要先装回 Xshell、也不需要解压**：
+
+1. 点对话框里的 **「选择备份文件」**；
+2. 选中 `xbackup*.xts`（也支持把备份重命名后的 `.zip`）；
+3. b-shell 会把它解压到系统临时目录（`%TEMP%\b-shell-xshell-<哈希>`）后按目录方式扫描，界面上会显示「来源：备份文件」以及备份的版本号；
+4. 核对统计信息后点「一键导入」。
+
+`.xts` 其实就是一个 ZIP 包，内部结构与 Xshell 数据目录一致：
+
+```text
+Xshell\Sessions\...            会话（.xsh）
+com\SECSH\UserKeys\*.pri       用户密钥（NSSSH 格式）
+xsl\ColorScheme Files\*.scs    配色（仅用于展示，不导入）
+xts.zcf                        [SessionInfo] Version=6.0 / Master=0
+```
+
+`xts.zcf` 里的 `Master=1` 表示备份设置了主密码，这种备份里的密码无法解密，导入时会提示「需重录密码」。
+
+### 2.3 自动扫描的位置
 
 打开对话框后 b-shell 会自动扫描以下目录（按 Xshell 5 - 9 的默认安装位置）：
 
@@ -49,7 +69,7 @@ set XSHELL_SESSION_PATH=D:\MyData\NetSarang Computer\8\Xshell\Sessions
 
 多个目录用分号 `;` 分隔。
 
-### 2.3 字段映射关系
+### 2.4 字段映射关系
 
 | Xshell（`.xsh`） | b-shell 书签字段 | 说明 |
 | --- | --- | --- |
@@ -59,8 +79,8 @@ set XSHELL_SESSION_PATH=D:\MyData\NetSarang Computer\8\Xshell\Sessions
 | `[CONNECTION] Protocol` | `type` | `SSH` / `TELNET` / `RDP` / `VNC` 映射为对应类型 |
 | `[CONNECTION] Description` | `description` | 追加 Xshell 密钥名和导入来源路径 |
 | `[CONNECTION:AUTHENTICATION] UserName` | `username` | |
-| `[CONNECTION:AUTHENTICATION] Password` | `password` | 本地解密后导入，见 2.4 |
-| `[CONNECTION:AUTHENTICATION] UserKey` | 备注 + `authType` | 密钥文件本身不会复制，导入后请手动指定私钥路径 |
+| `[CONNECTION:AUTHENTICATION] Password` | `password` | 本地解密后导入，见 2.5 |
+| `[CONNECTION:AUTHENTICATION] UserKey` | `authType=privateKey` + `privateKey` | 从备份/密钥目录里找到同名 `.pri` 并转换为 OpenSSH 格式写入，见 2.6 |
 | `[CONNECTION:AUTHENTICATION] UseAuthAgent` | `useSshAgent` | `1` → 使用 SSH Agent |
 | `[CONNECTION:SSH] ForwardX11` | `x11` | `1` → 开启 X11 转发 |
 | `[CONNECTION:SSH] AgentForwarding` | `agentForward` | `1` → 开启 Agent 转发 |
@@ -73,7 +93,7 @@ set XSHELL_SESSION_PATH=D:\MyData\NetSarang Computer\8\Xshell\Sessions
 
 **不会导入的内容**（b-shell 中没有对应概念，需要手动处理）：端口转发/隧道、登录脚本（`UseInitScript` / `ScriptPath`）、`QuickCommandSet` 快捷命令、日志路径、Xshell 配色/字体（b-shell 的字体与主题是全局设置）、代理服务器。
 
-### 2.4 密码是怎么解密出来的
+### 2.5 密码是怎么解密出来的
 
 - 密文结构：`Base64( RC4 密文 + SHA256(明文密码) )`。
 - RC4 密钥：`SHA256( SID字符串 )`，其中 SID 字符串为：
@@ -88,7 +108,21 @@ set XSHELL_SESSION_PATH=D:\MyData\NetSarang Computer\8\Xshell\Sessions
 2. 会话是在其他 Windows 账户/其他电脑上保存的；
 3. 会话来自 Xshell 5 或更早版本（加密算法不同）。
 
-### 2.5 重复导入 / 增量导入
+### 2.6 用户密钥（`.pri`）会自动转换
+
+Xshell 的用户密钥（`com\SECSH\UserKeys\*.pri`）不是标准的 OpenSSH 格式，不能直接给其他 SSH 客户端用。b-shell 会在导入时把它**转换后内嵌到书签里**，所以换机器后无需再拷贝密钥文件。
+
+- 容器格式：`---- BEGIN NSSSH PRIVATE KEY ----`（注意是 4 个短横线）→ `Comment:` / `Key: <n>, <type>` → Base64（前段是标准 SSH 公钥 blob，后段是 `nsssh-key-v6\0` 私有载荷）。
+- 私有载荷：`checkint` ×2 + `string(私钥)` + `string(注释)` + 填充；b-shell 按 OpenSSH `openssh-key-v1` 重新封装（`none` 加密、公钥段 + 私钥段 + 1,2,3… 填充），生成标准 `-----BEGIN OPENSSH PRIVATE KEY-----`。
+- 支持：`ssh-ed25519`、`ecdsa-*`；不支持：`ssh-rsa` / `ssh-dss` 的 NSSSH 私有载荷，以及设置了口令（`cipher != none`）的密钥 —— 这两种情况书签仍会导入，只是标记为「缺私钥」。
+- 转换后的密钥已用 `@electerm/ssh2` 的 `parseKey` 验证：类型、注释、签名/验签、公钥字节全部正确（见 2.9 的实测记录）。
+
+界面上：
+
+- 蓝色「私钥」标签 = 密钥已转换并写入书签；
+- 红色「缺私钥」标签 = 会话用了 `UserKey`，但备份里没有对应密钥（或该密钥格式不支持），连接前需要在书签编辑器的「私钥」里手动选择。
+
+### 2.7 重复导入 / 增量导入
 
 会话 ID 由 **文件相对路径** 生成，是稳定的。因此可以随时再点一次「一键导入」：
 
@@ -96,11 +130,33 @@ set XSHELL_SESSION_PATH=D:\MyData\NetSarang Computer\8\Xshell\Sessions
 - Xshell 里新增的会话会被补进来；
 - b-shell 里手动改过的书签不会被覆盖。
 
-### 2.6 导入后建议做的 3 件事
+### 2.8 导入后建议做的 3 件事
 
 1. **检查分组**：新导入的会话都挂在「Xshell」分组下，可以拖动整理、改名、加颜色。
 2. **首次连接确认主机指纹**：b-shell 会像 Xshell 一样弹出主机指纹确认。
 3. **补齐密码**：看到「需重录密码」的会话，连接一次并保存密码。
+
+### 2.9 实测记录（真实备份 + 真实登录）
+
+用一份真实的 Xshell 8 备份（`.xts`，26 个 SSH 会话、1 把 ed25519 密钥）验证过：
+
+| 项目 | 结果 |
+| --- | --- |
+| 备份解析 | 26 / 26 会话，分组 `Xshell → brath(vtest/dmeet)` 正确还原 |
+| 密码解密 | 22 个会话解密成功（SHA-256 校验通过），0 个失败 |
+| 私钥转换 | 1 / 1 把 ed25519 转换成功，公钥与 Xshell 显示一致 |
+| 真实登录（密码） | 连上公网服务器并执行命令，回显正常 |
+| 真实登录（私钥） | 用转换后的私钥对本地 SSH 服务完成**签名认证**，服务端验签通过 |
+| 错误密码 | 被服务端正确拒绝（证明密码不是摆设） |
+
+复现方式（在仓库根目录）：
+
+```bash
+node --test src/test/unit-ci/xshell-import.spec.js   # 11 个用例，含 .xts 与密钥转换
+node _tools/e2e-xts.js <备份.xts>                     # 需要 node_modules 与 ssh2
+```
+
+> `_tools/e2e-xts.js` 会启动一个只接受「备份里那套凭据」的本地 SSH 服务，再用导入出的书签载荷去连接，因此能证明导入的密码与私钥**真的可用**，而不是只写进了 JSON。
 
 ---
 
@@ -221,7 +277,7 @@ console.log(data.stats)
 确认 Xshell 中会话确实保存过（不是只开了临时会话），并检查「文档」目录是否被 OneDrive 等重定向；手动填目录后重新扫描即可。
 
 **Q：导入后密码是空的 / 显示「需重录密码」？**
-见 2.4：Xshell 主密码、其他 Windows 账户、Xshell 5 及更早版本都会导致无法解密。主机和用户名已经导入，重录一次密码即可。
+见 2.5：Xshell 主密码、其他 Windows 账户、Xshell 5 及更早版本都会导致无法解密。主机和用户名已经导入，重录一次密码即可。
 
 **Q：会话名中文正常，但终端里中文乱码？**
 Xshell 的 `CodePage` 已经映射到 `encode`；如果目标系统实际是 UTF-8 而 Xshell 里是 GBK（或相反），在书签编辑里改「编码」即可（`utf8` / `gbk`）。
@@ -234,6 +290,12 @@ Xshell 的 `CodePage` 已经映射到 `encode`；如果目标系统实际是 UTF
 
 **Q：端口转发、快捷命令、登录脚本去哪了？**
 这些没有对应的 Xshell→b-shell 自动映射，需要手动在书签里重建：端口转发在书签编辑器的「隧道」中配置，快捷命令在「快速命令」面板配置。
+
+**Q：能不能直接导入 Xshell 的备份文件（`.xts`）？**
+可以，见 2.2。`.xts` 是 ZIP，b-shell 会解压到临时目录再扫描；如果备份设了主密码（`xts.zcf` 里 `Master=1`），密码无法解密，会话本身仍可导入。
+
+**Q：会话用的是密钥登录，导入后要手动选私钥吗？**
+一般不用：密钥会从 `com\SECSH\UserKeys` 里按 `UserKey` 名字找到并转换成 OpenSSH 格式内嵌到书签（见 2.6）。只有两种情况需要手动补：密钥文件不在备份里，或密钥设了口令 / 是 `ssh-rsa` 的 NSSSH 私有载荷。
 
 **Q：能不能把 b-shell 的会话再导回 Xshell？**
 可以导出书签 JSON，再用脚本转换为 `.xsh`；b-shell 不提供 `.xsh` 导出（Xshell 的密码加密算法需要 Windows SID，跨机器不可移植）。

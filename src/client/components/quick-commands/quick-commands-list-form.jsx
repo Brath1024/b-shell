@@ -30,7 +30,7 @@ const e = window.translate
 const keySelectOptions = keyOptions.map(k => ({ value: k, label: k }))
 
 // the whole steps / recording / grouping guide, opened by the ? next to "steps"
-const helpLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/quick-commands'
+const helpLink = 'https://github.com/electerm/electerm/wiki/quick-commands'
 
 export function newStep (type = 'command') {
   if (type === 'key') {

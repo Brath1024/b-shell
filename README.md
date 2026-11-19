@@ -53,16 +53,19 @@ npm run dist:linux # Linux
 打开 b-shell → 左侧书签面板工具栏 → 点击 **Windows 图标按钮**（「从 Xshell 导入」）→ 确认扫描结果 → 「一键导入」。
 
 - 自动扫描：`文档\NetSarang Computer\<版本>\Xshell\Sessions`、OneDrive 文档目录、`%APPDATA%\NetSarang\Xshell\Sessions`
+- 备份文件：点「选择备份文件」直接选 Xshell 导出的 `xbackup*.xts`（或 `.zip`），无需解压、无需装回 Xshell
 - 手动指定：在对话框顶部填入 `Sessions` 目录，或设置环境变量 `XSHELL_SESSION_PATH`
 - 密码：仅当前 Windows 账户加密且未设 Xshell 主密码的会话可以解密，其余会话会标记「需重录密码」，首次连接时输入一次即可
+- 私钥：会话使用的 `UserKey` 会自动从 `com\SECSH\UserKeys` 找到并转换为 OpenSSH 格式内嵌到书签，换机器不用再拷贝密钥文件
 - 重复导入：按会话文件路径去重，随时可以再导入增量会话
 
-完整字段映射、手动导入（JSON / ssh config / 快速连接）与常见问题见 **[docs/xshell-import.md](docs/xshell-import.md)**。
+完整字段映射、手动导入（JSON / ssh config / 快速连接）与常见问题见 **[docs/xshell-import.md](docs/xshell-import.md)**。二次开发（构建流程、命名约定、导入实现细节）见 **[AGENTS.md](AGENTS.md)**。
 
 ## 与上游 Electerm 的差异
 
 - 产品名、应用标识、安装包名、可执行文件名、协议前缀（`b-shell://`）、数据目录改为 b-shell 自有标识，可与官方 Electerm 同时安装、互不干扰。
-- 新增 Xshell 会话导入（主进程解析 + 密码解密 + 渲染层导入向导）。
+- 新增 Xshell 会话导入（主进程解析 + 密码解密 + 私钥转换 + `.xts` 备份读取 + 渲染层导入向导），详见 [docs/xshell-import.md](docs/xshell-import.md)。
+- 自绘 b-shell 品牌图标（应用图标、窗口水印、托盘图标、Windows `.ico`、macOS `.icns`、Linux 多尺寸 PNG、MSIX 磁贴），资源不再依赖上游 npm 包。
 - 移除上游的自动发布与赞助相关配置，构建目标指向本仓库。
 - 其余功能与上游保持一致，上游更新可以继续合并：本仓库基于 Electerm `5.11.8`。
 
@@ -72,14 +75,17 @@ npm run dist:linux # Linux
 src/
   app/         Electron 主进程：窗口、IPC、数据库、SSH/SFTP 会话、xshell-import.js
   client/      渲染进程（React + antd + Vite）：组件、store、主题
-  build/       构建脚本与 electron-builder 配置
+  build/       构建脚本、electron-builder 配置与品牌图标资源（src/build/resources）
   test/        单元测试与集成测试
 docs/          使用文档（Xshell 导入）
 ```
 
+界面使用的图标源文件在 [src/client/views/images](src/client/views/images)，打包/安装器用图标在 [src/build/resources](src/build/resources)（含 Windows `.ico`、macOS `.icns`、Linux 多尺寸 PNG 与 MSIX 磁贴）。
+
 Xshell 导入相关代码：
 
 - 主进程实现：[src/app/lib/xshell-import.js](src/app/lib/xshell-import.js)
+- `.xts` / ZIP 读取：[src/app/lib/zip-read.js](src/app/lib/zip-read.js)
 - IPC 注册：[src/app/lib/ipc.js](src/app/lib/ipc.js)（`loadXshellSessions`）
 - 渲染层 store：[src/client/store/bookmark.js](src/client/store/bookmark.js)（`loadXshellSessions` / `importXshellSessions`）
 - 导入向导：[src/client/components/xshell-import/index.jsx](src/client/components/xshell-import/index.jsx)

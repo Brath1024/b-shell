@@ -8,6 +8,7 @@ import uid from '../common/uid'
 const XSHELL_META_FIELDS = [
   'passwordStatus',
   'xshellPath',
+  'xshellUserKey',
   'folderPath',
   'xshellGroupId',
   'xshellColorScheme',

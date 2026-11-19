@@ -178,7 +178,7 @@ export default function SyncForm (props) {
           title={
             <span>
               Gitee data sync is not recommended. For more information, please refer to the
-              <Link to='https://gitee.com/Guoqing-Li/b-shell/wiki/gitee-data-sync-warning' className='mg1l'>
+              <Link to='https://github.com/electerm/electerm/wiki/gitee-data-sync-warning' className='mg1l'>
                 wiki
               </Link>
               .

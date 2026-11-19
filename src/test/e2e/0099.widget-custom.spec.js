@@ -92,7 +92,7 @@ test('custom widget UI talks to the host', async () => {
         return a ? a.getAttribute('href') : ''
       })
     }
-    assert.equal(helpHref, 'https://gitee.com/Guoqing-Li/b-shell/wiki/User-widget-guide')
+    assert.equal(helpHref, 'https://github.com/electerm/electerm/wiki/User-widget-guide')
     const row = page.locator('.item-type-widgets .item-list-unit', { hasText: 'Hello UI' })
     assert.equal(await row.count(), 1)
     const builtinRow = page.locator('.item-type-widgets .item-list-unit', { hasText: 'SSH Server' })

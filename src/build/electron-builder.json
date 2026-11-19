@@ -19,11 +19,7 @@
       "appx",
       "nsis"
     ],
-    "icon": "src/build/resources/icons-win.ico",
-    "publish": {
-      "provider": "github",
-      "channel": "${env.WORKFLOW_NAME}"
-    }
+    "icon": "src/build/resources/icons-win.ico"
   },
   "protocols": [
     {
@@ -93,15 +89,11 @@
     "category": "public.app-category.developer-tools",
     "target": "dmg",
     "icon": "src/build/resources/icons.icns",
-    "publish": {
-      "provider": "github",
-      "channel": "${env.WORKFLOW_NAME}"
-    },
     "hardenedRuntime": true,
     "gatekeeperAssess": false,
     "entitlements": "./src/build/entitlements.plist",
     "entitlementsInherit": "./src/build/entitlements.plist",
-    "notarize": true
+    "notarize": false
   },
   "dmg": {
     "contents": [
@@ -127,10 +119,6 @@
       "tar.gz",
       "snap"
     ],
-    "publish": {
-      "provider": "github",
-      "channel": "${env.WORKFLOW_NAME}"
-    },
     "desktop": {
       "entry": {
         "StartupWMClass": "b-shell"
@@ -138,11 +126,7 @@
     }
   },
   "snap": {
-    "confinement": "classic",
-    "publish": {
-      "provider": "github",
-      "channel": "${env.WORKFLOW_NAME}"
-    }
+    "confinement": "classic"
   },
   "deb": {
     "afterInstall": "src/build/bin/linux-deb-after-build.sh",

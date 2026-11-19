@@ -794,7 +794,7 @@ describe('install-command: testability guard', () => {
     )
     assert.match(
       constants,
-      /installCommandHelpLink = 'https:\/\/github\.com\/bshell\/bshell\/wiki\/Install-bshell-command'/,
+      /installCommandHelpLink = 'https:\/\/github\.com\/electerm\/electerm\/wiki\/Install-electerm-command'/,
       'the wiki URL is a contract - a typo here ships a 404'
     )
   })

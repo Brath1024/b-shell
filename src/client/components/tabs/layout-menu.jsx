@@ -38,7 +38,7 @@ export default function LayoutMenu (props) {
       label: (
         <span>
           <AppstoreOutlined /> {e('workspaces')}
-          <HelpIcon link='https://gitee.com/Guoqing-Li/b-shell/wiki/Workspace-Feature' />
+          <HelpIcon link='https://github.com/electerm/electerm/wiki/Workspace-Feature' />
         </span>
       )
     }

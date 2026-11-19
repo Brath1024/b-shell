@@ -33,7 +33,7 @@ const e = window.translate
 
 // Where "how do I write one / where do I get one" is answered. Kept next to the
 // import button because that is the moment the question comes up.
-const WIDGET_WIKI = 'https://gitee.com/Guoqing-Li/b-shell/wiki/User-widget-guide'
+const WIDGET_WIKI = 'https://github.com/electerm/electerm/wiki/User-widget-guide'
 
 export default auto(function WidgetsList ({ activeItemId, store, onClickItem }) {
   const { widgetInstances } = store

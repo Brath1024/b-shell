@@ -195,11 +195,11 @@ describe('registry install', () => {
     const record = recordFor(writeWidget(baseFiles()))
     assert.equal(
       registrySource(record),
-      `https://github.com/bshell/demo-widget/tree/${sha}`
+      `https://github.com/b-shell/demo-widget/tree/${sha}`
     )
     assert.equal(
       registrySource({ ...record, host: 'atomgit.com', subdir: 'widgets/foo' }),
-      `https://atomgit.com/bshell/demo-widget/tree/${sha}/widgets/foo`
+      `https://atomgit.com/b-shell/demo-widget/tree/${sha}/widgets/foo`
     )
   })
 
