@@ -20,7 +20,7 @@
  * shell again on the same connection instead of failing the session.
  *
  * All tests mock the electron environment and run exclusively with Node.js
- * built-ins + the packages already bundled with electerm.
+ * built-ins + the packages already bundled with bshell.
  */
 
 process.env.NODE_ENV = 'development'
@@ -41,7 +41,7 @@ const USERNAME = 'agent-forward-tester'
 
 // A fresh server host key for every test run.
 const HOST_KEY = utils.generateKeyPairSync('ed25519', {
-  comment: 'electerm-agent-forward-test-host'
+  comment: 'bshell-agent-forward-test-host'
 })
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -59,7 +59,7 @@ function runCommand (command, args, options = {}) {
 
 function generateKey ({ dir, name, type = 'ed25519' }) {
   const keyPath = path.join(dir, name)
-  runCommand('ssh-keygen', ['-q', '-t', type, '-N', '', '-f', keyPath, '-C', `electerm-${name}`])
+  runCommand('ssh-keygen', ['-q', '-t', type, '-N', '', '-f', keyPath, '-C', `bshell-${name}`])
   return {
     keyPath,
     privateKey: fs.readFileSync(keyPath, 'utf8'),
@@ -136,7 +136,7 @@ async function startServer ({ acceptAgentForward = false, debug = false } = {}) 
     client.on('ready', () => {
       client.on('session', (accept) => {
         const sess = accept()
-        // electerm sends env without wantReply, so accept can be undefined
+        // bshell sends env without wantReply, so accept can be undefined
         const acceptIfAsked = (accept) => {
           if (typeof accept === 'function') accept()
         }
@@ -152,7 +152,7 @@ async function startServer ({ acceptAgentForward = false, debug = false } = {}) 
         sess.on('shell', (accept) => {
           state.shells++
           const stream = accept()
-          stream.write('electerm-agent-forward-test ready\n')
+          stream.write('bshell-agent-forward-test ready\n')
         })
       })
     })
@@ -221,7 +221,7 @@ describe('SSH agent forwarding', () => {
   let savedEnv
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-agent-fwd-test-'))
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-agent-fwd-test-'))
 
     savedEnv = {
       HOME: process.env.HOME,

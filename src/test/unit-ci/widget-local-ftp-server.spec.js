@@ -40,7 +40,7 @@ function makeWidget (config = {}) {
 
 test('defaults are loopback-only, non-home and without a shipped password', () => {
   assert.equal(defaultOf('host'), '127.0.0.1')
-  assert.equal(defaultOf('directory'), path.join(os.homedir(), 'electerm-ftp-share'))
+  assert.equal(defaultOf('directory'), path.join(os.homedir(), 'bshell-ftp-share'))
   assert.equal(defaultOf('anonymous'), false)
   assert.equal(defaultOf('password'), '')
 })
@@ -61,7 +61,7 @@ test('refuses anonymous access rooted at the home directory', async () => {
 })
 
 test('a generated password works, creates the share dir and stays out of status text', async () => {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ftp-hardened-'))
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ftp-hardened-'))
   const directory = path.join(base, 'share')
   const password = 'ett_a1b2c3d4e5f6'
   const port = await freePort()

@@ -13,7 +13,7 @@ const PASV_MAX_PORT = 51000
 // The old defaults exposed a LAN-reachable FTP server with known credentials
 // rooted at $HOME. Keep the safe values for new instances and refuse to start
 // saved instances that still carry the shipped password.
-const SHARE_DIR = path.join(os.homedir(), 'electerm-ftp-share')
+const SHARE_DIR = path.join(os.homedir(), 'bshell-ftp-share')
 const LEGACY_PASSWORD = 'ftppass'
 const WILDCARD_BINDS = ['', '0.0.0.0', '::', '[::]']
 
@@ -54,7 +54,7 @@ const widgetInfo = {
       name: 'directory',
       type: 'string',
       default: SHARE_DIR,
-      description: 'The directory to serve files from (default: ~/electerm-ftp-share, not the whole home directory)'
+      description: 'The directory to serve files from (default: ~/bshell-ftp-share, not the whole home directory)'
     },
     {
       name: 'anonymous',

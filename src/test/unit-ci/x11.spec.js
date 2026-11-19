@@ -62,7 +62,7 @@ describe('x11 helpers', () => {
 
   test('probeXServer: false when nothing listens', async () => {
     const r = await probeXServer(
-      [{ path: path.join(os.tmpdir(), 'electerm-no-x-server-here') }],
+      [{ path: path.join(os.tmpdir(), 'bshell-no-x-server-here') }],
       300
     )
     assert.equal(r, false)
@@ -70,7 +70,7 @@ describe('x11 helpers', () => {
 
   test('probeXServer: true when an endpoint accepts', async () => {
     const sockPath = path.join(
-      fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-x11-')),
+      fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-x11-')),
       'X0'
     )
     const server = net.createServer()

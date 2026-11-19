@@ -1,6 +1,6 @@
 export default [
   {
     name: 'homepage',
-    url: 'https://electerm.org'
+    url: 'https://gitee.com/Guoqing-Li/b-shell'
   }
 ]

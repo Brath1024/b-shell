@@ -53,7 +53,7 @@ function resolveVvFile (value) {
  * (process.defaultApp is true, so it drops two entries) and for a packaged
  * build (it drops one). An argument ending in .vv means the same thing either
  * way, and going through argv keeps this working in both without touching how
- * `electerm user@host` is parsed.
+ * `bshell user@host` is parsed.
  *
  * @param {string[]} argv
  * @returns {string|null} absolute path, or null when no .vv was given

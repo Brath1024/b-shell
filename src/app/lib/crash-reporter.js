@@ -42,7 +42,7 @@ const GPU_ERROR_SUGGESTION = `
 ⚠️  GPU Process Error Detected
 ================================================================================
 If you encounter GPU process crashes (exit_code=-2147483645 or similar),
-try running electerm with one of these flags:
+try running bshell with one of these flags:
 
   1. --no-sandbox          (Recommended - run without sandbox)
   2. --disable-gpu        (Disable GPU rendering)
@@ -55,7 +55,7 @@ Or set environment variable:
   ENABLE_GPU=1          (Force hardware GPU, also cancels the automatic
                          software fallback below)
 
-electerm switches to software rendering by itself on the next launch after a
+bshell switches to software rendering by itself on the next launch after a
 GPU process crash, so a manual flag is usually not needed.
 ================================================================================
 `

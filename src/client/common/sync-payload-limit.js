@@ -1,7 +1,7 @@
 /**
- * Upload size limit for the electerm-cloud sync API.
+ * Upload size limit for the bshell-cloud sync API.
  *
- * Kept in step with electerm-cloud/src/server/control/sync-limits.ts. The
+ * Kept in step with bshell-cloud/src/server/control/sync-limits.ts. The
  * server publishes the value on every response as `X-Sync-Max-KB`, but the
  * client has to warn *before* it has ever talked to the server, so it carries
  * its own copy.

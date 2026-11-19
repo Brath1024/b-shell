@@ -127,7 +127,7 @@ describe('local PowerShell startup', () => {
     // The start directory is still sent - it is one short line, and dropping it
     // would lose a session restore - but nothing of the injection itself.
     assert.deepEqual(
-      addon.sent.filter(data => /ELECTERM_SHELL_INTEGRATION/.test(data)),
+      addon.sent.filter(data => /BSHELL_SHELL_INTEGRATION/.test(data)),
       []
     )
     queue.dispose()
@@ -177,7 +177,7 @@ describe('remote shell integration window', () => {
     addon.feed()
     await tick(1500 + 300)
     assert.equal(addon.sent.length, 1, 'the script is typed at the prompt')
-    assert.match(addon.sent[0], /ELECTERM_SHELL_INTEGRATION/)
+    assert.match(addon.sent[0], /BSHELL_SHELL_INTEGRATION/)
     assert.equal(addon.outputSuppressed, true, 'and hidden while it echoes')
     queue.dispose()
   })

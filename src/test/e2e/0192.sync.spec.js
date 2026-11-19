@@ -26,7 +26,7 @@ const {
 } = process.env
 // password used for the cloud round-trip check below; override via env
 // when the e2e cloud account already has a sync password set
-const CLOUD_SYNC_PASSWORD = process.env.CLOUD_SYNC_PASSWORD || 'electerm-cloud-e2e-pass'
+const CLOUD_SYNC_PASSWORD = process.env.CLOUD_SYNC_PASSWORD || 'bshell-cloud-e2e-pass'
 
 // gitee regularly needs 30s+ to answer from a CI runner, and nothing in the
 // request path carries a short timeout (the ws bridge allows 120s), so these

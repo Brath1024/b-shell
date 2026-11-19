@@ -3,7 +3,7 @@
  *
  * A registry record pins ONE commit of ONE repository and lists every file in
  * the widget folder with its size and sha256 (see scripts/lib/registry.mjs in
- * ~/dev/electerm-widgets — computeDigest here must stay byte-for-byte the same
+ * ~/dev/b-shell-widgets — computeDigest here must stay byte-for-byte the same
  * as the build script's). The site only indexes metadata; the bytes still come
  * from GitHub/AtomGit through widget-source.js, including its mirror and CDN
  * fallbacks, so the tree is verified against the record BEFORE it is copied
@@ -225,7 +225,7 @@ function verifyWidgetTree (dir, record) {
   } catch (e) {
     fail('downloaded widget has no readable package.json')
   }
-  const conf = pkg && pkg.electerm && typeof pkg.electerm === 'object' ? pkg.electerm : {}
+  const conf = pkg && pkg.bshell && typeof pkg.bshell === 'object' ? pkg.bshell : {}
   const pkgId = conf.id || pkg.name || path.basename(dir)
   if (normalizeWidgetId(pkgId) !== rec.id) {
     fail(`downloaded widget id "${pkgId}" does not match the registry record`)

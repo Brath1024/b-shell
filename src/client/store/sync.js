@@ -28,17 +28,17 @@ const {
 
 // Server- and machine-local config keys that must never be overwritten by an
 // imported/synced config, because they describe *this* install. Overwriting
-// tokenElecterm in particular breaks every subsequent WebSocket connection
+// tokenBshell in particular breaks every subsequent WebSocket connection
 // (terminals, sftp, transfers) because the token no longer matches the
 // server's JWT secret, causing connections to silently fail verification — the
 // terminal appears to connect but input never works until the app is
 // restarted. `sessionLogPath` is the same shape of mistake in the filesystem:
-// a full-data import carries `C:\Users\<someone else>\Documents\electerm` over
+// a full-data import carries `C:\Users\<someone else>\Documents\bshell` over
 // from the machine that exported it, and an unwritable log dir used to take
 // the session down with it (#4688). Keep the path local to the install, the
 // per-OS default (`default-log-path.js`) covers a machine that has none.
 const localConfigKeys = [
-  'tokenElecterm',
+  'tokenBshell',
   'host',
   'port',
   'server',
@@ -62,7 +62,7 @@ function isJSON (str = '') {
 }
 
 /**
- * Refuse an upload the electerm-cloud API is certain to reject, and warn about
+ * Refuse an upload the bshell-cloud API is certain to reject, and warn about
  * one it may reject.
  *
  * The server's cap is applied to the raw payload *before* it is compressed, so
@@ -70,7 +70,7 @@ function isJSON (str = '') {
  * it comes back as a 413 that surfaces here as a bare HTTPError. Checking
  * locally turns that into a message naming the actual size and the limit.
  *
- * Only the electerm-cloud API has this cap; github/gitee gists and WebDAV have
+ * Only the bshell-cloud API has this cap; github/gitee gists and WebDAV have
  * their own, unrelated ones.
  */
 function checkCloudPayloadSize (type, gistData) {
@@ -141,7 +141,7 @@ async function fetchData (type, func, args, token, proxy) {
 }
 
 function updateSyncServerStatusFromGist (store, gist, type) {
-  const statusContent = get(gist, 'files["electerm-status.json"].content')
+  const statusContent = get(gist, 'files["bshell-status.json"].content')
   const status = statusContent ? parseJsonSafe(statusContent) : undefined
   store.syncServerStatus[type] = status
 }
@@ -220,7 +220,7 @@ export default (Store) => {
   //   store.isSyncingSetting = true
   //   const token = store.getSyncToken(type)
   //   const data = {
-  //     description: 'sync electerm data',
+  //     description: 'sync bshell data',
   //     files: {
   //       'placeholder.js': {
   //         content: 'placeholder'
@@ -336,7 +336,7 @@ export default (Store) => {
         store.getSyncProxy(type)
       )
       if (gist && gist.files) {
-        const statusContent = get(gist, 'files["electerm-status.json"].content')
+        const statusContent = get(gist, 'files["bshell-status.json"].content')
         const status = statusContent ? parseJsonSafe(statusContent) : undefined
         store.syncServerStatus[type] = status
       }
@@ -384,7 +384,7 @@ export default (Store) => {
     // Update status
     if (type === syncTypes.webdav) {
       if (serverGist && serverGist.files) {
-        const statusContent = get(serverGist, 'files["electerm-status.json"].content')
+        const statusContent = get(serverGist, 'files["bshell-status.json"].content')
         const status = statusContent ? parseJsonSafe(statusContent) : undefined
         store.syncServerStatus[type] = status
       }
@@ -509,7 +509,7 @@ export default (Store) => {
     const now = Date.now()
     const status = {
       lastSyncTime: now,
-      electermVersion: packVer,
+      bshellVersion: packVer,
       deviceName: window.pre.osInfo().find(r => r.k === 'hostname')?.v || 'unknown'
     }
 
@@ -519,7 +519,7 @@ export default (Store) => {
       for (const [key, value] of Object.entries(objs)) {
         uploadData[key] = value.content
       }
-      uploadData['electerm-status.json'] = JSON.stringify(status)
+      uploadData['bshell-status.json'] = JSON.stringify(status)
 
       const res = await fetchData(
         type,
@@ -538,10 +538,10 @@ export default (Store) => {
     }
 
     const gistData = {
-      description: 'sync electerm data',
+      description: 'sync bshell data',
       files: {
         ...objs,
-        'electerm-status.json': {
+        'bshell-status.json': {
           content: JSON.stringify(status)
         }
       }
@@ -594,7 +594,7 @@ export default (Store) => {
         store.getSyncProxy(type)
       )
       if (gist && gist.files) {
-        const statusContent = get(gist, 'files["electerm-status.json"].content')
+        const statusContent = get(gist, 'files["bshell-status.json"].content')
         const status = statusContent ? parseJsonSafe(statusContent) : undefined
         store.syncServerStatus[type] = status
 
@@ -726,10 +726,10 @@ export default (Store) => {
   //     return
   //   }
   //   gist = gist.data
-  //   if (!gist.files['electerm-status.json']) {
+  //   if (!gist.files['bshell-status.json']) {
   //     return
   //   }
-  //   const status = JSON.parse(gist.files['electerm-status.json'].content)
+  //   const status = JSON.parse(gist.files['bshell-status.json'].content)
   //   if (status.lastSyncTime > store.lastUpdateTime) {
   //     store.uploadSetting()
   //   } else if (status.lastSyncTime < store.lastUpdateTime) {
@@ -771,7 +771,7 @@ export default (Store) => {
     }
     objs.config = store.config
     const text = JSON.stringify(objs)
-    const name = dayjs().format('YYYY-MM-DD-HH-mm-ss') + '-electerm-all-data.json'
+    const name = dayjs().format('YYYY-MM-DD-HH-mm-ss') + '-bshell-all-data.json'
     download(name, text)
   }
 

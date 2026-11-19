@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global electerm */
+/* global bshell */
 
 const out = document.getElementById('out')
 const nameInput = document.getElementById('name')
@@ -10,7 +10,7 @@ function show (value) {
 
 document.getElementById('greet').addEventListener('click', async () => {
   try {
-    show(await electerm.call('greet', nameInput.value))
+    show(await bshell.call('greet', nameInput.value))
   } catch (err) {
     show('error: ' + err.message)
   }
@@ -18,19 +18,19 @@ document.getElementById('greet').addEventListener('click', async () => {
 
 document.getElementById('upper').addEventListener('click', async () => {
   try {
-    show(await electerm.call('upper', nameInput.value))
+    show(await bshell.call('upper', nameInput.value))
   } catch (err) {
     show('error: ' + err.message)
   }
 })
 
 document.getElementById('copy').addEventListener('click', async () => {
-  await electerm.copy(out.textContent)
+  await bshell.copy(out.textContent)
   show('copied')
 })
 
 // init data (theme variables, widget version) arrives from the host
-electerm.ready.then(init => {
+bshell.ready.then(init => {
   document.title = init.name + ' ' + init.version
   show('bridge ready: ' + init.id + ' / ' + init.colorScheme)
 })

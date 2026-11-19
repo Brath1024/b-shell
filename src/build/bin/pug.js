@@ -24,7 +24,7 @@ const defaultAIPreset = {
   authHeaderNameAI: 'Authorization: Bearer',
   id: 'ai.electerm.org',
   nameAI: 'ai.electerm.org',
-  siteUrl: 'https://ai.electerm.org?utm=electerm'
+  siteUrl: 'https://ai.electerm.org?utm=bshell'
 }
 
 // const AIDisclamer = 'AI-generated terminal commands can be inaccurate or unsafe, be careful'
@@ -33,6 +33,8 @@ const data = {
   version: pack.version,
   siteName: pack.name,
   isDev: false,
+  // b-shell has no online release feed; users update from Gitee releases.
+  disableUpgradeCheck: true,
   defaultAIPreset,
   // The entry bundle statically imports ~190 chunks. index.html is built here
   // rather than by Vite, so Vite's automatic modulepreload injection never ran
@@ -46,7 +48,7 @@ const data = {
 function getEntryChunks () {
   const entry = resolve(
     __dirname,
-    `../../../work/app/assets/js/electerm-${pack.version}.js`
+    `../../../work/app/assets/js/bshell-${pack.version}.js`
   )
   try {
     const src = fs.readFileSync(entry, 'utf-8')

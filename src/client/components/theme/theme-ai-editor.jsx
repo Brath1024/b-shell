@@ -76,7 +76,7 @@ function buildThemePrompt (description) {
   const fieldList = requiredThemeProps
     .map(key => `  ${key}=${themePropDescriptions[key] || 'color value'}`)
     .join('\n')
-  return `You are an electerm terminal theme color generator. Based on the user's natural language description, generate a complete and harmonious color palette by filling in EVERY color listed below.
+  return `You are an bshell terminal theme color generator. Based on the user's natural language description, generate a complete and harmonious color palette by filling in EVERY color listed below.
 
 The theme uses a key=value format (one per line). UI colors use hex (#rrggbb). Terminal colors use hex or rgba. The palette should be cohesive, readable and accessible (keep good contrast between foreground and background).
 
@@ -161,7 +161,7 @@ export default function ThemeAiEditor (props) {
         'AIchat',
         prompt,
         config.modelAI,
-        appendMandatoryGuardrails('You are a helpful assistant that generates electerm terminal theme color palettes.'),
+        appendMandatoryGuardrails('You are a helpful assistant that generates bshell terminal theme color palettes.'),
         config.baseURLAI,
         config.apiPathAI,
         config.apiKeyAI,
@@ -225,7 +225,7 @@ export default function ThemeAiEditor (props) {
           <Button {...generateBtnProps}>
             {e('submit')}
           </Button>
-          <HelpIcon link='https://github.com/electerm/electerm/wiki/Create-theme-by-AI' />
+          <HelpIcon link='https://gitee.com/Guoqing-Li/b-shell/wiki/Create-theme-by-AI' />
         </Space>
       </div>
     </div>

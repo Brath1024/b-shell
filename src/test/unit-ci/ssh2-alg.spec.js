@@ -1,5 +1,5 @@
 /**
- * Test: the algorithm lists electerm hands to ssh2 must only contain names
+ * Test: the algorithm lists bshell hands to ssh2 must only contain names
  * this ssh2 build actually implements.
  *
  * ssh2 throws "Unsupported algorithm: xxx" and aborts the connection as soon

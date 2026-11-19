@@ -35,7 +35,7 @@ function runMainTests (getMod) {
     it('rejects a deep link that happens to end in .vv', () => {
       const { isVvFile } = getMod()
       assert.strictEqual(isVvFile('spice://host/console.vv'), false)
-      assert.strictEqual(isVvFile('electerm://host/x.vv'), false)
+      assert.strictEqual(isVvFile('b-shell://host/x.vv'), false)
     })
   })
 
@@ -63,7 +63,7 @@ function runMainTests (getMod) {
       )
       // the packaged layout has no script path, so the file is argv[1]
       assert.strictEqual(
-        findVvFile(['/Applications/electerm', '/a/console.vv']),
+        findVvFile(['/Applications/bshell', '/a/console.vv']),
         '/a/console.vv'
       )
       // flags before or after do not matter
@@ -136,7 +136,7 @@ describe('vv-file — src/app/common/vv-file.js (CJS, main process)', () => {
       '',
       ' ',
       'spice://host/console.vv',
-      'electerm://host/x.vv',
+      'b-shell://host/x.vv',
       'https://example.com/x.vv',
       'user@host',
       '/a/b/notes.txt',

@@ -1,14 +1,14 @@
 /**
- * Integration tests for the electerm MCP server — runs against a LIVE app.
+ * Integration tests for the bshell MCP server — runs against a LIVE app.
  *
  * Prerequisites:
- *   - electerm dev app running (npm start + npm run app)
+ *   - bshell dev app running (npm start + npm run app)
  *   - MCP Server widget started on http://127.0.0.1:30837/mcp, default config
  *     (bookmarks/groups/sftp read enabled, tasks extension enabled). The
  *     transfer tests additionally need `enableSftpWrite` on — it is opt-in
  *     since GHSA-vw4q-c6px-w5p3; without it the write tools are not registered
  *     and those cases degrade to no-ops via tolerant().
- *   - ELECTERM_MCP_API_KEY set to the key the widget generated. It is in the
+ *   - BSHELL_MCP_API_KEY set to the key the widget generated. It is in the
  *     URL the widget copies on start (…/mcp?apiKey=…), or in the instance
  *     detail panel. The server requires it — it no longer runs unauthenticated
  *     (GHSA-45rj-2wq9-r9mr).
@@ -37,7 +37,7 @@ const {
   TEST_PORT
 } = require('./lib/ssh-test-server')
 
-const MCP_API_KEY = process.env.ELECTERM_MCP_API_KEY || ''
+const MCP_API_KEY = process.env.BSHELL_MCP_API_KEY || ''
 const serverUrl = MCP_API_KEY
   ? `http://127.0.0.1:30837/mcp?apiKey=${encodeURIComponent(MCP_API_KEY)}`
   : 'http://127.0.0.1:30837/mcp'
@@ -144,7 +144,7 @@ async function initSession ({ protocolVersion = '2025-11-25', withTasksCap = fal
       capabilities: withTasksCap
         ? { extensions: { 'io.modelcontextprotocol/tasks': {} } }
         : {},
-      clientInfo: { name: 'electerm-integration-test', version: '1.0.0' }
+      clientInfo: { name: 'bshell-integration-test', version: '1.0.0' }
     }
   }, {
     'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 async function waitForTerminalReady (sid, tabId, { timeoutMs = 60000 } = {}) {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
-    const out = toolPayload(await callTool(sid, 'get_electerm_terminal_output', { tabId, lines: 30 }))
+    const out = toolPayload(await callTool(sid, 'get_bshell_terminal_output', { tabId, lines: 30 }))
     if ((out.output || '').trim().length > 0) {
       return out.output
     }
@@ -241,7 +241,7 @@ async function waitForMarker (sid, tabId, marker, { timeoutMs = 60000 } = {}) {
   const deadline = Date.now() + timeoutMs
   let lastOutput = ''
   while (Date.now() < deadline) {
-    const out = toolPayload(await callTool(sid, 'get_electerm_terminal_output', { tabId, lines: 50 }))
+    const out = toolPayload(await callTool(sid, 'get_bshell_terminal_output', { tabId, lines: 50 }))
     lastOutput = out.output || ''
     if (lastOutput.includes(marker)) {
       return lastOutput
@@ -263,11 +263,11 @@ const createdBookmarkIds = []
 
 function skipOffline (t) {
   if (!online) {
-    t.skip('MCP server not reachable at 127.0.0.1:30837 — start the electerm app with the MCP widget')
+    t.skip('MCP server not reachable at 127.0.0.1:30837 — start the bshell app with the MCP widget')
     return true
   }
   if (!MCP_API_KEY) {
-    t.skip('ELECTERM_MCP_API_KEY not set — copy it from the URL the widget shows')
+    t.skip('BSHELL_MCP_API_KEY not set — copy it from the URL the widget shows')
     return true
   }
   return false
@@ -291,7 +291,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     ensureKnownHostsEntry(TEST_PORT, console.log)
 
     // 3. Start the in-process SSH server with a scratch SFTP root
-    sftpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-mcp-it-'))
+    sftpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-mcp-it-'))
     fs.writeFileSync(path.join(sftpRoot, 'hello.txt'), 'hello sftp world\n')
     fs.mkdirSync(path.join(sftpRoot, 'subdir'))
     fs.writeFileSync(path.join(sftpRoot, 'subdir', 'nested.txt'), 'nested file\n')
@@ -325,7 +325,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const a = await initSession({ protocolVersion: '2024-11-05' })
     assert.equal(a.init.result.protocolVersion, '2024-11-05')
-    assert.equal(a.init.result.serverInfo.name, 'electerm-mcp-server')
+    assert.equal(a.init.result.serverInfo.name, 'bshell-mcp-server')
     assert.match(a.sid, /^[\w-]+$/)
 
     const b = await initSession({ protocolVersion: '2025-11-25' })
@@ -356,7 +356,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       params: {
         protocolVersion: '2025-11-25',
         capabilities: {},
-        clientInfo: { name: 'electerm-content-type-test', version: '1.0.0' }
+        clientInfo: { name: 'bshell-content-type-test', version: '1.0.0' }
       }
     }, {
       'Content-Type': 'application/json',
@@ -436,37 +436,37 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     const names = tools.map(tl => tl.name)
 
     for (const expected of [
-      'list_electerm_tabs',
-      'get_electerm_active_tab',
-      'switch_electerm_tab',
-      'close_electerm_tab',
-      'reload_electerm_tab',
-      'duplicate_electerm_tab',
-      'open_electerm_local_terminal',
-      'send_electerm_terminal_command',
-      'get_electerm_terminal_selection',
-      'get_electerm_terminal_output',
-      'wait_for_electerm_terminal_idle',
-      'get_electerm_terminal_status',
-      'cancel_electerm_terminal_command',
-      'set_electerm_terminal_keepalive',
-      'execute_electerm_command',
-      'open_electerm_tab_ssh',
-      'open_electerm_tab_telnet',
-      'open_electerm_tab_serial',
-      'open_electerm_tab_local',
-      'list_electerm_bookmarks',
-      'get_electerm_bookmark',
-      'add_electerm_bookmark_ssh',
-      'edit_electerm_bookmark',
-      'delete_electerm_bookmark',
-      'open_electerm_bookmark',
-      'list_electerm_bookmark_groups',
-      'electerm_sftp_list',
-      'electerm_sftp_stat',
-      'electerm_sftp_read_file',
-      'electerm_sftp_transfer_list',
-      'electerm_sftp_transfer_history'
+      'list_bshell_tabs',
+      'get_bshell_active_tab',
+      'switch_bshell_tab',
+      'close_bshell_tab',
+      'reload_bshell_tab',
+      'duplicate_bshell_tab',
+      'open_bshell_local_terminal',
+      'send_bshell_terminal_command',
+      'get_bshell_terminal_selection',
+      'get_bshell_terminal_output',
+      'wait_for_bshell_terminal_idle',
+      'get_bshell_terminal_status',
+      'cancel_bshell_terminal_command',
+      'set_bshell_terminal_keepalive',
+      'execute_bshell_command',
+      'open_bshell_tab_ssh',
+      'open_bshell_tab_telnet',
+      'open_bshell_tab_serial',
+      'open_bshell_tab_local',
+      'list_bshell_bookmarks',
+      'get_bshell_bookmark',
+      'add_bshell_bookmark_ssh',
+      'edit_bshell_bookmark',
+      'delete_bshell_bookmark',
+      'open_bshell_bookmark',
+      'list_bshell_bookmark_groups',
+      'bshell_sftp_list',
+      'bshell_sftp_stat',
+      'bshell_sftp_read_file',
+      'bshell_sftp_transfer_list',
+      'bshell_sftp_transfer_history'
     ]) {
       assert.ok(names.includes(expected), `Missing tool: ${expected}`)
     }
@@ -474,11 +474,11 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     // Write tools are opt-in (enableSftpWrite, off by default since
     // GHSA-vw4q-c6px-w5p3): either the widget registered all of them or none.
     const writeTools = [
-      'electerm_sftp_del_file_or_folder',
-      'electerm_sftp_upload',
-      'electerm_sftp_download',
-      'electerm_zmodem_upload',
-      'electerm_zmodem_download'
+      'bshell_sftp_del_file_or_folder',
+      'bshell_sftp_upload',
+      'bshell_sftp_download',
+      'bshell_zmodem_upload',
+      'bshell_zmodem_download'
     ]
     const registeredWriteTools = writeTools.filter(name => names.includes(name))
     assert.ok(
@@ -488,15 +488,15 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     )
 
     for (const removed of [
-      'run_electerm_background_command',
-      'get_electerm_background_task_status',
-      'get_electerm_background_task_log',
-      'cancel_electerm_background_task'
+      'run_bshell_background_command',
+      'get_bshell_background_task_status',
+      'get_bshell_background_task_log',
+      'cancel_bshell_background_task'
     ]) {
       assert.ok(!names.includes(removed), `Removed legacy tool still present: ${removed}`)
     }
 
-    const exec = tools.find(tl => tl.name === 'execute_electerm_command')
+    const exec = tools.find(tl => tl.name === 'execute_bshell_command')
     const props = exec.inputSchema.properties
     assert.deepEqual(props.mode.enum, ['exec', 'pty'])
     assert.equal(props.wait.type, 'boolean')
@@ -563,12 +563,12 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
   test('tab listing and active tab', { timeout: 30000 }, async (t) => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
-    const tabs = toolPayload(await callTool(sid, 'list_electerm_tabs', {}))
+    const tabs = toolPayload(await callTool(sid, 'list_bshell_tabs', {}))
     assert.ok(Array.isArray(tabs))
     for (const tab of tabs) {
       assert.ok(tab.id && 'onData' in tab, 'each tab exposes id and onData')
     }
-    const active = toolPayload(await callTool(sid, 'get_electerm_active_tab', {}))
+    const active = toolPayload(await callTool(sid, 'get_bshell_active_tab', {}))
     assert.ok('activeTabId' in active)
   })
 
@@ -576,7 +576,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_local_terminal', {}))
+    const opened = toolPayload(await callTool(sid, 'open_bshell_local_terminal', {}))
     assert.equal(opened.success, true)
     const tabId = opened.tabId
     openedTabIds.push(tabId)
@@ -586,7 +586,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
     // Legacy send → wait → read chain still works for interactive programs
     const marker = `MCP_IT_LOCAL_${uid}`
-    const sent = toolPayload(await callTool(sid, 'send_electerm_terminal_command', {
+    const sent = toolPayload(await callTool(sid, 'send_bshell_terminal_command', {
       command: `echo "${marker}"`,
       tabId
     }))
@@ -594,25 +594,25 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     await waitForMarker(sid, tabId, marker)
 
     // wait-idle returns a well-formed payload on an idle terminal
-    const idle = toolPayload(await callTool(sid, 'wait_for_electerm_terminal_idle', {
+    const idle = toolPayload(await callTool(sid, 'wait_for_bshell_terminal_idle', {
       tabId, timeout: 10000, lines: 40
     }))
     assert.equal(idle.timedOut, false)
     assert.equal(typeof idle.output, 'string')
 
-    const out = toolPayload(await callTool(sid, 'get_electerm_terminal_output', { tabId, lines: 10 }))
+    const out = toolPayload(await callTool(sid, 'get_bshell_terminal_output', { tabId, lines: 10 }))
     assert.equal(out.tabId, tabId)
     assert.ok(out.lineCount > 0)
 
-    const status = toolPayload(await callTool(sid, 'get_electerm_terminal_status', { tabId }))
+    const status = toolPayload(await callTool(sid, 'get_bshell_terminal_status', { tabId }))
     assert.ok('isRunning' in status && 'isIdle' in status)
 
-    const sel = toolPayload(await callTool(sid, 'get_electerm_terminal_selection', { tabId }))
+    const sel = toolPayload(await callTool(sid, 'get_bshell_terminal_selection', { tabId }))
     assert.equal(typeof sel.selection, 'string')
 
-    // execute_electerm_command — pty mode on a local tab
+    // execute_bshell_command — pty mode on a local tab
     const execMarker = `MCP_IT_EXEC_${uid}`
-    const r = toolPayload(await callTool(sid, 'execute_electerm_command', {
+    const r = toolPayload(await callTool(sid, 'execute_bshell_command', {
       command: `echo "${execMarker}"`,
       tabId
     }))
@@ -623,14 +623,14 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     assert.equal(r.timedOut, false)
 
     // non-zero exit code is captured
-    const r3 = toolPayload(await callTool(sid, 'execute_electerm_command', {
+    const r3 = toolPayload(await callTool(sid, 'execute_bshell_command', {
       command: '(exit 3)',
       tabId
     }))
     assert.equal(r3.exitCode, 3)
 
     // stderr is merged into stdout in pty mode
-    const rErr = toolPayload(await callTool(sid, 'execute_electerm_command', {
+    const rErr = toolPayload(await callTool(sid, 'execute_bshell_command', {
       command: 'echo OUT_LINE; echo ERR_LINE >&2',
       tabId
     }))
@@ -639,7 +639,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     assert.ok(rErr.stdout.includes('ERR_LINE'))
 
     // explicit mode:"pty"
-    const rPty = toolPayload(await callTool(sid, 'execute_electerm_command', {
+    const rPty = toolPayload(await callTool(sid, 'execute_bshell_command', {
       command: 'echo PTY_MODE_OK',
       tabId,
       mode: 'pty'
@@ -648,7 +648,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     assert.ok(rPty.stdout.includes('PTY_MODE_OK'))
 
     // timeout returns partial result with timedOut
-    const rTo = toolPayload(await callTool(sid, 'execute_electerm_command', {
+    const rTo = toolPayload(await callTool(sid, 'execute_bshell_command', {
       command: 'sleep 30',
       tabId,
       timeoutMs: 3000
@@ -656,18 +656,18 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     assert.equal(rTo.timedOut, true)
     assert.equal(rTo.exitCode, null)
     // free the terminal
-    await callTool(sid, 'cancel_electerm_terminal_command', { tabId })
+    await callTool(sid, 'cancel_bshell_terminal_command', { tabId })
 
     // built-in blacklist still guards the exec path
-    const blocked = await callTool(sid, 'execute_electerm_command', { command: 'rm -rf /', tabId })
+    const blocked = await callTool(sid, 'execute_bshell_command', { command: 'rm -rf /', tabId })
     assert.equal(blocked.result.isError, true)
 
     // missing command errors
-    const noCmd = await callTool(sid, 'execute_electerm_command', { tabId })
+    const noCmd = await callTool(sid, 'execute_bshell_command', { tabId })
     assert.equal(noCmd.result.isError, true)
 
     // wait=false without a tasks-capable client errors (legacy tools removed)
-    const noCaps = await callTool(sid, 'execute_electerm_command', {
+    const noCaps = await callTool(sid, 'execute_bshell_command', {
       command: 'sleep 5',
       tabId,
       wait: false
@@ -675,21 +675,21 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     assert.equal(noCaps.result.isError, true)
     assert.ok(/MCP Tasks extension/.test(noCaps.result.content[0].text))
 
-    await callTool(sid, 'close_electerm_tab', { tabId })
+    await callTool(sid, 'close_bshell_tab', { tabId })
   })
 
   test('MCP tab status: from tag, running/waiting/done lifecycle, auto-clear', { timeout: 180000 }, async (t) => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_local_terminal', {}))
+    const opened = toolPayload(await callTool(sid, 'open_bshell_local_terminal', {}))
     assert.equal(opened.success, true)
     const tabId = opened.tabId
     openedTabIds.push(tabId)
     await waitForTerminalReady(sid, tabId)
 
     const findTab = async () => {
-      const tabs = toolPayload(await callTool(sid, 'list_electerm_tabs', {}))
+      const tabs = toolPayload(await callTool(sid, 'list_bshell_tabs', {}))
       return tabs.find(tb => tb.id === tabId)
     }
 
@@ -702,7 +702,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       assert.equal(tab.from, 'mcp', 'MCP-opened tab must expose from:"mcp"')
 
       // send → [running] appears (auto-clears after ~15s if never waited on)
-      await callTool(sid, 'send_electerm_terminal_command', {
+      await callTool(sid, 'send_bshell_terminal_command', {
         command: 'sleep 2',
         tabId
       })
@@ -711,7 +711,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
       // wait_for_terminal_idle → [waiting] while pending, [done] after
       let sawWaiting = false
-      const waitPromise = callTool(sid, 'wait_for_electerm_terminal_idle', {
+      const waitPromise = callTool(sid, 'wait_for_bshell_terminal_idle', {
         tabId, timeout: 30000, minWait: 4000, lines: 20
       }).catch(err => { throw new Error(`wait_for_terminal_idle failed: ${err.message}`) })
       const waitDeadline = Date.now() + 8000
@@ -736,7 +736,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
       // execute → [running] while pending, [done] after completion
       let sawRunning = false
-      const execPromise = callTool(sid, 'execute_electerm_command', {
+      const execPromise = callTool(sid, 'execute_bshell_command', {
         command: `sleep 2 && echo "MCP_IT_STATUS_${uid}"`,
         tabId
       })
@@ -749,13 +749,13 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
         }
         await sleep(300)
       }
-      assert.ok(sawRunning, 'expected [running] while execute_electerm_command is pending')
+      assert.ok(sawRunning, 'expected [running] while execute_bshell_command is pending')
       const exec = toolPayload(await execPromise)
       assert.equal(exec.exitCode, 0)
       tab = await findTab()
       assert.equal(tab.mcpStatus, 'done', 'execute must end with [done]')
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -767,7 +767,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -781,7 +781,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
     try {
       const marker = `MCP_IT_SSH_EXEC_${uid}`
-      const r = toolPayload(await callTool(sid, 'execute_electerm_command', {
+      const r = toolPayload(await callTool(sid, 'execute_bshell_command', {
         command: `echo "${marker}"`,
         tabId
       }))
@@ -791,7 +791,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       assert.ok(r.stdout.includes(marker))
 
       // stdout and stderr are captured separately
-      const r2 = toolPayload(await callTool(sid, 'execute_electerm_command', {
+      const r2 = toolPayload(await callTool(sid, 'execute_bshell_command', {
         command: 'echo SSH_OUT; echo SSH_ERR >&2',
         tabId
       }))
@@ -800,13 +800,13 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       assert.ok(!r2.stdout.includes('SSH_ERR'), 'stderr must not leak into stdout in exec mode')
 
       // real exit codes
-      const r7 = toolPayload(await callTool(sid, 'execute_electerm_command', {
+      const r7 = toolPayload(await callTool(sid, 'execute_bshell_command', {
         command: 'exit 7',
         tabId
       }))
       assert.equal(r7.exitCode, 7)
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -814,7 +814,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession({ withTasksCap: true })
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_TASK_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -828,7 +828,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
     try {
       const marker = `MCP_IT_TASK_DONE_${uid}`
-      const created = await callTool(sid, 'execute_electerm_command', {
+      const created = await callTool(sid, 'execute_bshell_command', {
         command: `sleep 2 && echo "${marker}"`,
         tabId,
         wait: false
@@ -849,7 +849,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       assert.equal(final.result.exitCode, 0)
       assert.equal(typeof final.result.durationMs, 'number')
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -857,7 +857,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession({ withTasksCap: true })
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_CANCEL_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -870,7 +870,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     await waitForTerminalReady(sid, tabId)
 
     try {
-      const created = await callTool(sid, 'execute_electerm_command', {
+      const created = await callTool(sid, 'execute_bshell_command', {
         command: 'sleep 60',
         tabId,
         wait: false
@@ -885,7 +885,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       const again = await callMethod(sid, 'tasks/get', { taskId: task.taskId })
       assert.equal(again.result.status, 'cancelled')
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -893,7 +893,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_SHELL_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -907,14 +907,14 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
     try {
       const marker = `MCP_IT_SHELL_${uid}`
-      await callTool(sid, 'send_electerm_terminal_command', {
+      await callTool(sid, 'send_bshell_terminal_command', {
         command: `echo "${marker}"`,
         tabId
       })
       const output = await waitForMarker(sid, tabId, marker)
       assert.ok(output.includes(marker))
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -922,7 +922,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_KEEPALIVE_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -935,17 +935,17 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     await waitForTerminalReady(sid, tabId)
 
     const findTab = async () => {
-      const tabs = toolPayload(await callTool(sid, 'list_electerm_tabs', {}))
+      const tabs = toolPayload(await callTool(sid, 'list_bshell_tabs', {}))
       return tabs.find(tb => tb.id === tabId)
     }
 
     try {
       // off until something turns it on
-      let status = toolPayload(await callTool(sid, 'get_electerm_terminal_status', { tabId }))
+      let status = toolPayload(await callTool(sid, 'get_bshell_terminal_status', { tabId }))
       assert.equal(status.keepalive, false, 'keepalive must start off')
       assert.equal((await findTab()).keepalive, false, 'list_tabs must agree')
 
-      const on = toolPayload(await callTool(sid, 'set_electerm_terminal_keepalive', {
+      const on = toolPayload(await callTool(sid, 'set_bshell_terminal_keepalive', {
         tabId,
         enabled: true
       }))
@@ -953,12 +953,12 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       assert.equal(on.keepalive, true)
       assert.equal(on.tabId, tabId)
 
-      status = toolPayload(await callTool(sid, 'get_electerm_terminal_status', { tabId }))
+      status = toolPayload(await callTool(sid, 'get_bshell_terminal_status', { tabId }))
       assert.equal(status.keepalive, true, 'status must report keepalive on')
       assert.equal((await findTab()).keepalive, true, 'list_tabs must report keepalive on')
 
       // set (not toggle) semantics: repeating the same value is a no-op
-      const again = toolPayload(await callTool(sid, 'set_electerm_terminal_keepalive', {
+      const again = toolPayload(await callTool(sid, 'set_bshell_terminal_keepalive', {
         tabId,
         enabled: true
       }))
@@ -966,34 +966,34 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
       // the session survives a couple of keepalive cycles and still runs commands
       await sleep(7000)
-      const r = toolPayload(await callTool(sid, 'execute_electerm_command', {
+      const r = toolPayload(await callTool(sid, 'execute_bshell_command', {
         command: `echo MCP_IT_KEEPALIVE_ALIVE_${uid}`,
         tabId
       }))
       assert.equal(r.exitCode, 0)
       assert.ok(r.stdout.includes(`MCP_IT_KEEPALIVE_ALIVE_${uid}`))
 
-      const off = toolPayload(await callTool(sid, 'set_electerm_terminal_keepalive', {
+      const off = toolPayload(await callTool(sid, 'set_bshell_terminal_keepalive', {
         tabId,
         enabled: false
       }))
       assert.equal(off.keepalive, false)
-      status = toolPayload(await callTool(sid, 'get_electerm_terminal_status', { tabId }))
+      status = toolPayload(await callTool(sid, 'get_bshell_terminal_status', { tabId }))
       assert.equal(status.keepalive, false, 'status must report keepalive off')
 
       // `enabled` is required
-      const bad = await callTool(sid, 'set_electerm_terminal_keepalive', { tabId })
+      const bad = await callTool(sid, 'set_bshell_terminal_keepalive', { tabId })
       assert.equal(bad.result.isError, true)
       assert.match(bad.result.content[0].text, /enabled/)
 
       // unknown tab is rejected
-      const missing = await callTool(sid, 'set_electerm_terminal_keepalive', {
+      const missing = await callTool(sid, 'set_bshell_terminal_keepalive', {
         tabId: 'tab-does-not-exist',
         enabled: true
       })
       assert.equal(missing.result.isError, true)
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -1004,7 +1004,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_SFTP_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -1031,18 +1031,18 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     }
 
     try {
-      const list = tolerant(await callTool(sid, 'electerm_sftp_list', { tabId, remotePath: '/' }), 'sftp_list')
+      const list = tolerant(await callTool(sid, 'bshell_sftp_list', { tabId, remotePath: '/' }), 'sftp_list')
       if (list) {
         assert.ok(Array.isArray(list.list))
         assert.ok(list.list.some(f => f.name === 'hello.txt'), `expected hello.txt in / listing: ${JSON.stringify(list.list)}`)
       }
 
-      const stat = tolerant(await callTool(sid, 'electerm_sftp_stat', { tabId, remotePath: '/hello.txt' }), 'sftp_stat')
+      const stat = tolerant(await callTool(sid, 'bshell_sftp_stat', { tabId, remotePath: '/hello.txt' }), 'sftp_stat')
       if (stat) {
         assert.ok(stat.stat, 'stat result expected')
       }
 
-      const read = tolerant(await callTool(sid, 'electerm_sftp_read_file', { tabId, remotePath: '/hello.txt' }), 'sftp_read_file')
+      const read = tolerant(await callTool(sid, 'bshell_sftp_read_file', { tabId, remotePath: '/hello.txt' }), 'sftp_read_file')
       if (read) {
         assert.ok(String(read.content).includes('hello sftp world'))
       }
@@ -1050,7 +1050,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       const delName = `/mcp-it-del-${uid}.txt`
       // The test server's SFTP root is local — create the file to delete
       fs.writeFileSync(path.join(sftpRoot, `mcp-it-del-${uid}.txt`), 'delete me')
-      const del = tolerant(await callTool(sid, 'electerm_sftp_del_file_or_folder', { tabId, remotePath: delName }), 'sftp_del')
+      const del = tolerant(await callTool(sid, 'bshell_sftp_del_file_or_folder', { tabId, remotePath: delName }), 'sftp_del')
       if (del) {
         assert.equal(del.success, true)
         assert.ok(
@@ -1062,7 +1062,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       // Upload: local scratch file → remote / (confined to sftpRoot)
       const localUp = path.join(os.tmpdir(), `mcp-it-up-${uid}.txt`)
       fs.writeFileSync(localUp, `upload content ${uid}`)
-      const up = tolerant(await callTool(sid, 'electerm_sftp_upload', {
+      const up = tolerant(await callTool(sid, 'bshell_sftp_upload', {
         tabId,
         localPath: localUp,
         remotePath: `/mcp-it-up-${uid}.txt`
@@ -1083,7 +1083,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
 
       // Download: remote hello.txt → local scratch path
       const localDown = path.join(os.tmpdir(), `mcp-it-down-${uid}.txt`)
-      const down = tolerant(await callTool(sid, 'electerm_sftp_download', {
+      const down = tolerant(await callTool(sid, 'bshell_sftp_download', {
         tabId,
         remotePath: '/hello.txt',
         localPath: localDown
@@ -1105,12 +1105,12 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       }
 
       // Transfer list/history are readable regardless
-      const transfers = toolPayload(await callTool(sid, 'electerm_sftp_transfer_list', {}))
+      const transfers = toolPayload(await callTool(sid, 'bshell_sftp_transfer_list', {}))
       assert.ok(Array.isArray(transfers))
-      const history = toolPayload(await callTool(sid, 'electerm_sftp_transfer_history', {}))
+      const history = toolPayload(await callTool(sid, 'bshell_sftp_transfer_history', {}))
       assert.ok(Array.isArray(history))
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
     }
   })
 
@@ -1123,7 +1123,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     const { sid } = await initSession()
     const title = `MCP_IT_BM_${uid}`
 
-    const added = toolPayload(await callTool(sid, 'add_electerm_bookmark_ssh', {
+    const added = toolPayload(await callTool(sid, 'add_bshell_bookmark_ssh', {
       title,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -1135,31 +1135,31 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     createdBookmarkIds.push(id)
 
     try {
-      const list = toolPayload(await callTool(sid, 'list_electerm_bookmarks', {}))
+      const list = toolPayload(await callTool(sid, 'list_bshell_bookmarks', {}))
       const found = list.find(b => b.id === id)
       assert.ok(found, 'bookmark must appear in list')
       assert.equal(found.title, title)
       assert.ok(!('password' in found), 'bookmark list must not leak passwords')
 
-      const got = toolPayload(await callTool(sid, 'get_electerm_bookmark', { id }))
+      const got = toolPayload(await callTool(sid, 'get_bshell_bookmark', { id }))
       assert.equal(got.title, title)
       assert.ok(!('password' in got), 'bookmark get must not leak passwords')
 
-      const edited = toolPayload(await callTool(sid, 'edit_electerm_bookmark', {
+      const edited = toolPayload(await callTool(sid, 'edit_bshell_bookmark', {
         id,
         updates: { title: `${title}_renamed` }
       }))
       assert.equal(edited.success, true)
-      const got2 = toolPayload(await callTool(sid, 'get_electerm_bookmark', { id }))
+      const got2 = toolPayload(await callTool(sid, 'get_bshell_bookmark', { id }))
       assert.equal(got2.title, `${title}_renamed`)
     } finally {
-      const deleted = toolPayload(await callTool(sid, 'delete_electerm_bookmark', { id }))
+      const deleted = toolPayload(await callTool(sid, 'delete_bshell_bookmark', { id }))
       assert.equal(deleted.success, true)
-      const list2 = toolPayload(await callTool(sid, 'list_electerm_bookmarks', {}))
+      const list2 = toolPayload(await callTool(sid, 'list_bshell_bookmarks', {}))
       assert.ok(!list2.find(b => b.id === id), 'bookmark must be deleted')
     }
 
-    const groups = toolPayload(await callTool(sid, 'list_electerm_bookmark_groups', {}))
+    const groups = toolPayload(await callTool(sid, 'list_bshell_bookmark_groups', {}))
     assert.ok(Array.isArray(groups))
   })
 
@@ -1172,12 +1172,12 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     const { sid } = await initSession()
 
     const cases = [
-      ['electerm_sftp_list', {}],
-      ['electerm_sftp_del_file_or_folder', {}],
-      ['electerm_sftp_upload', { remotePath: '/tmp/x' }],
-      ['electerm_sftp_download', { localPath: '/tmp/x' }],
-      ['electerm_zmodem_upload', {}],
-      ['electerm_zmodem_download', { saveFolder: '/tmp' }]
+      ['bshell_sftp_list', {}],
+      ['bshell_sftp_del_file_or_folder', {}],
+      ['bshell_sftp_upload', { remotePath: '/tmp/x' }],
+      ['bshell_sftp_download', { localPath: '/tmp/x' }],
+      ['bshell_zmodem_upload', {}],
+      ['bshell_zmodem_download', { saveFolder: '/tmp' }]
     ]
     for (const [tool, args] of cases) {
       const res = await callTool(sid, tool, args)
@@ -1196,7 +1196,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     if (skipOffline(t)) return
     const { sid } = await initSession()
 
-    const opened = toolPayload(await callTool(sid, 'open_electerm_tab_ssh', {
+    const opened = toolPayload(await callTool(sid, 'open_bshell_tab_ssh', {
       title: `MCP_IT_SSH_ERR_${uid}`,
       host: '127.0.0.1',
       port: TEST_PORT,
@@ -1209,7 +1209,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
     await waitForTerminalReady(sid, tabId)
 
     const findTab = async () => {
-      const tabs = toolPayload(await callTool(sid, 'list_electerm_tabs', {}))
+      const tabs = toolPayload(await callTool(sid, 'list_bshell_tabs', {}))
       return tabs.find(tb => tb.id === tabId)
     }
 
@@ -1220,7 +1220,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       await stopTestSshServer(sshServer)
       sshServer = null
 
-      const res = await callTool(sid, 'execute_electerm_command', {
+      const res = await callTool(sid, 'execute_bshell_command', {
         command: 'echo never-runs',
         tabId
       })
@@ -1232,7 +1232,7 @@ describe('MCP server integration (live app + in-process SSH server)', () => {
       tab = await findTab()
       assert.equal(tab.mcpStatus || '', '', '[error] must auto-clear')
     } finally {
-      await callTool(sid, 'close_electerm_tab', { tabId })
+      await callTool(sid, 'close_bshell_tab', { tabId })
       // Bring the shared server back so later tests / reruns still work
       for (let i = 0; i < 5 && !sshServer; i++) {
         try {

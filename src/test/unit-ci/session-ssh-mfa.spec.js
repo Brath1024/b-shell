@@ -53,17 +53,17 @@ const { Server, utils } = require('@electerm/ssh2')
 const { session } = require('../../../src/app/server/session-ssh')
 
 const USERNAME = 'tester'
-const PASSWORD = 'electerm-test'
+const PASSWORD = 'bshell-test'
 const OTP = '123456'
 // the one-line form: password and one-time code in a single answer (#4670)
 const PASSCODE = `${PASSWORD} ${OTP}`
 
 const HOST_KEY = utils.generateKeyPairSync('ed25519', {
-  comment: 'electerm-mfa-host'
+  comment: 'bshell-mfa-host'
 })
 
 function makeTmpDir () {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-mfa-test-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-mfa-test-'))
 }
 
 function setEnvVar (name, value) {
@@ -141,7 +141,7 @@ async function startServer (shape = {}) {
         index++
         ctx.prompt(
           round.prompts,
-          round.name || 'electerm-test',
+          round.name || 'bshell-test',
           round.instructions || '',
           (responses) => {
             state.rounds.push({
@@ -172,7 +172,7 @@ async function startServer (shape = {}) {
         sshSession.on('pty', (accept) => accept())
         sshSession.on('shell', (accept) => {
           const stream = accept()
-          stream.write('electerm ready\n')
+          stream.write('bshell ready\n')
         })
       })
     })
@@ -429,7 +429,7 @@ describe('session-ssh MFA shapes', () => {
     const server = await startServer({
       advertise: ['password', 'keyboard-interactive'],
       // takes the password, but does not flag the connection as partially
-      // authenticated, so electerm cannot tell the factors apart
+      // authenticated, so bshell cannot tell the factors apart
       password: { keep: true },
       rejectWith: ['keyboard-interactive'],
       rounds: [{

@@ -7,7 +7,7 @@ import def from './def.js'
 
 function buildInput () {
   return {
-    electerm: resolve(cwd, '../../../src/client/entry/electerm.jsx'),
+    bshell: resolve(cwd, '../../../src/client/entry/bshell.jsx'),
     basic: resolve(cwd, '../../../src/client/entry/basic.js'),
     worker: resolve(cwd, '../../../src/client/entry/worker.js')
   }

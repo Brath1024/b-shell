@@ -9,12 +9,12 @@
 #
 #   sudo bash src/build/bin/local-ssh-test-server.sh
 #   TEST_HOST=127.0.0.1 TEST_PORT=2222 TEST_USER=etest \
-#     TEST_PASS=electerm-test npm run test1
+#     TEST_PASS=b-shell-test npm run test1
 #
 # It is idempotent: re-running reuses the user, the host key and the port.
 # Linux only (it creates a user and starts sshd); the macOS CI jobs do not run
 # the e2e suite. On macOS run it in a container and publish the port:
-#   docker run --rm -d --name electerm-sshd -p 2222:2222 \
+#   docker run --rm -d --name b-shell-sshd -p 2222:2222 \
 #     -e LOCAL_SSH_BIND=0.0.0.0 -v "$PWD":/repo -w /repo ubuntu:24.04 bash -c \
 #     'apt-get update -qq && apt-get install -y -qq nodejs npm &&
 #      bash src/build/bin/local-ssh-test-server.sh && sleep infinity'
@@ -33,9 +33,9 @@ PORT="${LOCAL_SSH_PORT:-2222}"
 # 0.0.0.0 only when running in a container whose port is published
 BIND_ADDR="${LOCAL_SSH_BIND:-127.0.0.1}"
 TEST_USER="${LOCAL_SSH_USER:-etest}"
-TEST_PASS="${LOCAL_SSH_PASS:-electerm-test}"
+TEST_PASS="${LOCAL_SSH_PASS:-b-shell-test}"
 HOME_DIR="/home/${TEST_USER}"
-CONF_DIR="/etc/electerm-sshd"
+CONF_DIR="/etc/b-shell-sshd"
 HOST_KEY="${CONF_DIR}/host_ed25519_key"
 CONFIG="${CONF_DIR}/sshd_config"
 PID_FILE="${CONF_DIR}/sshd.pid"
@@ -174,7 +174,7 @@ chmod 0755 "$CONF_DIR"
 
 if [ ! -f "$HOST_KEY" ]; then
   log 'generating host key'
-  ssh-keygen -q -t ed25519 -N '' -C 'electerm-local-test-server' -f "$HOST_KEY"
+  ssh-keygen -q -t ed25519 -N '' -C 'b-shell-local-test-server' -f "$HOST_KEY"
 fi
 
 cat > "$CONFIG" <<EOF

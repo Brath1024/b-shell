@@ -17,7 +17,7 @@
  * Installed at runtime rather than injected at build time (see
  * src/build/bin/inject-polyfills.js) because it only *adds* a global that is
  * missing: a modern build never notices it, and every entry point that can
- * build a vt parser is covered - the desktop main process, electerm-web's
+ * build a vt parser is covered - the desktop main process, bshell-web's
  * server, and the unit tests.
  */
 
@@ -32,7 +32,7 @@ function dataCloneError (message) {
 function clone (value, options) {
   const transfer = options && options.transfer
   if (transfer && transfer.length) {
-    // Nothing in electerm asks for a transfer, and honouring one means
+    // Nothing in bshell asks for a transfer, and honouring one means
     // detaching the source buffers, which v8.serialize does not do.
     throw dataCloneError('structuredClone shim does not support transfer')
   }

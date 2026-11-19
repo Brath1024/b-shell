@@ -5,26 +5,26 @@
  *   main (js)         main-process entry, same contract as a built-in widget:
  *                     widgetInfo + widgetRun(config, ctx), plus any extra
  *                     exported function the widget's UI calls through
- *                     `electerm.call(name, ...args)`
- *   electerm.ui       optional html file: the widget gets its own panel in the
- *                     renderer, served on electerm-widget://<id>/ inside an
+ *                     `bshell.call(name, ...args)`
+ *   bshell.ui       optional html file: the widget gets its own panel in the
+ *                     renderer, served on b-shell-widget://<id>/ inside an
  *                     iframe
  *
- * A widget without `ui` is a config-mode widget: electerm renders the form
- * from `electerm.configs`, calls `electerm.action` (default "run") in the main
+ * A widget without `ui` is a config-mode widget: bshell renders the form
+ * from `bshell.configs`, calls `bshell.action` (default "run") in the main
  * process on submit, and draws the returned result (message/details/table/
  * buttons/openTab/aiConfig/bookmarks) with its own components. No HTML, no CSS,
  * no bridge. That form remembers the values it was last used with, so a second
- * visit starts where the last one ended; `electerm.persist: false` opts out, and
+ * visit starts where the last one ended; `bshell.persist: false` opts out, and
  * a password field or a generated secret is never stored either way (see
  * client/common/widget-form-memory.js).
  *
- * `electerm.credentialProvider: { get, save }` names two main-process exports
+ * `bshell.credentialProvider: { get, save }` names two main-process exports
  * that serve passwords for bookmarks that ask for it (`usePasswordManager` in
  * the bookmark form) and have none saved (a password manager widget), see
  * client/common/credential-provider.jsx.
  *
- * `electerm.styles: ["style.css"]` is the whole widget for a restyling one: the
+ * `bshell.styles: ["style.css"]` is the whole widget for a restyling one: the
  * host reads those files and hands them to the renderer for as long as an
  * instance runs, so there is no server script, and it works in the web app too
  * (app/widgets/css-bus.js + client/common/widget-style-host.js). A widget that
@@ -39,7 +39,7 @@
  * ./ai-config.js are accepted, and the system prompt is not one of them.
  *
  * `bookmarks` in an action result is the same kind of offer: `{ bookmarks,
- * bookmarkGroups }`, the shape of electerm's own bookmark export, listed with
+ * bookmarkGroups }`, the shape of bshell's own bookmark export, listed with
  * a count and imported only when the user presses the button — a bare bookmark
  * array is accepted as well, with `bookmarkGroups` beside it in the result. It
  * goes through the regular bookmark import, so a category with an id that
@@ -47,7 +47,7 @@
  * Config-mode action results only: a run result carrying `bookmarks` is
  * ignored.
  *
- * `electerm.i18n: { "zh_cn": { name, description, submitLabel, configs } }`
+ * `bshell.i18n: { "zh_cn": { name, description, submitLabel, configs } }`
  * carries a widget's own translations. The manifest stays English as the base;
  * the renderer picks a locale from window.store.config.language and applies the
  * display strings (see client/common/widget-i18n.js). Only text is copied here,
@@ -97,7 +97,7 @@ function readJSON (file) {
 }
 
 // `My Widget@1` -> `my-widget-1`; the id doubles as a folder name and as the
-// host part of electerm-widget://<id>/, so it is kept strictly to [a-z0-9-].
+// host part of b-shell-widget://<id>/, so it is kept strictly to [a-z0-9-].
 function normalizeWidgetId (name) {
   return String(name || '')
     .toLowerCase()
@@ -162,12 +162,12 @@ function sanitizeConfigs (configs) {
     })
 }
 
-// Stylesheets a declarative widget ships (`electerm.styles`): the host reads
+// Stylesheets a declarative widget ships (`bshell.styles`): the host reads
 // and applies them, so the widget needs no server script at all. Resolved and
 // checked here, at manifest time, so a typo reads as a broken widget instead of
 // a silently unstyled app.
 // Display strings a widget translates in its own package.json. Keys are
-// electerm locale codes (en_us, zh_cn, ...); configs are keyed by field name so
+// bshell locale codes (en_us, zh_cn, ...); configs are keyed by field name so
 // renaming a config cannot silently inherit the wrong label.
 const LOCALE_RE = /^[a-z]{2}_[a-z]{2}$/
 const CONFIG_NAME_RE = /^[A-Za-z_$][A-Za-z0-9_$]*$/
@@ -300,7 +300,7 @@ function readWidget (dir, folderName) {
     return null
   }
   const pkg = readJSON(pkgFile)
-  const conf = pkg.electerm && typeof pkg.electerm === 'object' ? pkg.electerm : {}
+  const conf = pkg.bshell && typeof pkg.bshell === 'object' ? pkg.bshell : {}
 
   const id = typeof conf.id === 'string' && conf.id ? conf.id : folderName
   if (id !== folderName) {
@@ -314,7 +314,7 @@ function readWidget (dir, folderName) {
     throw new Error(`invalid widget type "${type}" (expected one of ${WIDGET_TYPES.join(', ')})`)
   }
 
-  // A widget with stylesheets and no script is complete: electerm applies the
+  // A widget with stylesheets and no script is complete: bshell applies the
   // css itself (load-widget.js runDeclarativeWidget). `main` stays the default
   // entry when it is declared, and when the folder has always relied on
   // index.js, so nothing that worked before changes.
@@ -364,16 +364,16 @@ function readWidget (dir, folderName) {
       builtin: false,
       singleInstance: !!conf.singleInstance,
       // A widget that ships its own UI has no generated run form to tick
-      // "Start with electerm" in. Declaring it in the manifest lets the panel
+      // "Start with bshell" in. Declaring it in the manifest lets the panel
       // start the instance on its own and register it for autorun (see
       // client/components/widgets/custom-widget-panel.jsx).
       autoRun: !!conf.autoRun,
       configs: sanitizeConfigs(conf.configs),
       // relative to the widget folder; the renderer builds
-      // electerm-widget://<id>/<ui> out of it
+      // b-shell-widget://<id>/<ui> out of it
       ui,
       // stylesheets the host applies to the app for as long as an instance
-      // runs — the no-script way to restyle electerm, on desktop and on web
+      // runs — the no-script way to restyle bshell, on desktop and on web
       styles,
       action,
       submitLabel: typeof conf.submitLabel === 'string' ? conf.submitLabel : '',
@@ -435,7 +435,7 @@ function resolveUserWidgetEntry (id) {
     throw new Error(`Widget ${id} not found`)
   }
   const pkg = readJSON(pkgFile)
-  const conf = pkg.electerm && typeof pkg.electerm === 'object' ? pkg.electerm : {}
+  const conf = pkg.bshell && typeof pkg.bshell === 'object' ? pkg.bshell : {}
   const declared = typeof pkg.main === 'string' && pkg.main
   const hasStyles = Array.isArray(conf.styles) && conf.styles.length > 0
   const hasOwnEntry = !!declared || (!hasStyles && !conf.ui)
@@ -497,10 +497,10 @@ function importWidget (srcDir, overwrite = false) {
   }
   const pkgFile = path.join(source, 'package.json')
   if (!fs.existsSync(pkgFile)) {
-    throw new Error('the folder has no package.json, it is not an electerm widget')
+    throw new Error('the folder has no package.json, it is not an bshell widget')
   }
   const pkg = readJSON(pkgFile)
-  const conf = pkg.electerm && typeof pkg.electerm === 'object' ? pkg.electerm : {}
+  const conf = pkg.bshell && typeof pkg.bshell === 'object' ? pkg.bshell : {}
   const id = normalizeWidgetId(
     conf.id || pkg.name || path.basename(source)
   )

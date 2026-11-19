@@ -11,16 +11,16 @@ describe('webUrl', () => {
   test('uses the host resolver when the web build injected one', async () => {
     const { webUrl } = await load()
     global.window.et = {
-      basePath: '/electerm',
-      url: p => '/electerm' + p
+      basePath: '/bshell',
+      url: p => '/bshell' + p
     }
-    assert.equal(webUrl('/api/widget-ui/x'), '/electerm/api/widget-ui/x')
+    assert.equal(webUrl('/api/widget-ui/x'), '/bshell/api/widget-ui/x')
   })
 
   test('falls back to basePath on a host build without the resolver', async () => {
     const { webUrl } = await load()
-    global.window.et = { basePath: '/electerm' }
-    assert.equal(webUrl('/api/x'), '/electerm/api/x')
+    global.window.et = { basePath: '/bshell' }
+    assert.equal(webUrl('/api/x'), '/bshell/api/x')
   })
 
   test('is a pass-through on the desktop app', async () => {

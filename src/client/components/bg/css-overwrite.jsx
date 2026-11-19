@@ -149,7 +149,7 @@ async function createStyleForTab (tab, props) {
 async function createGlobalStyle (props) {
   const st = await createBackgroundStyle(props.terminalBackgroundImagePath)
   if (!st) {
-    // Default terminal bg = the electerm watermark (766 x 266 natural size).
+    // Default terminal bg = the bshell watermark (766 x 266 natural size).
     // Without an explicit size the image is just centered at 1:1, so on narrow
     // panes (mobile / thin split columns) it gets cropped on both sides.
     // `min(100%, 766px) auto` keeps the aspect ratio and scales it down to fit

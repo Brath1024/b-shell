@@ -173,7 +173,7 @@ export default auto(function InfoModal (props) {
     sponsorLink,
     knownIssuesLink
   } = packInfo
-  const electermOnline = 'https://cloud.electerm.org'
+  const bshellOnline = 'https://cloud.electerm.org'
   const link = releaseLink.replace('/releases', '')
   const { versions } = window.pre
   const deps = {
@@ -191,8 +191,8 @@ export default auto(function InfoModal (props) {
     { icon: <AlignLeftOutlined />, title: e('knownIssues'), to: knownIssuesLink },
     { icon: <BugOutlined />, title: e('bugReport'), to: bugReportLink },
     { icon: <GlobalOutlined />, title: `${e('language')} repo`, to: languageRepo },
-    { icon: <CloudOutlined />, title: 'electerm Online', to: electermOnline },
-    { icon: <HeartOutlined />, title: e('sponsorElecterm'), to: sponsorLink },
+    { icon: <CloudOutlined />, title: 'bshell Online', to: bshellOnline },
+    { icon: <HeartOutlined />, title: e('sponsorBshell'), to: sponsorLink },
     { icon: <UserOutlined />, title: authorName, sub: email, to: authorUrl },
     { icon: <InfoCircleOutlined />, title: e('privacyNotice'), to: privacyNoticeLink }
   ]

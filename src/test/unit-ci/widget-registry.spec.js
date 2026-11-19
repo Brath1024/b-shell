@@ -24,14 +24,14 @@ const pkg = JSON.stringify({
   name: 'demo-widget',
   version: '1.0.0',
   main: 'index.js',
-  electerm: { id: 'demo-widget', name: 'Demo', type: 'once' }
+  bshell: { id: 'demo-widget', name: 'Demo', type: 'once' }
 })
 
 let tmp
 let n = 0
 
 before(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-registry-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-registry-'))
 })
 
 after(() => {
@@ -76,7 +76,7 @@ function recordFor (dir, extra = {}) {
   return {
     id: 'demo-widget',
     host: 'github.com',
-    owner: 'electerm',
+    owner: 'b-shell',
     repo: 'demo-widget',
     subdir: '',
     ref: sha,
@@ -184,7 +184,7 @@ describe('downloaded tree verification', () => {
   it('refuses a folder whose manifest names another widget', () => {
     const dir = writeWidget({
       ...baseFiles(),
-      'package.json': JSON.stringify({ name: 'other', electerm: { id: 'other' } })
+      'package.json': JSON.stringify({ name: 'other', bshell: { id: 'other' } })
     })
     assert.throws(() => verifyWidgetTree(dir, recordFor(dir)), /does not match the registry record/)
   })
@@ -195,11 +195,11 @@ describe('registry install', () => {
     const record = recordFor(writeWidget(baseFiles()))
     assert.equal(
       registrySource(record),
-      `https://github.com/electerm/demo-widget/tree/${sha}`
+      `https://github.com/bshell/demo-widget/tree/${sha}`
     )
     assert.equal(
       registrySource({ ...record, host: 'atomgit.com', subdir: 'widgets/foo' }),
-      `https://atomgit.com/electerm/demo-widget/tree/${sha}/widgets/foo`
+      `https://atomgit.com/bshell/demo-widget/tree/${sha}/widgets/foo`
     )
   })
 

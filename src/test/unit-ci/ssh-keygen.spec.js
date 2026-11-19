@@ -36,7 +36,7 @@ function hasSshKeygen () {
 }
 
 before(() => {
-  base = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ssh-keygen-'))
+  base = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ssh-keygen-'))
 })
 
 after(() => {

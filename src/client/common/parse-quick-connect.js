@@ -2,15 +2,15 @@
  * Quick Connect String Parser
  * Parses connection strings according to temp/quick-connect.wiki.md specification
  *
- * Supported Protocols: ssh, telnet, vnc, rdp, spice, serial, ftp, http, https, electerm
+ * Supported Protocols: ssh, telnet, vnc, rdp, spice, serial, ftp, http, https, bshell
  *
  * Basic Format:
  * protocol://[username:password@]host[:port]?anyQueryParam=anyValue&opts={"key":"value"}
  *
- * electerm:// Format (default type is ssh):
- * electerm://[username:password@]host[:port]?type=ssh&anyQueryParam=anyValue
- * electerm://host?type=telnet
- * electerm://user@host:22?type=vnc
+ * b-shell:// Format (default type is ssh):
+ * b-shell://[username:password@]host[:port]?type=ssh&anyQueryParam=anyValue
+ * b-shell://host?type=telnet
+ * b-shell://user@host:22?type=vnc
  *
  * Shortcut Format (SSH default):
  * user@host
@@ -21,7 +21,7 @@
 
 import DANGEROUS_SESSION_FIELDS from './dangerous-session-fields'
 
-const SUPPORTED_PROTOCOLS = ['ssh', 'telnet', 'vnc', 'rdp', 'spice', 'serial', 'ftp', 'http', 'https', 'electerm']
+const SUPPORTED_PROTOCOLS = ['ssh', 'telnet', 'vnc', 'rdp', 'spice', 'serial', 'ftp', 'http', 'https', 'b-shell']
 
 /**
  * Deny list for opts keys.
@@ -65,7 +65,7 @@ const DEFAULT_PORTS = {
   ftp: 21,
   http: 80,
   https: 443,
-  electerm: 22 // electerm defaults to SSH port
+  'b-shell': 22 // bshell defaults to SSH port
 }
 
 /**
@@ -146,7 +146,7 @@ function parseQuickConnect (str) {
     const input = trimmed.replace(/\/+$/, '')
 
     // Detect protocol
-    const protocolMatch = input.match(/^(ssh|telnet|vnc|rdp|spice|serial|ftp|https?|electerm):\/\//i)
+    const protocolMatch = input.match(/^(ssh|telnet|vnc|rdp|spice|serial|ftp|https?|b-shell):\/\//i)
 
     let protocol = ''
     let connectionString = ''
@@ -205,7 +205,7 @@ function parseQuickConnect (str) {
       connectionString = connectionString.slice(0, optsMatch.index)
     }
 
-    // Extract query string for web type and electerm type
+    // Extract query string for web type and bshell type
     let queryStr = ''
     const queryMatch = connectionString.match(/\?(.+)$/)
     if (queryMatch) {
@@ -337,12 +337,12 @@ function parseQuickConnect (str) {
     }
 
     // Build base options
-    // For electerm protocol, we need to handle the type from query params
+    // For bshell protocol, we need to handle the type from query params
     let finalProtocol = protocol
     let webProtocol = originalProtocol // Store original for web type
 
-    // Handle electerm:// protocol - extract type from query params, default to ssh
-    if (originalProtocol === 'electerm') {
+    // Handle b-shell:// protocol - extract type from query params, default to ssh
+    if (originalProtocol === 'b-shell') {
       // Parse query params to get type
       const params = new URLSearchParams(queryStr)
       finalProtocol = params.get('type') || params.get('tp') || 'ssh'

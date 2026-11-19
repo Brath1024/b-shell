@@ -27,9 +27,9 @@ if (!isDev) {
 initWs(app)
 
 const runServer = function () {
-  const { electermPort, electermHost } = process.env
+  const { bshellPort, bshellHost } = process.env
   const onError = (err) => {
-    log.error('server', 'failed to listen on', `${electermHost}:${electermPort}`, err.message)
+    log.error('server', 'failed to listen on', `${bshellHost}:${bshellPort}`, err.message)
     try {
       process.send({
         serverInited: false,
@@ -38,8 +38,8 @@ const runServer = function () {
     } catch (e) {}
     setTimeout(() => process.exit(1), 100)
   }
-  const server = app.listen(electermPort, electermHost, () => {
-    log.info('server', 'runs on', electermHost, electermPort)
+  const server = app.listen(bshellPort, bshellHost, () => {
+    log.info('server', 'runs on', bshellHost, bshellPort)
     process.send({ serverInited: true })
   })
   // Without this a port failure only surfaced as an uncaughtException: the

@@ -1,5 +1,5 @@
 /**
- * electerm-widget:// adapter for Electron < 25.
+ * b-shell-widget:// adapter for Electron < 25.
  *
  * NOT part of the shipped sources on a normal build. src/build/bin/inject-
  * polyfills.js copies this file into the packaged app (`work/app/widgets/`)

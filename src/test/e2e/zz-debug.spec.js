@@ -70,7 +70,7 @@ describe('debug', function () {
     await dump('after-connect')
 
     // 3. create local folder
-    const fname = '00000test-electerm' + nanoid()
+    const fname = '00000test-bshell' + nanoid()
     log('creating local folder ' + fname)
     try {
       await client.rightClick('.session-current .file-list.local .parent-file-item', 10, 10)
@@ -89,7 +89,7 @@ describe('debug', function () {
     log('local folder exists: ' + await client.locator(`.session-current .file-list.local .sftp-item[title="${fname}"]`).count())
 
     // 4. create remote folder
-    const rname = '00000test-electerm' + nanoid()
+    const rname = '00000test-bshell' + nanoid()
     log('creating remote folder ' + rname)
     try {
       await client.rightClick('.session-current .file-list.remote .parent-file-item', 10, 10)

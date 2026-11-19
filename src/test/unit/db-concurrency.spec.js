@@ -23,13 +23,13 @@ let dbAction
 let cleanup
 
 function createTestDb () {
-  const tmpDir = fs.mkdtempSync(resolve(os.tmpdir(), 'electerm-test-'))
+  const tmpDir = fs.mkdtempSync(resolve(os.tmpdir(), 'bshell-test-'))
   const dbFolder = resolve(tmpDir, 'users', 'testuser')
   fs.mkdirSync(dbFolder, { recursive: true })
 
   const { DatabaseSync } = require('node:sqlite')
-  const mainDbPath = resolve(dbFolder, 'electerm.db')
-  const dataDbPath = resolve(dbFolder, 'electerm_data.db')
+  const mainDbPath = resolve(dbFolder, 'bshell.db')
+  const dataDbPath = resolve(dbFolder, 'bshell_data.db')
   const mainDb = new DatabaseSync(mainDbPath)
   const dataDb = new DatabaseSync(dataDbPath)
 

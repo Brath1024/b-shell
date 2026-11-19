@@ -118,7 +118,7 @@ export function colorToOscRgb (color) {
  * xterm derives its DOM selection colour as blend(theme.background,
  * selectionBackground) into `selectionBackgroundOpaque`, and separately forces
  * any opaque selectionBackground down to 0.3 alpha in
- * `selectionBackgroundTransparent` (xterm#2737). electerm renders the terminal
+ * `selectionBackgroundTransparent` (xterm#2737). bshell renders the terminal
  * background via CSS and hands xterm a transparent background, so the blend
  * must be redone over the real visible background — starting from the
  * *configured* colour so an opaque selection stays opaque (xterm's forced

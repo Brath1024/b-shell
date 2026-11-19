@@ -22,7 +22,7 @@ if (!TEST_HOST || !TEST_PASS || !TEST_USER) {
 
     no test server? on Linux start a local one:
       sudo bash src/build/bin/local-ssh-test-server.sh
-    then TEST_HOST=127.0.0.1 TEST_PORT=2222 TEST_USER=etest TEST_PASS=electerm-test
+    then TEST_HOST=127.0.0.1 TEST_PORT=2222 TEST_USER=etest TEST_PASS=bshell-test
     (that is exactly what CI does, no secrets involved)
   `)
 }

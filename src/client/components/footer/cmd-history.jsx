@@ -32,7 +32,7 @@ import classNames from 'classnames'
 import './cmd-history.styl'
 
 const e = window.translate
-const SORT_BY_FREQ_KEY = 'electerm-cmd-history-sort-by-frequency'
+const SORT_BY_FREQ_KEY = 'bshell-cmd-history-sort-by-frequency'
 
 export default auto(function CmdHistory (props) {
   const { store, inline } = props

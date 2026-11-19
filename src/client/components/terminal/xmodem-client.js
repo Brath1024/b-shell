@@ -74,7 +74,7 @@ export class XmodemClient extends TransferClientBase {
   }
 
   /**
-   * Auto-triggered: device is sending a file, electerm should receive it.
+   * Auto-triggered: device is sending a file, bshell should receive it.
    * Opens save folder dialog then starts xmodem receive.
    * @param {string} fileName - Original filename from the device
    */
@@ -102,7 +102,7 @@ export class XmodemClient extends TransferClientBase {
   }
 
   /**
-   * Auto-triggered: device wants to receive a file, electerm should send it.
+   * Auto-triggered: device wants to receive a file, bshell should send it.
    * Opens file select dialog then starts xmodem send.
    */
   async handleAutoSend () {

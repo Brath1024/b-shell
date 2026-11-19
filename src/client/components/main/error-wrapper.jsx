@@ -17,32 +17,32 @@ const os = isMac ? 'mac' : isWin ? 'windows' : 'linux'
 const isVersion2OrAbove = compare(version, '2.0.0') >= 0
 
 const userDataPath = {
-  mac: '~/Library/Application\\ Support/electerm/users/default_user',
-  linux: '~/.config/electerm/users/default_user',
-  windows: 'C:\\Users\\your-user-name\\AppData\\Roaming\\electerm\\users\\default_user'
+  mac: '~/Library/Application\\ Support/bshell/users/default_user',
+  linux: '~/.config/bshell/users/default_user',
+  windows: 'C:\\Users\\your-user-name\\AppData\\Roaming\\bshell\\users\\default_user'
 }
 
 const troubleshootContent = {
   runInCommandLine: {
-    mac: '/Applications/electerm.app/Contents/MacOS/electerm',
-    linux: 'path/to/electerm',
-    windows: 'path\\to\\electerm.exe'
+    mac: '/Applications/bshell.app/Contents/MacOS/bshell',
+    linux: 'path/to/bshell',
+    windows: 'path\\to\\b-shell.exe'
   },
   clearConfig: {
     mac: isVersion2OrAbove
-      ? `rm -rf ${userDataPath.mac}/electerm_data.db`
-      : `rm -rf ${userDataPath.mac}/electerm.data.nedb`,
+      ? `rm -rf ${userDataPath.mac}/bshell_data.db`
+      : `rm -rf ${userDataPath.mac}/bshell.data.nedb`,
     linux: isVersion2OrAbove
-      ? `rm -rf ${userDataPath.linux}/electerm_data.db`
-      : `rm -rf ${userDataPath.linux}/electerm.data.nedb`,
+      ? `rm -rf ${userDataPath.linux}/bshell_data.db`
+      : `rm -rf ${userDataPath.linux}/bshell.data.nedb`,
     windows: isVersion2OrAbove
-      ? `Delete ${userDataPath.windows}\\electerm_data.db`
-      : `Delete ${userDataPath.windows}\\electerm.data.nedb`
+      ? `Delete ${userDataPath.windows}\\bshell_data.db`
+      : `Delete ${userDataPath.windows}\\bshell.data.nedb`
   },
   backupData: {
-    mac: `cp -r ${userDataPath.mac} ~/Desktop/electerm_backup_${Date.now()}`,
-    linux: `cp -r ${userDataPath.linux} ~/Desktop/electerm_backup_${Date.now()}`,
-    windows: `xcopy "${userDataPath.windows}\\*" "%USERPROFILE%\\Desktop\\electerm_backup_${Date.now()}" /E /I`
+    mac: `cp -r ${userDataPath.mac} ~/Desktop/bshell_backup_${Date.now()}`,
+    linux: `cp -r ${userDataPath.linux} ~/Desktop/bshell_backup_${Date.now()}`,
+    windows: `xcopy "${userDataPath.windows}\\*" "%USERPROFILE%\\Desktop\\bshell_backup_${Date.now()}" /E /I`
   }
 }
 
@@ -83,7 +83,7 @@ export default class ErrorBoundary extends React.PureComponent {
     return (
       <div className='pd1y wordbreak'>
         <h2>{e('troubleShoot')}</h2>
-        <p>Electerm Version: {packInfo.version}, OS: {os}</p>
+        <p>B-Shell Version: {packInfo.version}, OS: {os}</p>
         {
           Object.keys(troubleshootContent).map((k, i) => {
             const v = troubleshootContent[k]

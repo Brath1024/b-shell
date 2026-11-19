@@ -9,7 +9,7 @@ const { TerminalBase } = require('../../app/server/session-base')
 // Writes terminal output through the session log of a terminal that is
 // `cols` wide and returns the lines that end up in the log file.
 async function logLines (cols, output, addTimeStamp = false) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-log-wrap-'))
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-log-wrap-'))
   const file = path.join(dir, 'session.log')
   const term = new TerminalBase({ cols, rows: 24, logName: 'wrap', sessionLogPath: dir })
   try {

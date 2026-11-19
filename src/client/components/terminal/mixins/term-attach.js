@@ -36,7 +36,7 @@ export const attachMixin = {
   },
 
   // Idempotent setter shared by the toolbar heartbeat icon and the MCP
-  // `set_electerm_terminal_keepalive` tool, so both paths agree on one
+  // `set_bshell_terminal_keepalive` tool, so both paths agree on one
   // state instead of each owning their own copy.
   // Returns the resulting flag; before the attach addon exists (terminal
   // not connected yet) the request is refused and false is returned.

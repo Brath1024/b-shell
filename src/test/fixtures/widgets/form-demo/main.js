@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-// A config-mode widget: electerm draws the form from package.json and calls
+// A config-mode widget: bshell draws the form from package.json and calls
 // these exports. No HTML, no bridge, no renderer code in the widget.
 module.exports = {
   run (config) {
@@ -31,7 +31,7 @@ module.exports = {
     }
   },
 
-  // an action result may offer bookmarks for import: electerm lists them and
+  // an action result may offer bookmarks for import: bshell lists them and
   // imports only when the user presses the button
   offerBookmarks (config) {
     return {

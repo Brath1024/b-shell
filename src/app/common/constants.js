@@ -7,7 +7,7 @@ exports.userNoEncryptConfigId = 'userConfigNoEncrypt'
 // Server-managed config keys that must never be persisted to (or read
 // from) the user-config database, because they are specific to the
 // running server instance and are injected at runtime from process.env
-// or generated values.  Overwriting tokenElecterm in particular breaks
+// or generated values.  Overwriting tokenBshell in particular breaks
 // every subsequent WebSocket connection (terminals, sftp, transfers)
 // because the token no longer matches the server's JWT secret, causing
 // connections to silently fail verification — the terminal appears to
@@ -20,7 +20,7 @@ exports.userNoEncryptConfigId = 'userConfigNoEncrypt'
 // here because saveUserConfig is called for every config change,
 // including normal user edits.
 exports.serverManagedConfigKeys = [
-  'tokenElecterm',
+  'tokenBshell',
   'host',
   'port',
   'server',

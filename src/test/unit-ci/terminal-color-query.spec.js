@@ -47,7 +47,7 @@ describe('terminal OSC color query helpers', () => {
     }
 
     // The DOM renderer (including the post-fallback one) is always
-    // transparent: even when the user configured webGL, electerm's own CSS
+    // transparent: even when the user configured webGL, bshell's own CSS
     // background has to show through whenever webGL is not what is running.
     assert.deepEqual(
       createRendererThemeConfig(themeConfig, 'dom', '#121214'),

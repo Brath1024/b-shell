@@ -39,7 +39,7 @@ const { createDb } = require('../../../src/app/lib/nedb')
 // Helpers
 // ---------------------------------------------------------------------------
 function makeTmpDir () {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-nedb-test-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-nedb-test-'))
 }
 
 // ---------------------------------------------------------------------------
@@ -120,7 +120,7 @@ describe('nedb write-counter compaction', () => {
   })
 
   const fileFor = table => path.join(
-    tmpDir, 'electerm', 'users', 'testuser', `electerm.${table}.nedb`
+    tmpDir, 'b-shell', 'users', 'testuser', `bshell.${table}.nedb`
   )
   const countFor = table => compactCalls.filter(f => f === fileFor(table)).length
 

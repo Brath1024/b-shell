@@ -15,7 +15,7 @@ let names
 const canSymlink = process.platform !== 'win32'
 
 before(async () => {
-  dir = await fss.mkdtemp(path.join(os.tmpdir(), 'electerm-readdir-stat-'))
+  dir = await fss.mkdtemp(path.join(os.tmpdir(), 'bshell-readdir-stat-'))
   await fss.mkdir(path.join(dir, 'sub'))
   await fss.writeFile(path.join(dir, 'file.txt'), 'abc')
   await fss.writeFile(path.join(dir, STRANGE), 'xy')

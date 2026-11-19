@@ -29,7 +29,7 @@ const appOptions = {
   ...baseOptions,
   env: {
     ...launchEnv,
-    DATA_PATH: mkdtempSync(join(tmpdir(), 'electerm-kbd-nav-'))
+    DATA_PATH: mkdtempSync(join(tmpdir(), 'bshell-kbd-nav-'))
   }
 }
 

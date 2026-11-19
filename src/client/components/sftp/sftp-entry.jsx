@@ -942,7 +942,7 @@ export default class Sftp extends Component {
 
   // The whole directory in one round trip when the backend supports it
   // (`readdir` + per-entry `lstat` together). Falls back to the old "two calls
-  // per entry" path against an older server (electerm-web can serve a frontend
+  // per entry" path against an older server (bshell-web can serve a frontend
   // that is newer than its backend).
   getLocalList = async (localPath) => {
     if (window.fs.readdirStatAsync) {

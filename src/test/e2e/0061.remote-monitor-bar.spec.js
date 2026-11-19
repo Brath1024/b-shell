@@ -46,8 +46,8 @@ test.setTimeout(180000)
 
 test.beforeAll(async () => {
   ensureKnownHostsEntry(TEST_PORT)
-  fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-remote-monitor-'))
-  profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-remote-monitor-profile-'))
+  fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-remote-monitor-'))
+  profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-remote-monitor-profile-'))
   sshServer = await startTestSshServer({
     port: TEST_PORT,
     rootDir: fixtureRoot

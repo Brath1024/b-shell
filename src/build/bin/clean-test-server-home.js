@@ -43,7 +43,7 @@ const action = dryRun ? '-print' : '-print -exec rm -rf {} +'
 // folders is removed along with its parent. Keep this allowlist in sync when a
 // spec introduces a new top-level artifact.
 const testArtifactPatterns = [
-  '00000test-electerm*',
+  '00000test-bshell*',
   'conflict-test-*',
   'drag-folder-local-root-*',
   'drag-folder-remote-root-*',

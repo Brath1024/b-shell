@@ -46,8 +46,8 @@ const executionSwitches = ['command', 'encodedcommand', 'file', 'noninteractive'
  *   argument and PowerShell re-parses it, so quotes only add failure modes.
  */
 const integrationScript = [
-  'if(-not $env:ELECTERM_SHELL_INTEGRATION){',
-  "$env:ELECTERM_SHELL_INTEGRATION='1';",
+  'if(-not $env:BSHELL_SHELL_INTEGRATION){',
+  "$env:BSHELL_SHELL_INTEGRATION='1';",
   '$global:__e_prompt=$function:prompt;',
   'function global:prompt{',
   "$x=if($global:__e_prompt){& $global:__e_prompt}else{'PS '+$PWD+'> '};",

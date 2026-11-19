@@ -18,7 +18,7 @@ const { test, describe, before } = require('node:test')
 const assert = require('node:assert/strict')
 const Module = require('node:module')
 
-let ElectermMCPServer
+let BshellMCPServer
 let widgetInfo
 
 before(() => {
@@ -38,7 +38,7 @@ before(() => {
   }
   const widget = require('../../../src/app/widgets/widget-mcp-server')
   Module._load = originalLoad
-  ElectermMCPServer = widget._ElectermMCPServer
+  BshellMCPServer = widget._BshellMCPServer
   widgetInfo = widget.widgetInfo
 })
 
@@ -47,7 +47,7 @@ const configDefault = name => {
   return item && item.default
 }
 
-const make = config => new ElectermMCPServer({
+const make = config => new BshellMCPServer({
   host: '127.0.0.1',
   port: 0,
   apiKey: 'test-key',

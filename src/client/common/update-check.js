@@ -36,6 +36,19 @@ function getInfo (url) {
     })
 }
 
+/**
+ * Try every configured release feed base url until one answers.
+ * `suffix` must start with '/'.
+ */
+async function getInfoFromSources (suffix) {
+  for (const base of baseUpdateCheckUrls) {
+    const res = await getInfo(`${base}${suffix}`)
+    if (res) {
+      return res
+    }
+  }
+}
+
 export async function getLatestReleaseVersion (n) {
   let q = ''
   if (n) {
@@ -56,12 +69,7 @@ export async function getLatestReleaseVersion (n) {
     }, '')
   }
   const versionFile = window.et.versionFile || 'version.html'
-  let url = `${baseUpdateCheckUrls[0]}/${versionFile}${q}`
-  let tagName = await getInfo(url)
-  if (!tagName) {
-    url = `${baseUpdateCheckUrls[1]}/${versionFile}${q}`
-    tagName = await getInfo(url)
-  }
+  const tagName = await getInfoFromSources(`/${versionFile}${q}`)
   if (tagName) {
     return {
       tag_name: tagName
@@ -69,47 +77,20 @@ export async function getLatestReleaseVersion (n) {
   }
 }
 
-// GitHub and atomgit serve release assets from the same path shape:
-//   https://github.com/electerm/electerm/releases/download/<tag>/<file>
-//   https://atomgit.com/electerm/electerm/releases/download/<tag>/<file>
-// so only the two trailing segments (tag, file name) need carrying over.
-// The asset itself only exists on atomgit for the newest release: the sync
-// workflow empties every older release to stay under the attachment quota.
-export function getAtomgitUrl (url) {
-  const arr = url.split('/')
-  const len = arr.length
-  return `https://atomgit.com/electerm/electerm/releases/download/${arr[len - 2]}/${arr[len - 1]}`
-}
-
+/**
+ * b-shell ships releases on Gitee only, without third-party mirrors, so the
+ * download always points at the asset url that the release feed reports.
+ * `mirror` is kept in the signature for callers that still pass it.
+ */
 export function getDownloadUrl (browserDownloadUrl, mirror) {
-  if (!browserDownloadUrl) {
-    return ''
-  }
-  if (mirror === 'gh-proxy') {
-    return `https://mirror.electerm.org/${browserDownloadUrl}`
-  } if (mirror === 'sourceforge') {
-    const arr = browserDownloadUrl.split('/')
-    const len = arr.length
-    return `https://master.dl.sourceforge.net/project/electerm.mirror/${arr[len - 2]}/${arr[len - 1]}?viasf=1`
-  } else if (mirror === 'r2') {
-    return `https://electerm-store.html5beta.com/r/${browserDownloadUrl.split('/').pop()}`
-  } else if (mirror === 'atomgit') {
-    return getAtomgitUrl(browserDownloadUrl)
-  } else {
-    return browserDownloadUrl
-  }
+  return browserDownloadUrl || ''
 }
 
 export async function getLatestReleaseInfo () {
   const { installSrc } = window.store
   const src = installSrc ? '?src=' + encodeURIComponent(installSrc) : ''
-  let url = `${baseUpdateCheckUrls[0]}/data/electerm-github-release.json${src}`
-  let res = await getInfo(url)
-  if (!res?.release?.body) {
-    url = `${baseUpdateCheckUrls[1]}/data/electerm-github-release.json${src}`
-    res = await getInfo(url)
-  }
-  if (!res || !res.release) {
+  const res = await getInfoFromSources(`/data/bshell-github-release.json${src}`)
+  if (!res?.release) {
     return undefined
   }
   const asset = (res.release.assets || []).find(r => r.name.includes(installSrc))

@@ -1,6 +1,6 @@
 /*
  * Live reproduction of bookmark loss, driven through the real store + watcher
- * in a running electerm instance.
+ * in a running bshell instance.
  *
  * Two experiments, both using only code paths the app itself uses.
  *
@@ -58,10 +58,10 @@
  * -- see the note there, it is why a rebuilt app can still run the old code):
  *   rm -rf /tmp/dbcorrupt4 && mkdir -p /tmp/dbcorrupt4/{data,tmp}
  *   TMPDIR=/tmp/dbcorrupt4/tmp DATA_PATH=/tmp/dbcorrupt4/data \
- *     ELECTERM_E2E_NO_SANDBOX=1 \
+ *     BSHELL_E2E_NO_SANDBOX=1 \
  *     npx playwright test src/test/e2e/099.db-corruption.spec.js --workers=1
  *
- * ELECTERM_E2E_NO_SANDBOX=1 is only for environments where Electron's sandbox
+ * BSHELL_E2E_NO_SANDBOX=1 is only for environments where Electron's sandbox
  * can not initialize; drop it elsewhere. `env -u ELECTRON_RUN_AS_NODE
  * -u NODE_OPTIONS` is needed when the tests are launched from a shell that
  * already runs on an Electron runtime.

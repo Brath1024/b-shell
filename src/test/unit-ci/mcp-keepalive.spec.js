@@ -1,5 +1,5 @@
 /**
- * Unit tests for the MCP set_electerm_terminal_keepalive tool.
+ * Unit tests for the MCP set_bshell_terminal_keepalive tool.
  *
  * HTTP-level wiring only — a real express server with a mocked electron +
  * renderer bridge, same pattern as mcp-exec.spec.js. The two halves of the
@@ -127,7 +127,7 @@ async function captureRendererCall (fn) {
   return captured
 }
 
-describe('set_electerm_terminal_keepalive – tool surface & wiring', () => {
+describe('set_bshell_terminal_keepalive – tool surface & wiring', () => {
   const PORT = 30854
   let instance = null
 
@@ -142,8 +142,8 @@ describe('set_electerm_terminal_keepalive – tool surface & wiring', () => {
 
   test('tools/list registers the tool with a required boolean `enabled`', async () => {
     const tools = await listTools(PORT)
-    const tool = tools.find(t => t.name === 'set_electerm_terminal_keepalive')
-    assert.ok(tool, 'set_electerm_terminal_keepalive must be registered')
+    const tool = tools.find(t => t.name === 'set_bshell_terminal_keepalive')
+    assert.ok(tool, 'set_bshell_terminal_keepalive must be registered')
 
     const props = tool.inputSchema.properties
     assert.equal(props.enabled.type, 'boolean')
@@ -160,7 +160,7 @@ describe('set_electerm_terminal_keepalive – tool surface & wiring', () => {
     const sid = await initSession(PORT)
     let res = null
     const captured = await captureRendererCall(async () => {
-      res = await callTool(PORT, sid, 'set_electerm_terminal_keepalive', {
+      res = await callTool(PORT, sid, 'set_bshell_terminal_keepalive', {
         enabled: true,
         tabId: 'tab-42'
       })
@@ -180,7 +180,7 @@ describe('set_electerm_terminal_keepalive – tool surface & wiring', () => {
     const sid = await initSession(PORT)
     let res = null
     const captured = await captureRendererCall(async () => {
-      res = await callTool(PORT, sid, 'set_electerm_terminal_keepalive', { enabled: false })
+      res = await callTool(PORT, sid, 'set_bshell_terminal_keepalive', { enabled: false })
     })
 
     assert.equal(captured.data.args.enabled, false)
@@ -191,9 +191,9 @@ describe('set_electerm_terminal_keepalive – tool surface & wiring', () => {
     assert.equal(payload.keepalive, false)
   })
 
-  test('get_electerm_terminal_status description advertises keepalive', async () => {
+  test('get_bshell_terminal_status description advertises keepalive', async () => {
     const tools = await listTools(PORT)
-    const tool = tools.find(t => t.name === 'get_electerm_terminal_status')
+    const tool = tools.find(t => t.name === 'get_bshell_terminal_status')
     assert.ok(tool.description.includes('keepalive'),
       'status tool description should mention the keepalive field')
   })

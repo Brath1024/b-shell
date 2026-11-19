@@ -12,7 +12,7 @@ const appOptions = require('./common/app-options')
 test.setTimeout(60000)
 
 test('remote monitor styles, panel geometry and mobile overflow', async () => {
-  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-remote-monitor-visual-'))
+  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-remote-monitor-visual-'))
   const app = await electron.launch({
     ...appOptions,
     args: [...appOptions.args, `--user-data-dir=${profileRoot}`],

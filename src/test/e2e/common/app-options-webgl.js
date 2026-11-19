@@ -10,13 +10,13 @@
  *
  * Built from ./app-options.js rather than re-listing the arguments: the shared
  * helper owns the launch isolation (fresh user-data dir, NODE_TEST, the
- * explicit ELECTERM_E2E_NO_SANDBOX opt-out, Linux sandbox flags). A hand-copied
+ * explicit BSHELL_E2E_NO_SANDBOX opt-out, Linux sandbox flags). A hand-copied
  * list drifts as soon as that helper changes -- an earlier version of this file
  * predated the user-data dir, so it launched against the developer's real
  * Electron profile (and, on macOS, a cached stale bundle).
  *
  * This helper and every other E2E launch keep the sandbox: the global default
- * is only overridden when ELECTERM_E2E_NO_SANDBOX is set explicitly.
+ * is only overridden when BSHELL_E2E_NO_SANDBOX is set explicitly.
  */
 const base = require('./app-options')
 

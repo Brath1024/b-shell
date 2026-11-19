@@ -1,5 +1,5 @@
 /**
- * electerm-widget://<id>/<file> — serves one user widget folder to the renderer.
+ * b-shell-widget://<id>/<file> — serves one user widget folder to the renderer.
  *
  * Why a protocol and not http: the widget UI is untrusted-ish code that ships
  * after the app does, it must load in dev and in a packaged build the same way,
@@ -9,7 +9,7 @@
  * resolves DATA_PATH, the server child does not).
  *
  * The html of a widget gets the bridge script injected on the fly, so
- * window.electerm exists without the author adding a script tag.
+ * window.bshell exists without the author adding a script tag.
  *
  * This is the Electron >= 25 implementation, and nothing else: the legacy
  * builds (Electron 22, pinned for old glibc) get `protocol-legacy.js` copied
@@ -25,7 +25,7 @@ const { pathToFileURL } = require('url')
 const { isValidWidgetId, resolveUserWidgetDir, isInside } = require('./paths')
 const bridgeSource = require('./bridge')
 
-const SCHEME = 'electerm-widget'
+const SCHEME = 'b-shell-widget'
 const BRIDGE_PATH = '/__bridge.js'
 const HTML_EXT = /\.html?$/i
 
@@ -66,7 +66,7 @@ function mimeTypeOf (file) {
   return MIME_TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream'
 }
 
-// Put the bridge first in <head> so window.electerm exists before any script
+// Put the bridge first in <head> so window.bshell exists before any script
 // the widget loads from there.
 function injectBridge (html) {
   const tag = `<script src="${BRIDGE_PATH}"></script>`
@@ -99,7 +99,7 @@ function resolveWidgetRequest (requestUrl) {
   } catch (e) {
     return NOT_FOUND
   }
-  // electerm-widget://<id>/<path inside the widget folder>
+  // b-shell-widget://<id>/<path inside the widget folder>
   const id = url.hostname
   if (!isValidWidgetId(id)) {
     return NOT_FOUND

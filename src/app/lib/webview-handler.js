@@ -67,7 +67,7 @@ const onAuthResponse = (event, data) => {
 }
 
 // A web session renders a URL the user did not write: it arrives from a
-// quick-connect paste, a command-line argument, an electerm:// deep link or an
+// quick-connect paste, a command-line argument, an b-shell:// deep link or an
 // MCP call. The renderer used to create that <webview> with
 // `disablewebsecurity='true'`, which turns off the same-origin policy for the
 // guest and lets the page read every other origin the machine can reach

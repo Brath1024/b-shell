@@ -1,242 +1,99 @@
-<h1 align="center" style="padding-top: 60px;padding-bottom: 40px;">
-    <a href="https://electerm.org">
-        <img src="https://github.com/electerm/electerm-resource/raw/master/static/images/electerm.png", alt="" />
-    </a>
-</h1>
+# b-shell
 
-[![GitHub version](https://badgers.space/github/release/electerm/electerm?corner_radius=m)](https://github.com/electerm/electerm/releases)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/electerm/electerm/blob/master/LICENSE)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/electerm?label=Sponsors)](https://github.com/sponsors/electerm)
-[![star](https://atomgit.com/electerm/electerm/star/badge.svg)](https://atomgit.com/electerm/electerm)
-[![X](https://img.shields.io/badge/X-@zxdong-black?logo=x)](https://x.com/zxdong)
+> Brath 终端管理工具 —— Windows / macOS 双端，基于 [Electerm](https://github.com/electerm/electerm) 二次开发，内置 **Xshell 会话一键导入**。
 
-[English](README.md) | [中文](src/docs/README_cn.md) | [日本語](src/docs/README_jp.md)
+b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户端。相比上游 Electerm，b-shell 针对长期使用 Xshell 的用户做了迁移优化：读取本机 Xshell 的 `.xsh` 会话文件，把主机、端口、用户名、密码和文件夹结构一次性导入，导入后可以直接连接，不需要逐个重建会话。
 
-Open-sourced terminal/ssh/sftp/telnet/serialport/RDP/VNC/Spice/ftp client(Linux, Mac, Windows, Android, HarmonyOS, iOS).
+[![GitHub issues](https://img.shields.io/badge/repo-gitee.com%2FGuoqing--Li%2Fb--shell-c71d23)](https://gitee.com/Guoqing-Li/b-shell)
 
-Besides mainstream Windows/macOS/Linux/Android, electerm also supports HarmonyOS, iOS, and older systems — Ubuntu 18, Windows 7, macOS 10+, and special Chinese Linux distributions such as UOS, Kylin, and LoongArch (both old-world and new-world), as well as RISC-V (riscv64) and PowerPC 64-bit little-endian (ppc64le) Linux.
+---
 
-<p>
-  <a href="https://electerm.org">Homepage / Downloads</a> ·
-  <a href="https://theme.electerm.org">Theme</a> ·
-  <a href="https://github.com/electerm/electerm-web-docker">Docker</a> ·
-  <a href="https://demo.electerm.org">Online demo</a> ·
-  <a href="https://github.com/electerm/electerm-android">Android</a> ·
-  <a href="https://play.google.com/store/apps/details?id=org.electerm.electerm">Google Play</a> ·
-  <a href="https://github.com/electerm/electerm-harmony">HarmonyOS</a> ·
-  <a href="https://apps.apple.com/us/app/electerm/id6792971552">Apple App Store</a> ·
-  <a href="https://appgallery.huawei.com/app/detail?id=org.electerm.electerm">Huawei AppGallery</a> ·
-  <a href="https://www.microsoft.com/store/apps/9NCN7272GTFF">Microsoft Store</a> ·
-  <a href="https://snapcraft.io/electerm">Snap Store</a> ·
-  <a href="https://repos.electerm.org/deb">deb repo</a> ·
-  <a href="https://repos.electerm.org/rpm">rpm repo</a>
-</p>
+## 功能
 
-<div>🌐 <strong><a href="https://cloud.electerm.org">electerm online</a></strong> — Public free online electerm app</div>
-<div>🤖 <strong><a href="https://ai.electerm.org">electerm AI</a></strong> — Free AI for electerm users</div>
-<div>💻 <strong><a href="https://github.com/electerm/electerm-web">electerm-web</a></strong> — Web app version running in browser (including mobile device)</div>
+- **Xshell 一键导入**：自动扫描 Xshell 5 - 9 的会话目录，解密密码（RC4 + SHA-256 校验），还原分组目录，重复导入自动去重。详见 [Xshell 导入文档](docs/xshell-import.md)。
+- 多协议：SSH、SFTP、Telnet、Serial Port、RDP、VNC、Spice、FTP、本地终端。
+- 书签与分组：无限层级分组、拖拽整理、颜色/图标标记、批量打开。
+- SSH 隧道、跳板机（connection hopping）、X11 转发、Agent 转发、多套认证配置。
+- 快捷命令、命令自动补全、触发器、全局搜索、分屏、标签页批量操作。
+- 内置 AI 助手（可选）、同步（可选）、主题与字体自定义。
+- Windows（安装包 / 便携版 / MSIX）与 macOS（dmg）构建。
 
-## Sponsors
+## 下载与安装
 
-<div align="center">
-  <a href="https://www.packyapi.ai/register?aff=DOZI">
-    <img src="https://github.com/electerm/electerm-resource/blob/master/static/images/packy-api.png?raw=true" alt="PackyCode" width="210" />
-  </a>
-</div>
+目前请从仓库 Release 或自行构建：
 
-[PackyCode](https://www.packyapi.ai/register?aff=DOZI) — Access leading AI models through PackyCode with one API endpoint and one API key. Enjoy fast, reliable access with automatic failover and dedicated high-speed routes for Codex and Claude Code. Get started with $1 in free credits, a discount on your first top-up, and savings of up to 80% on eligible routes. Pay in RMB with no currency conversion markups or extra top-up fees.
+| 平台 | 产物 |
+| --- | --- |
+| Windows x64 | `b-shell-<version>-win-x64.exe`（安装包）、`b-shell-<version>-win-x64.tar.gz`（免安装） |
+| macOS | `b-shell-<version>-mac-*.dmg` |
+| Linux | `b-shell-<version>-linux-*.AppImage` / `.deb` |
 
-----
+## 从源码构建
 
-<div align="center">
-
-<a href="https://www.infistar.cc/register?aff=4R4JT29X&ref_source=link"><img align="middle" src="https://github.com/electerm/electerm-resource/blob/master/static/images/infistar-wordmark.png?raw=true" alt="Infistar" height="40" /></a>&nbsp;&nbsp;&nbsp;<a href="https://www.digitalocean.com/?refcode=c10bcb28b846&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img align="middle" src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="DigitalOcean Referral Badge" /></a>
-
-</div>
-
-<div align="center">
-    <img src="https://github.com/electerm/electerm-resource/raw/master/static/images/electerm-banner-1.jpg", alt="" />
-</div>
-
-## Features
-
-- Works as a terminal/file manager, ssh/sftp/ftp/telnet/serialport/RDP/VNC/Spice client
-- Support Window 7+(X64/ARM64), HarmonyOS，Android, iOS, Mac OS 10.15+(x64/arm64), Linux(x64/arm64/riscv64/ppc64le/Loong64 new world & old world), even old Linux with glibc 2.17+ like UOS/Kylin/Ubuntu 18.04 etc
-- Global hotkey to toggle window visibility (similar to guake, default is `ctrl + 2`)
-- 🇺🇸 🇨🇳 🇧🇷 🇷🇺 🇪🇸 🇫🇷 🇹🇷 🇭🇰 🇯🇵 🇸🇦 🇩🇪 🇰🇷 🇮🇩 🇵🇱 Multi-language support([electerm-locales](https://github.com/electerm/electerm-locales), contributions/fixes welcome)
-- Double click to directly edit (small) remote files.
-- All kind of auth methods: publicKey, password, ssh agent, certificates, otp, netbird etc.
-- Support Zmodem(rz, sz), and [Trzsz](https://github.com/trzsz/trzsz)(trz/tsz).
-- Support ssh related features: tunnel, connection hopping.
-- Customizable UI: themes, background image, transparent window(Mac, win).
-- Global/session proxy.
-- Quick commands/triggers to do predefined tasks and automattic operations
-- Sync data including bookmarks to github/gitee secret gist/webdav/custom server/electerm cloud
-- Quick input/mirror input to one or all terminals.
-- AI assistant integration (supporting multiple LLM API formats — OpenAI Chat Completions, OpenAI Responses, and Anthropic Messages) to help with command suggestions, script writing, and explaining selected terminal content, create bookmarks/themes, and agent mode to directly do terminal operations
-- MCP (Model Context Protocol) widget for AI assistants and external tools integration - see [MCP Widget Usage Guide](https://github.com/electerm/electerm/wiki/MCP-Widget-Usage-Guide)
-- Deep link support: Open connections with URLs like `telnet://192.168.2.31:34554` or `ssh://user@host:22` - see [Deep link support wiki](https://github.com/electerm/electerm/wiki/Deep-link-support)
-- Command line usage: check [wiki](https://github.com/electerm/electerm/wiki/Command-line-usage)
-
-## Install
-
-- For Mac user: `brew install --cask electerm`
-- With snap: `sudo snap install electerm --classic`
-- For some Linux distribution, you can find it from OS default App store(Ubuntu, Deepin, Mint...).
-- For some linux OS, the `rpm`, `deb`, or `snap` release may not work, you can try the `tar.gz` or `.appImage` release.
-- For Windows users, you can install it from [windows store](https://www.microsoft.com/store/apps/9NCN7272GTFF), command-line installer [winget](https://github.com/microsoft/winget-cli) and [scoop](https://github.com/lukesampson/scoop) is also recommended:
-
-```powershell
-# winget https://github.com/microsoft/winget-cli
-winget install electerm.electerm
-
-# scoop https://github.com/lukesampson/scoop
-scoop bucket add dorado https://github.com/chawyehsu/dorado
-scoop install dorado/electerm
-```
-
-- Install from Debian repository (for Debian/Ubuntu-based systems) with `apt` command
-
-Check [https://repos.electerm.org/deb](https://repos.electerm.org/deb)
-
-- Install from npm
+需要 Node.js ≥ 16（推荐 20 或 22）、npm、npm 可访问的网络环境。
 
 ```bash
-npm i -g electerm
+git clone git@gitee.com:Guoqing-Li/b-shell.git
+cd b-shell
+npm install
 
-```
-
-## Upgrade
-
-- Auto upgrade: When a new version is released, you will get an upgrade notification after you start electerm again. You can then click the upgrade button to upgrade.
-- Download: Just download the latest edition, reinstall.
-- Npm: If you install from npm, just run `npm i -g electerm` again.
-- If use Snap or some other distribution system, these systems may provide upgrades.
-
-## Known issues
-
-[https://github.com/electerm/electerm/wiki/Know-issues](https://github.com/electerm/electerm/wiki/Know-issues)
-
-## Troubleshoot
-
-[https://github.com/electerm/electerm/wiki/Troubleshoot](https://github.com/electerm/electerm/wiki/Troubleshoot)
-
-## Discussion
-
-[![Discord](https://img.shields.io/badge/Discord-Join-blue?logo=discord)](https://discord.gg/855W7g8EVd)
-
-[Discussion board](https://github.com/electerm/electerm/discussions)
-
-<img src="https://electerm.org/electerm-wechat-group-qr.jpg" width="300" alt="electerm WeChat group QR code">
-
-<img src="https://electerm.org/telegram-qr.png" width="300" alt="electerm Telegram group QR code">
-
-## Support
-
-Would love to hear from you, please tell me what you think, [submit an issue](https://github.com/electerm/electerm/issues), [Start a new discussion](https://github.com/electerm/electerm/discussions/new), [create/fix language files](https://github.com/electerm/electerm-locales) or create pull requests, all welcome.
-
-## Sponsor this project
-
-github sponsor
-
-[https://github.com/sponsors/electerm](https://github.com/sponsors/electerm)
-
-kofi
-
-[https://ko-fi.com/zhaoxudong](https://ko-fi.com/zhaoxudong)
-
-wechat donate
-
-[![wechat donate](https://electerm.org/electerm-wechat-donate.png)](https://github.com/electerm)
-
-TRON TRN20
-
-[![TRN20 donate](https://github.com/electerm/electerm-resource/blob/master/static/images/trn20.png?raw=true)]
-
-Address: TXk3pQNmQu1vihH76RaEFnK9wg13x4LLCZ
-
-## Dev
-
-```bash
-# May only works in Linux
-# needs nodejs/npm, suggest using nvm to install nodejs/npm
-# with nodejs 24.x
-
-git clone git@github.com:electerm/electerm.git
-cd electerm
-npm config set legacy-peer-deps true
-npm i
-
-# start vite dev server, requires port 5570
+# 开发模式（Vite dev server + Electron）
 npm start
 
-# in a separate terminal session run app
-npm run app
-
-# code format check
-npm run lint
-
-# code format fix
-npm run fix
+# 打包当前平台的安装包
+npm run dist:win   # Windows x64
+npm run dist:mac   # macOS
+npm run dist:linux # Linux
 ```
 
-## Test
+`npm run dist:*` 会先执行 `npm run b`（清理 + 编译主进程/预加载脚本 + 生成静态资源），再调用 `electron-builder`。构建配置位于 [src/build/electron-builder.json](src/build/electron-builder.json)。
+
+## 把 Xshell 数据迁移过来
+
+打开 b-shell → 左侧书签面板工具栏 → 点击 **Windows 图标按钮**（「从 Xshell 导入」）→ 确认扫描结果 → 「一键导入」。
+
+- 自动扫描：`文档\NetSarang Computer\<版本>\Xshell\Sessions`、OneDrive 文档目录、`%APPDATA%\NetSarang\Xshell\Sessions`
+- 手动指定：在对话框顶部填入 `Sessions` 目录，或设置环境变量 `XSHELL_SESSION_PATH`
+- 密码：仅当前 Windows 账户加密且未设 Xshell 主密码的会话可以解密，其余会话会标记「需重录密码」，首次连接时输入一次即可
+- 重复导入：按会话文件路径去重，随时可以再导入增量会话
+
+完整字段映射、手动导入（JSON / ssh config / 快速连接）与常见问题见 **[docs/xshell-import.md](docs/xshell-import.md)**。
+
+## 与上游 Electerm 的差异
+
+- 产品名、应用标识、安装包名、可执行文件名、协议前缀（`b-shell://`）、数据目录改为 b-shell 自有标识，可与官方 Electerm 同时安装、互不干扰。
+- 新增 Xshell 会话导入（主进程解析 + 密码解密 + 渲染层导入向导）。
+- 移除上游的自动发布与赞助相关配置，构建目标指向本仓库。
+- 其余功能与上游保持一致，上游更新可以继续合并：本仓库基于 Electerm `5.11.8`。
+
+## 项目结构
+
+```text
+src/
+  app/         Electron 主进程：窗口、IPC、数据库、SSH/SFTP 会话、xshell-import.js
+  client/      渲染进程（React + antd + Vite）：组件、store、主题
+  build/       构建脚本与 electron-builder 配置
+  test/        单元测试与集成测试
+docs/          使用文档（Xshell 导入）
+```
+
+Xshell 导入相关代码：
+
+- 主进程实现：[src/app/lib/xshell-import.js](src/app/lib/xshell-import.js)
+- IPC 注册：[src/app/lib/ipc.js](src/app/lib/ipc.js)（`loadXshellSessions`）
+- 渲染层 store：[src/client/store/bookmark.js](src/client/store/bookmark.js)（`loadXshellSessions` / `importXshellSessions`）
+- 导入向导：[src/client/components/xshell-import/index.jsx](src/client/components/xshell-import/index.jsx)
+- 工具栏入口：[src/client/components/tree-list/bookmark-toolbar.jsx](src/client/components/tree-list/bookmark-toolbar.jsx)
+
+## 测试
 
 ```bash
-npm run b
-npm run prepare-test
-cp ./src/build/.sample.env ./.env
-
-# edit .env, fill your test host/username/password, may only works in mac OS
-npm run test
+npm run lint          # standard 代码风格检查
+npm run test-unit-ci  # Node 原生 test runner，无需启动 Electron
 ```
 
-## Test build
+## 致谢与许可
 
-```bash
-# May only works in Linux
-# Install yarn first(to do yarn autoclean)
-# See https://yarnpkg.com/en/docs/install
-
-# Build linux only with -l
-npm i
-npm run b
-npm run pb
-./node_modules/.bin/electron-builder --linux tar.gz
-# or replace tar.gz to rpm/deb/AppImage
-# check dist/ folder
-
-# build for linux arm/
-./node_modules/.bin/electron-builder --linux --arm64
-```
-
-## Video guide
-
-- [https://electerm.org/videos](https://electerm.org/videos)
-
-## Change log
-
-Visit [Releases](https://github.com/electerm/electerm/releases).
-
-## Contact author
-
-[zxdong@gmail.com](mailto:zxdong@gmail.com)
-
-
-## License
-
-MIT
-
-## Star History
-
-<p>
- <a href="https://www.star-history.com/electerm/electerm"><img src="https://api.star-history.com/badge?repo=electerm/electerm" alt="Star History Rank" /></a>
-</p>
-
-<a href="https://www.star-history.com/?repos=electerm%2Felecterm&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=electerm/electerm&type=date&legend=top-left&sealed_token=DvPlttPaLtq6RPIWRANYX08-8ZJyrJalhombrkDcg1IwWOMPMIplgi85q0FiwrbhE3lRIi_yxvOWdell731CGQvzlfJMt2Sa6VfCvQ80BwEtQ6RpPchEiw" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=electerm/electerm&type=date&legend=top-left&sealed_token=DvPlttPaLtq6RPIWRANYX08-8ZJyrJalhombrkDcg1IwWOMPMIplgi85q0FiwrbhE3lRIi_yxvOWdell731CGQvzlfJMt2Sa6VfCvQ80BwEtQ6RpPchEiw" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=electerm/electerm&type=date&legend=top-left&sealed_token=DvPlttPaLtq6RPIWRANYX08-8ZJyrJalhombrkDcg1IwWOMPMIplgi85q0FiwrbhE3lRIi_yxvOWdell731CGQvzlfJMt2Sa6VfCvQ80BwEtQ6RpPchEiw" />
- </picture>
-</a>
+- 上游项目：[Electerm](https://github.com/electerm/electerm)，作者 [ZHAO Xudong](https://github.com/zxdong262)，MIT License。
+- Xshell 密码解密算法参考了开源项目 Xdecrypt / Xpass 的实现思路。
+- 本项目同样以 [MIT License](LICENSE) 开源，保留上游版权声明。

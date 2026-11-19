@@ -27,10 +27,10 @@
  * note there for why a shared one silently re-runs an older bundle):
  *   rm -rf /tmp/dbimport && mkdir -p /tmp/dbimport/{data,tmp}
  *   DATA_PATH=/tmp/dbimport/data TMPDIR=/tmp/dbimport/tmp \
- *     ELECTERM_E2E_NO_SANDBOX=1 \
+ *     BSHELL_E2E_NO_SANDBOX=1 \
  *     npx playwright test src/test/e2e/0991.import-cancel-fix.spec.js --workers=1
  *
- * ELECTERM_E2E_NO_SANDBOX=1 is only for environments where Electron's sandbox
+ * BSHELL_E2E_NO_SANDBOX=1 is only for environments where Electron's sandbox
  * can not initialize; drop it elsewhere.
  */
 

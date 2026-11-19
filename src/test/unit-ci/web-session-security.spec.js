@@ -150,7 +150,7 @@ describe('web session guest hardening', () => {
     const win = createWindow()
     webviewHandler.init(win)
 
-    for (const src of ['file:///etc/passwd', 'electerm://x', 'javascript:alert(1)', '']) {
+    for (const src of ['file:///etc/passwd', 'b-shell://x', 'javascript:alert(1)', '']) {
       const { prevented } = attachWebview(win, createGuest(), {}, { src })
       assert.equal(prevented, true, `${src || '(empty)'} should be rejected`)
     }
@@ -174,7 +174,7 @@ describe('web session guest hardening', () => {
     assert.equal(allowed.overrideBrowserWindowOptions.webPreferences.nodeIntegration, false)
     assert.equal(allowed.overrideBrowserWindowOptions.webPreferences.webviewTag, false)
 
-    for (const url of ['file:///etc/passwd', 'electerm://evil', 'about:blank']) {
+    for (const url of ['file:///etc/passwd', 'b-shell://evil', 'about:blank']) {
       assert.equal(guest.windowOpenHandler({ url }).action, 'deny', `${url} should be denied`)
     }
   })

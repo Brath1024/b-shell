@@ -12,13 +12,13 @@ const {
 } = require('../../../src/app/server/spice-proxy')
 const { session: createSpiceSession } = require('../../../src/app/server/session-spice')
 
-// A .vv with only tls-port makes electerm speak TLS to the SPICE server, and
+// A .vv with only tls-port makes bshell speak TLS to the SPICE server, and
 // the Proxmox variant puts a signed ticket in `host` with the real certificate
 // subject in `host-subject` (PVE::AccessControl::remote_viewer_config). Both
 // go through the same code path, so the peer here is a real TLS server with a
 // real certificate chain.
 
-const HOST_SUBJECT = 'OU=Electerm Test,O=electerm,CN=127.0.0.1'
+const HOST_SUBJECT = 'OU=B-Shell Test,O=bshell,CN=127.0.0.1'
 
 function makeCert ({ subject, issuer, publicKey, signingKey, isCa, altNames }) {
   const cert = forge.pki.createCertificate()
@@ -43,7 +43,7 @@ function makeCert ({ subject, issuer, publicKey, signingKey, isCa, altNames }) {
 
 function makeCa () {
   const keys = forge.pki.rsa.generateKeyPair(2048)
-  const subject = [{ name: 'commonName', value: 'electerm test ca' }]
+  const subject = [{ name: 'commonName', value: 'bshell test ca' }]
   const cert = makeCert({
     subject,
     issuer: subject,
@@ -63,8 +63,8 @@ function makeChain () {
   const serverKeys = forge.pki.rsa.generateKeyPair(2048)
   const serverCert = makeCert({
     subject: [
-      { name: 'organizationalUnitName', value: 'Electerm Test' },
-      { name: 'organizationName', value: 'electerm' },
+      { name: 'organizationalUnitName', value: 'B-Shell Test' },
+      { name: 'organizationName', value: 'b-shell' },
       { name: 'commonName', value: '127.0.0.1' }
     ],
     issuer: ca.subject,
@@ -250,17 +250,17 @@ describe('spice-proxy TLS transport', () => {
   })
 
   it('matches a host-subject against the peer certificate', () => {
-    const cert = { subject: { CN: '127.0.0.1', O: 'electerm', OU: 'Electerm Test' } }
+    const cert = { subject: { CN: '127.0.0.1', O: 'b-shell', OU: 'B-Shell Test' } }
     // field order is not significant
     assert.strictEqual(subjectMatches(HOST_SUBJECT, cert), true)
     assert.strictEqual(
-      subjectMatches('CN=127.0.0.1,OU=Electerm Test,O=electerm', cert),
+      subjectMatches('CN=127.0.0.1,OU=B-Shell Test,O=bshell', cert),
       true
     )
     // A wrong value, a missing field and an extra field all fail.
     // spice-gtk compares the entry counts before the entries themselves
     // (ssl_verify.c: verify_subject), so a subset must not match.
-    assert.strictEqual(subjectMatches('OU=Electerm Test,O=nope,CN=127.0.0.1', cert), false)
+    assert.strictEqual(subjectMatches('OU=B-Shell Test,O=nope,CN=127.0.0.1', cert), false)
     assert.strictEqual(subjectMatches('CN=127.0.0.1', cert), false)
     assert.strictEqual(subjectMatches(HOST_SUBJECT + ',L=Somewhere', cert), false)
     assert.strictEqual(subjectMatches('', cert), false)

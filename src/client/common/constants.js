@@ -236,9 +236,11 @@ export const mobileBreakpoint = 600
 // breakpoint matching the setting panel's `@media (max-width: 800px)` CSS —
 // must be kept in sync with setting-wrap.styl
 export const settingPanelMobileBreakpoint = 800
+// b-shell does not publish a gh-pages style release feed, so the online update
+// check is disabled (see `disableUpgradeCheck` in src/build/bin/pug.js). Keep the
+// repo page as the only candidate in case a feed is added later.
 export const baseUpdateCheckUrls = [
-  packInfo.homepage,
-  'https://gitee.com/github-zxdong262/electerm/raw/gh-pages'
+  packInfo.homepage
 ]
 export const syncTypes = buildConst([
   'github',
@@ -258,11 +260,11 @@ export const allowedSyncTypes = () => {
     : Object.keys(syncTypes)
 }
 export const syncTokenCreateUrls = {
-  gitee: 'https://gitee.com/github-zxdong262/electerm/wikis/Create%20personal%20access%20token?sort_id=3028409',
-  github: 'https://github.com/electerm/electerm/wiki/Create-personal-access-token',
-  custom: 'https://github.com/electerm/electerm/wiki/Custom-sync-server',
+  gitee: 'https://gitee.com/Guoqing-Li/b-shell/wikis/Create%20personal%20access%20token?sort_id=3028409',
+  github: 'https://gitee.com/Guoqing-Li/b-shell/wiki/Create-personal-access-token',
+  custom: 'https://gitee.com/Guoqing-Li/b-shell/wiki/Custom-sync-server',
   cloud: 'https://sync.electerm.org',
-  webdav: 'https://github.com/electerm/electerm/wiki/WebDAV-sync'
+  webdav: 'https://gitee.com/Guoqing-Li/b-shell/wiki/WebDAV-sync'
 }
 export const settingSyncId = 'setting-sync'
 export const settingTerminalId = 'setting-terminal'
@@ -321,23 +323,23 @@ export const checkedKeysLsKey = 'checked-keys'
 export const quickCommandLabelsLsKey = 'quick-command-label'
 export const localAddrBookmarkLsKey = 'local-addr-bookmark-keys'
 export const treeSortLsKey = 'tree-sort'
-export const sshTunnelHelpLink = 'https://github.com/electerm/electerm/wiki/How-to-use-ssh-tunnel'
-export const proxyHelpLink = 'https://github.com/electerm/electerm/wiki/proxy-format'
-export const regexHelpLink = 'https://github.com/electerm/electerm/wiki/Terminal-keywords-highlight-regular-expression-exmaples'
-export const connectionHoppingWikiLink = 'https://github.com/electerm/electerm/wiki/Connection-Hopping-Behavior-Change-in-electerm-since-v1.50.65'
-export const aiConfigWikiLink = 'https://github.com/electerm/electerm/wiki/AI-model-config-guide'
-export const installCommandHelpLink = 'https://github.com/electerm/electerm/wiki/Install-electerm-command'
-export const sshKeyContentOrPathHelpLink = 'https://github.com/electerm/electerm/wiki/SSH-Key-Content-vs-Key-Path'
+export const sshTunnelHelpLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/How-to-use-ssh-tunnel'
+export const proxyHelpLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/proxy-format'
+export const regexHelpLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/Terminal-keywords-highlight-regular-expression-exmaples'
+export const connectionHoppingWikiLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/Connection-Hopping-Behavior-Change-in-bshell-since-v1.50.65'
+export const aiConfigWikiLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/AI-model-config-guide'
+export const installCommandHelpLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/Install-bshell-command'
+export const sshKeyContentOrPathHelpLink = 'https://gitee.com/Guoqing-Li/b-shell/wiki/SSH-Key-Content-vs-Key-Path'
 
 // Toggle options that have a wiki page explaining what they actually change.
 // renderToggle() looks the config key up here and renders a HelpIcon only for
 // the keys listed, so a toggle without an explanation stays clean. Add a page
-// under https://github.com/electerm/electerm/wiki first, then add its key here.
+// under https://gitee.com/Guoqing-Li/b-shell/wiki first, then add its key here.
 export const toggleWikiMap = {
   mouseEventsRequireAlt:
-    'https://github.com/electerm/electerm/wiki/Mouse-events-require-alt',
+    'https://gitee.com/Guoqing-Li/b-shell/wiki/Mouse-events-require-alt',
   sftpPathFollowSsh:
-    'https://github.com/electerm/electerm/wiki/Warning-about-sftp-follow-ssh-path-function'
+    'https://gitee.com/Guoqing-Li/b-shell/wiki/Warning-about-sftp-follow-ssh-path-function'
 }
 export const aiChatModeLsKey = 'ai-chat-mode'
 export const aiAutoCompressLsKey = 'ai-auto-compress'

@@ -127,7 +127,7 @@ describe('startup queue', () => {
     await tick()
 
     assert.equal(addon.sent.length, 2)
-    assert.match(addon.sent[0], /ELECTERM_SHELL_INTEGRATION/)
+    assert.match(addon.sent[0], /BSHELL_SHELL_INTEGRATION/)
     assert.equal(addon.sent[1], 'ls\r')
     assert.equal(queue.shellInjected, true)
 

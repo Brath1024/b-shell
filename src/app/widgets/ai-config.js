@@ -3,7 +3,7 @@
  *
  * A widget already runs code in the main process, so it could write the config
  * db directly. This exists so the supported way is also the safe one: a widget
- * *proposes* a config with its run result (`aiConfig`), electerm lists the
+ * *proposes* a config with its run result (`aiConfig`), bshell lists the
  * values in the widget panel, and the user applies them with a button. Nothing
  * is applied on its own, and the widget never touches settings.
  *
@@ -11,7 +11,7 @@
  *   - `roleAI` is the system prompt. A widget silently rewriting it would be
  *     prompt injection with extra steps, so it is not reachable from here.
  *   - `languageAI` / `contextLengthAI` have nothing to do with pointing
- *     electerm at an endpoint.
+ *     bshell at an endpoint.
  * `nameAI` is the label the AI panel shows, which is why a widget that is not
  * a known provider can name itself instead of falling back to "Custom AI
  * Model".

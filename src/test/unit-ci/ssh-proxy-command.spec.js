@@ -16,14 +16,14 @@ const {
 } = require('../../../src/app/server/ssh-proxy-command')
 
 const USERNAME = 'tester'
-const PASSWORD = 'electerm-test'
+const PASSWORD = 'bshell-test'
 
 const HOST_KEY = utils.generateKeyPairSync('ed25519', {
-  comment: 'electerm-test-host'
+  comment: 'bshell-test-host'
 })
 
 function makeTmpDir () {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-proxy-cmd-test-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-proxy-cmd-test-'))
 }
 
 // in-process ssh server the fake netbird proxy forwards to
@@ -53,7 +53,7 @@ async function startServer () {
         sshSession.on('pty', (accept) => accept())
         sshSession.on('shell', (accept) => {
           const stream = accept()
-          stream.write('electerm proxy-command ready\n')
+          stream.write('bshell proxy-command ready\n')
         })
       })
     })
@@ -165,8 +165,8 @@ describe('ssh proxy command', () => {
     tmpDir = makeTmpDir()
     server = await startServer()
     netbirdPath = writeFakeNetbird(tmpDir, server.port, 0)
-    origBin = process.env.ELECTERM_NETBIRD_BIN
-    process.env.ELECTERM_NETBIRD_BIN = netbirdPath
+    origBin = process.env.BSHELL_NETBIRD_BIN
+    process.env.BSHELL_NETBIRD_BIN = netbirdPath
     // reset module level detect cache between tests
     const mod = require('../../../src/app/server/ssh-proxy-command')
     mod.clearDetectCache()
@@ -174,9 +174,9 @@ describe('ssh proxy command', () => {
 
   afterEach(async () => {
     if (origBin === undefined) {
-      delete process.env.ELECTERM_NETBIRD_BIN
+      delete process.env.BSHELL_NETBIRD_BIN
     } else {
-      process.env.ELECTERM_NETBIRD_BIN = origBin
+      process.env.BSHELL_NETBIRD_BIN = origBin
     }
     await server.close()
     fs.rmSync(tmpDir, { recursive: true, force: true })
@@ -220,7 +220,7 @@ describe('ssh proxy command', () => {
       'process.exit(1)\n',
       { mode: 0o755 }
     )
-    process.env.ELECTERM_NETBIRD_BIN = stub
+    process.env.BSHELL_NETBIRD_BIN = stub
     const mod = require('../../../src/app/server/ssh-proxy-command')
     mod.clearDetectCache()
     const r = await mod.maybeProxyCommand(
@@ -235,7 +235,7 @@ describe('ssh proxy command', () => {
     // stub fails on every invocation; a null result proves it was never called
     const stub = path.join(tmpDir, 'netbird-fail-all')
     fs.writeFileSync(stub, '#!/usr/bin/env node\nprocess.exit(1)\n', { mode: 0o755 })
-    process.env.ELECTERM_NETBIRD_BIN = stub
+    process.env.BSHELL_NETBIRD_BIN = stub
     const mod = require('../../../src/app/server/ssh-proxy-command')
     mod.clearDetectCache()
     const r = await mod.maybeProxyCommand(

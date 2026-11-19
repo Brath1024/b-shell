@@ -359,7 +359,7 @@ exports.patchNsisKeepShortcuts = function patchNsisKeepShortcuts () {
  * Patch electron-builder's Snap target so classic confinement builds keep the
  * Chromium sandbox and do not force --no-sandbox into the generated launcher.
  *
- * electerm's packaged entrypoint rejects the --no-sandbox CLI flag, and classic
+ * bshell's packaged entrypoint rejects the --no-sandbox CLI flag, and classic
  * snaps do not need the browser-support plug path used by strict confinement.
  */
 exports.patchSnapClassicSandbox = function patchSnapClassicSandbox () {

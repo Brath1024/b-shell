@@ -110,7 +110,7 @@ function request (target, redirects) {
     const req = client.get(url, {
       headers: {
         // some CDNs hand out a different (or no) image to unknown agents
-        'user-agent': 'Mozilla/5.0 (compatible; electerm-icon-fetch)',
+        'user-agent': 'Mozilla/5.0 (compatible; bshell-icon-fetch)',
         accept: 'image/*,*/*;q=0.8'
       },
       timeout: REQUEST_TIMEOUT

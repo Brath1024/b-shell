@@ -23,11 +23,11 @@ const {
 const globalState = require('./global-state')
 const wsDec = require('./ws-dec')
 
-const { tokenElecterm } = process.env
+const { tokenBshell } = process.env
 
 function verify (req) {
   const { token: to } = req.query
-  if (to !== tokenElecterm) {
+  if (to !== tokenBshell) {
     throw new Error('not valid request')
   }
   if (process.env.requireAuth === 'yes' && !globalState.authed) {

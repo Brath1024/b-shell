@@ -31,17 +31,17 @@
  *     src/test/e2e/004.webgl-lifecycle.spec.js --workers=1
  *
  * Both launches go through ./common/webgl-test-isolation.js, which gives each
- * of them its own throwaway root: DATA_PATH (electerm's own config, history
+ * of them its own throwaway root: DATA_PATH (bshell's own config, history
  * and database) and --user-data-dir (Chromium's profile) both live inside a
  * fresh temp dir and are removed once that app has closed. A run therefore
- * does not write the developer's real electerm config/history/database, and
+ * does not write the developer's real bshell config/history/database, and
  * the two tests sharing one worker never share a profile or a database.
  *
- * Isolation, stated precisely: what the above separates is electerm's own data
+ * Isolation, stated precisely: what the above separates is bshell's own data
  * and the Chromium profile. As in the rest of this suite, the app's electron-log
  * still writes to the developer's default log directory, so this spec makes no
  * claim about isolating logs. The launch env copy also drops any
- * electermPort/electermHost/tokenElecterm and wsPort/type left behind by the
+ * bshellPort/bshellHost/tokenBshell and wsPort/type left behind by the
  * parent environment (base.env is untouched), see
  * common/webgl-test-isolation.js.
  *

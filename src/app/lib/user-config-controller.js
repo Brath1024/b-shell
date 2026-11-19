@@ -25,7 +25,7 @@ exports.saveUserConfig = async (userConfig) => {
   }
   delete userConfig.host
   delete userConfig.terminalTypes
-  delete userConfig.tokenElecterm
+  delete userConfig.tokenBshell
   delete userConfig.server
   delete userConfig.port
   globalState.update('config', userConfig)

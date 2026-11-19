@@ -42,8 +42,8 @@ function getHost (argv, opts) {
 /**
  * Open a .vv (virt-viewer) connection file as a new Spice session.
  *
- * Used when electerm is handed a file from outside:
- *   electerm /path/to/console.vv
+ * Used when bshell is handed a file from outside:
+ *   bshell /path/to/console.vv
  *
  * This opens a session, it does not import a bookmark. For a Proxmox file that
  * is the only shape that can work at all: the signed proxy ticket it carries is
@@ -106,7 +106,7 @@ export async function addTabFromCommandLine (store, opts) {
   if (isHelp) {
     return store.openAbout(infoTabs.cmd)
   }
-  // A .vv connection file, e.g. `electerm /path/to/console.vv`.
+  // A .vv connection file, e.g. `bshell /path/to/console.vv`.
   // Checked before the protocol-URL scan below because the two cannot overlap:
   // a path ending in .vv never matches a `scheme://` prefix.
   if (opts.vvFile) {
@@ -116,7 +116,7 @@ export async function addTabFromCommandLine (store, opts) {
   // and use parseQuickConnect for proper parsing
   if (argv && argv.length) {
     const protocolUrl = argv.find(arg =>
-      /^(ssh|telnet|rdp|vnc|serial|spice|ftp|http|https|electerm):\/\//i.test(arg)
+      /^(ssh|telnet|rdp|vnc|serial|spice|ftp|http|https|b-shell):\/\//i.test(arg)
     )
     if (protocolUrl) {
       const parsed = parseQuickConnect(protocolUrl)
@@ -365,7 +365,7 @@ export default (Store) => {
    * A .vv file that arrived before the window existed -- macOS delivers
    * 'open-file' during launch, so a cold double-click always lands here. The
    * payload is the same shape initCommandLine() returns, so it goes through the
-   * same entry point as `electerm /path/to/console.vv`.
+   * same entry point as `bshell /path/to/console.vv`.
    */
   Store.prototype.checkPendingVvFile = async function () {
     const pending = await window.pre.runGlobalAsync('getPendingVvFile')

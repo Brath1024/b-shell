@@ -89,7 +89,7 @@ export default function WidgetImportModal ({ open, onCancel, onImport, onChooseF
     >
       <p className='cwf-desc'>
         Paste a GitHub or AtomGit repository, or a link to a folder inside one.
-        The widget is copied into electerm's data folder. An instance widget
+        The widget is copied into bshell's data folder. An instance widget
         that declares autoRun starts as soon as it is installed; all other
         widgets start when you press Run.
       </p>

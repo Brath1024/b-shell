@@ -3,11 +3,11 @@
   "version": "0.3.0",
   "description": "Generated-form demo widget",
   "main": "main.js",
-  "electerm": {
+  "bshell": {
     "id": "form-demo",
     "name": "Form Demo",
     "version": "0.3.0",
-    "description": "A config-mode widget: no HTML, electerm draws the form and the result.",
+    "description": "A config-mode widget: no HTML, b-shell draws the form and the result.",
     "type": "frontend",
     "submitLabel": "Search",
     "configs": [

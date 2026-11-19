@@ -56,7 +56,7 @@ test('openFile passes malicious Windows filenames as a literal PowerShell argume
   ])
   assert.match(spawnCall.args[3], /Invoke-Item -LiteralPath \$path/)
   assert.equal(
-    Buffer.from(spawnCall.options.env.ELECTERM_OPEN_FILE_PATH_B64, 'base64').toString('utf8'),
+    Buffer.from(spawnCall.options.env.BSHELL_OPEN_FILE_PATH_B64, 'base64').toString('utf8'),
     "C:\\Temp\\poc';Start-Process calc;#.txt"
   )
   assert.equal(spawnCall.options.windowsHide, true)

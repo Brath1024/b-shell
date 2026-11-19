@@ -1,6 +1,6 @@
 /**
  * Display strings a widget translates in its own package.json
- * (`electerm.i18n.<locale>`). English in the manifest is the base; the renderer
+ * (`bshell.i18n.<locale>`). English in the manifest is the base; the renderer
  * owns the current language (window.store.config.language) and applies the
  * right strings to the installed-widget list, its forms and the online list.
  *

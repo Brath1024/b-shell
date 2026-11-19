@@ -4,7 +4,7 @@ const path = require('path')
 const express = require('express')
 const uid = require('../common/uid')
 
-const SHARE_DIR = path.join(os.homedir(), 'electerm-share')
+const SHARE_DIR = path.join(os.homedir(), 'bshell-share')
 
 const widgetInfo = {
   name: 'Static File Server',
@@ -30,7 +30,7 @@ const widgetInfo = {
       name: 'directory',
       type: 'string',
       default: SHARE_DIR,
-      description: 'The directory to serve files from (default: ~/electerm-share, not the whole home directory)'
+      description: 'The directory to serve files from (default: ~/bshell-share, not the whole home directory)'
     },
     {
       name: 'maxAge',

@@ -189,7 +189,7 @@ export default (type, id, sftpId = '', persist, port) => {
   const opts = pick(window.store.config, [
     'host',
     'port',
-    'tokenElecterm',
+    'tokenBshell',
     'server',
     'urlPath'
   ])

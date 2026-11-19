@@ -15,10 +15,10 @@ const {
 // filesystem here (they do not on the real test host). Keep the two sides on
 // different paths, otherwise the `Delete Remote 5M File` step below deletes the
 // file the previous step just downloaded, and the upload fails with ENOENT.
-const REMOTE_DIR = '/tmp/electerm-batch-op'
+const REMOTE_DIR = '/tmp/bshell-batch-op'
 const REMOTE_FILE = `${REMOTE_DIR}/test_5m_file.bin`
 const REMOTE_LOG = `${REMOTE_DIR}/test_log.log`
-const LOCAL_FILE = '/tmp/electerm-batch-op-local.bin'
+const LOCAL_FILE = '/tmp/bshell-batch-op-local.bin'
 
 module.exports = [
   {

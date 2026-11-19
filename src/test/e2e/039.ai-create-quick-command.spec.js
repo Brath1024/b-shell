@@ -32,7 +32,7 @@ describe('AI Create Quick Command', function () {
   it('should create a quick command with AI in the quick command form', async function () {
     // isolated profile: the quick command generated here must not leak into
     // other runs, and the profile own http cache can not serve a stale bundle
-    const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-qm-ai-'))
+    const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-qm-ai-'))
     const electronApp = await electron.launch({
       ...appOptions,
       args: [...appOptions.args, `--user-data-dir=${profileRoot}`],

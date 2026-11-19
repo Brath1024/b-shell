@@ -25,7 +25,7 @@ test.setTimeout(60000)
 const STRIP = 36
 
 test('pinned right panel clears the Windows caption buttons', async () => {
-  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-panel-wco-'))
+  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-panel-wco-'))
   const app = await electron.launch({
     ...appOptions,
     args: [...appOptions.args, `--user-data-dir=${profileRoot}`],

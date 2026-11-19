@@ -10,7 +10,7 @@ const { TerminalBase } = require('../../app/server/session-base')
 // is, blank lines included. session-server.js hands the log whatever arrived
 // in one flush, so a line ending can be split between two chunks.
 async function logText (chunks, addTimeStamp = false) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-log-crlf-'))
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-log-crlf-'))
   const file = path.join(dir, 'session.log')
   const term = new TerminalBase({ cols: 80, rows: 24, logName: 'crlf', sessionLogPath: dir })
   try {

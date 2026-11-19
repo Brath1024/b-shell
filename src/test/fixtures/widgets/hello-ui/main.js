@@ -3,7 +3,7 @@
  * Main-process half of the hello-ui widget.
  *
  * Everything exported here is reachable from the widget's own UI through
- * window.electerm.call(name, ...args) — nothing needs to be added to the app's
+ * window.bshell.call(name, ...args) — nothing needs to be added to the app's
  * ipc.js.
  */
 

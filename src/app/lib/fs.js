@@ -224,7 +224,7 @@ const touch = (localFilePath) => {
  */
 const openFile = (localFilePath) => {
   if (isWin) {
-    const script = '$path = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($env:ELECTERM_OPEN_FILE_PATH_B64)); Invoke-Item -LiteralPath $path'
+    const script = '$path = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($env:BSHELL_OPEN_FILE_PATH_B64)); Invoke-Item -LiteralPath $path'
     return spawnDetachedCommand('powershell.exe', [
       '-NoLogo',
       '-NonInteractive',
@@ -234,7 +234,7 @@ const openFile = (localFilePath) => {
       windowsHide: true,
       env: {
         ...process.env,
-        ELECTERM_OPEN_FILE_PATH_B64: encodeUtf8Base64(localFilePath)
+        BSHELL_OPEN_FILE_PATH_B64: encodeUtf8Base64(localFilePath)
       }
     })
   }

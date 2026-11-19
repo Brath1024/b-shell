@@ -13,7 +13,7 @@ const { tmpdir } = require('node:os')
 const SessionLog = require('../../app/server/session-log.js')
 
 function tmpDir () {
-  return mkdtempSync(join(tmpdir(), 'electerm-session-log-'))
+  return mkdtempSync(join(tmpdir(), 'bshell-session-log-'))
 }
 
 // Stream writes land on the next ticks; polling keeps the assertions about the
@@ -35,7 +35,7 @@ describe('session log', () => {
     const root = tmpDir()
     // the parent chain does not exist: a path carried over from another
     // computer looks like this (#4688)
-    const logDir = join(root, 'a', 'b', 'electerm')
+    const logDir = join(root, 'a', 'b', 'b-shell')
     const logger = new SessionLog({ logDir, fileName: 't.log' })
     try {
       assert.equal(logger.ready, true)
@@ -57,7 +57,7 @@ describe('session log', () => {
     // logDir points *inside* a regular file, so neither mkdir nor open can work
     const blocked = join(root, 'blocked')
     writeFileSync(blocked, '')
-    const logDir = join(blocked, 'electerm')
+    const logDir = join(blocked, 'b-shell')
     let thrown = null
     const onUncaught = (e) => {
       thrown = e

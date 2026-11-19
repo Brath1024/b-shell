@@ -28,7 +28,7 @@ describe('title bar window options', () => {
     }
   })
 
-  test('electerm title bar off Windows: frameless and transparent', () => {
+  test('bshell title bar off Windows: frameless and transparent', () => {
     assert.deepEqual(getTitleBarOptions(false, false), {
       frame: false,
       transparent: true,

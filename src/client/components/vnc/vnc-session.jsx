@@ -141,19 +141,19 @@ export default class VncSession extends PureComponent {
   }
 
   buildWsUrl = (port, type = 'vnc', extra = '') => {
-    const { host, tokenElecterm } = this.props.config
+    const { host, tokenBshell } = this.props.config
     const { id } = this.props.tab
     if (window.et.buildWsUrl) {
       return window.et.buildWsUrl(
         host,
         port,
-        tokenElecterm,
+        tokenBshell,
         id,
         type,
         extra
       )
     }
-    return `ws://${host}:${port}/${type}/${id}?token=${tokenElecterm}${extra}`
+    return `ws://${host}:${port}/${type}/${id}?token=${tokenBshell}${extra}`
   }
 
   getControlProps = (options = {}) => {

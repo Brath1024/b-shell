@@ -13,9 +13,9 @@
  *      side) and a full "old device" sshd_config. Self-skips without docker.
  *
  * Setup for layer 2:
- *   cd temp/dockers/legacy-ssh && docker build -t electerm-legacy-ssh .
- *   docker run -d --name electerm-legacy-ssh -p 2201:2201 -p 2202:2202 \
- *     -p 2203:2203 -p 2204:2204 electerm-legacy-ssh
+ *   cd temp/dockers/legacy-ssh && docker build -t bshell-legacy-ssh .
+ *   docker run -d --name bshell-legacy-ssh -p 2201:2201 -p 2202:2202 \
+ *     -p 2203:2203 -p 2204:2204 bshell-legacy-ssh
  *
  * Run: node --test src/test/integration/session-ssh-legacy-alg.spec.js
  */
@@ -57,7 +57,7 @@ const { createTrustingWs } = require('./lib/ssh-session-harness')
 // The app writes trusted host keys to ~/.ssh/known_hosts — point HOME at a
 // throwaway dir so a test run never touches the developer's real file
 const REAL_HOME = process.env.HOME
-process.env.HOME = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-legacy-alg-'))
+process.env.HOME = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-legacy-alg-'))
 
 // the docker CLI resolves its context from $HOME, so it must keep the real one
 function docker (command, options = {}) {
@@ -71,8 +71,8 @@ function docker (command, options = {}) {
 
 const IN_PROCESS_PORT = 22230
 const RIG_DIR = path.resolve(__dirname, '../../../temp/dockers/legacy-ssh')
-const RIG_IMAGE = 'electerm-legacy-ssh'
-const RIG_CONTAINER = 'electerm-legacy-ssh'
+const RIG_IMAGE = 'bshell-legacy-ssh'
+const RIG_CONTAINER = 'bshell-legacy-ssh'
 const RIG_GROUP1 = 2201
 const RIG_GROUP14 = 2202
 const RIG_GEX = 2203
@@ -401,7 +401,7 @@ describe('legacy ssh algorithms — real OpenSSH rig (docker)', () => {
   })
 
   after(() => {
-    // rig is left running for debugging; `docker rm -f electerm-legacy-ssh` cleans up
+    // rig is left running for debugging; `docker rm -f bshell-legacy-ssh` cleans up
   })
 
   test('connects to sshd pinned to diffie-hellman-group1-sha1 + CBC', async (t) => {

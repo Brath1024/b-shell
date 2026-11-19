@@ -1,8 +1,8 @@
 /**
  * Config-mode user widget panel.
  *
- * A user widget without `electerm.ui` does not ship its own HTML. The host
- * renders the form from its `electerm.configs`, calls `electerm.action`
+ * A user widget without `bshell.ui` does not ship its own HTML. The host
+ * renders the form from its `bshell.configs`, calls `bshell.action`
  * (default "run") in the main process with the form values, and draws whatever
  * the action returns:
  *

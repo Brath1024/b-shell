@@ -16,10 +16,10 @@ const { Server, utils } = require('@electerm/ssh2')
 const { session } = require('../../../src/app/server/session-ssh')
 
 const USERNAME = 'tester'
-const PASSWORD = 'electerm-test-password'
+const PASSWORD = 'bshell-test-password'
 
 const HOST_KEY = utils.generateKeyPairSync('ed25519', {
-  comment: 'electerm-test-host'
+  comment: 'bshell-test-host'
 })
 
 function parseKey (key, passphrase) {
@@ -41,7 +41,7 @@ function matchesPublicKey (ctx, publicKey) {
 }
 
 function makeTmpDir () {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ssh-test-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ssh-test-'))
 }
 
 function setEnvVar (name, value) {
@@ -80,7 +80,7 @@ function generateClientKey ({ dir, name, type, passphrase, bits }) {
     '-f',
     keyPath,
     '-C',
-    `electerm-${name}`
+    `bshell-${name}`
   )
 
   runCommand('ssh-keygen', args)
@@ -135,7 +135,7 @@ async function startTrackingServer (publicKey) {
         sshSession.on('pty', (accept) => accept())
         sshSession.on('shell', (accept) => {
           const stream = accept()
-          stream.write('electerm ready\n')
+          stream.write('bshell ready\n')
         })
       })
     })
@@ -396,7 +396,7 @@ describe('session-ssh password-first auth', () => {
           sshSession.on('pty', (accept) => accept())
           sshSession.on('shell', (accept) => {
             const stream = accept()
-            stream.write('electerm ready\n')
+            stream.write('bshell ready\n')
           })
         })
       })

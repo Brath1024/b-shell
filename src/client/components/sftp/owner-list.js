@@ -27,7 +27,7 @@ const linuxListUser = 'cat /etc/passwd'
 const linuxListGroup = 'cat /etc/group'
 
 // The local shell (node-bash) only exists on desktop builds; web/mobile builds
-// (electerm-web in a browser, electerm-ios/electerm-android) ship without it, so
+// (bshell-web in a browser, bshell-ios/bshell-android) ship without it, so
 // `fs.run` rejects. These owner/group lists are a best-effort nicety for the
 // local file panel, and every rejection would surface as a spurious error
 // notification on those platforms — skip the probe entirely when we know there

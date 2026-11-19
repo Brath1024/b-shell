@@ -35,7 +35,7 @@ describe('local file manager', function () {
       // make a local folder
       await setupSftpConnection(client)
       log('009 -> add folder')
-      const fname = '00000test-electerm' + nanoid()
+      const fname = '00000test-bshell' + nanoid()
       await createFolder(client, 'local', fname)
       expect(await verifyFileExists(client, 'local', fname)).equal(true)
 
@@ -45,7 +45,7 @@ describe('local file manager', function () {
 
       // new file
       log('009 -> add file')
-      const fname00 = '00000test-electerm' + nanoid()
+      const fname00 = '00000test-bshell' + nanoid()
       await createFile(client, 'local', fname00)
       expect(await verifyFileExists(client, 'local', fname00)).equal(true)
 

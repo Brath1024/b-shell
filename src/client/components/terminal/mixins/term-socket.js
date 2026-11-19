@@ -69,17 +69,17 @@ function expandCloseSequence (text) {
  */
 export const socketMixin = {
   buildWsUrl (port) {
-    const { host, tokenElecterm } = this.props.config
+    const { host, tokenBshell } = this.props.config
     const { id } = this.props.tab
     if (window.et.buildWsUrl) {
       return window.et.buildWsUrl(
         host,
         port,
-        tokenElecterm,
+        tokenBshell,
         id
       )
     }
-    return `ws://${host}:${port}/terminals/${id}?token=${tokenElecterm}`
+    return `ws://${host}:${port}/terminals/${id}?token=${tokenBshell}`
   },
 
   async remoteInit (term = this.term) {

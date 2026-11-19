@@ -75,7 +75,7 @@ export default function confirmMcpTransfer ({
     const body = (
       <div className='mcp-transfer-confirm'>
         <div className='mcp-transfer-row'>
-          <span>{t('mcpTransferIntro', 'An MCP client asked electerm to transfer a file. Nothing has been transferred yet.')}</span>
+          <span>{t('mcpTransferIntro', 'An MCP client asked bshell to transfer a file. Nothing has been transferred yet.')}</span>
         </div>
         <div className='mcp-transfer-row'>
           <span className='mcp-transfer-label'>{fromLabel}</span>

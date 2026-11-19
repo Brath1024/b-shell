@@ -1,5 +1,5 @@
 /**
- * Unit tests for the MCP Tasks extension (Phase 2 of electerm#4450, SEP-2663)
+ * Unit tests for the MCP Tasks extension (Phase 2 of bshell#4450, SEP-2663)
  *
  * 1. TaskManager (src/app/mcp/server/tasks.js) – pure unit tests
  * 2. HTTP-level protocol tests – real express server, mocked electron/renderer:
@@ -19,7 +19,7 @@ const { TaskManager } = require('../../../src/app/mcp/server/tasks')
 describe('TaskManager', () => {
   test('create returns a working task with wire fields', () => {
     const tm = new TaskManager({ ttl: 60000 })
-    const task = tm.create({ toolName: 'execute_electerm_command', meta: { bgTaskId: 'bg-1' } })
+    const task = tm.create({ toolName: 'execute_bshell_command', meta: { bgTaskId: 'bg-1' } })
     assert.ok(task.taskId.startsWith('task-'))
     assert.equal(task.status, 'working')
     assert.equal(task.ttl, 60000)
@@ -183,9 +183,9 @@ const mockWin = {
         result = {
           taskId: 'bg-mock-1',
           tabId: 'tab-1',
-          logFile: '/tmp/electerm-bg-mock-1.log',
-          pidFile: '/tmp/electerm-bg-mock-1.pid',
-          exitFile: '/tmp/electerm-bg-mock-1.exit'
+          logFile: '/tmp/bshell-bg-mock-1.log',
+          pidFile: '/tmp/bshell-bg-mock-1.pid',
+          exitFile: '/tmp/bshell-bg-mock-1.exit'
         }
       } else if (toolName === 'get_background_task_status') {
         result = { taskId: 'bg-mock-1', ...mockBehavior.bgStatus }
@@ -324,7 +324,7 @@ describe('MCP Tasks extension – protocol', () => {
   test('wait=false + client tasks capability returns resultType:"task"', async () => {
     const { sid } = await initSession(PORT)
     mockBehavior.bgStatus = { status: 'running' }
-    const res = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const res = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'npm run build',
       wait: false
     })
@@ -340,7 +340,7 @@ describe('MCP Tasks extension – protocol', () => {
   test('wait=false via initialize-time capability also returns a task', async () => {
     const { sid } = await initSession(PORT, { withTasksCap: true })
     mockBehavior.bgStatus = { status: 'running' }
-    const res = await callTool(PORT, sid, 'execute_electerm_command', {
+    const res = await callTool(PORT, sid, 'execute_bshell_command', {
       command: 'npm test',
       wait: false
     })
@@ -350,7 +350,7 @@ describe('MCP Tasks extension – protocol', () => {
 
   test('wait=false without client capability returns an error (legacy tools removed)', async () => {
     const { sid } = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'execute_electerm_command', {
+    const res = await callTool(PORT, sid, 'execute_bshell_command', {
       command: 'npm run build',
       wait: false
     })
@@ -366,7 +366,7 @@ describe('MCP Tasks extension – protocol', () => {
     mockBehavior.bgStatus = { status: 'completed', exitCode: 0, endTime: Date.now() }
     mockBehavior.bgLog = { output: 'build ok\n42 tests passed' }
 
-    const createRes = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const createRes = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'npm run build',
       wait: false
     })
@@ -391,7 +391,7 @@ describe('MCP Tasks extension – protocol', () => {
   test('tasks/get maps renderer cancelled state to cancelled', async () => {
     const { sid } = await initSession(PORT)
     mockBehavior.bgStatus = { status: 'cancelled' }
-    const createRes = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const createRes = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'sleep 100',
       wait: false
     })
@@ -408,7 +408,7 @@ describe('MCP Tasks extension – protocol', () => {
   test('tasks/get maps unknown renderer state to failed', async () => {
     const { sid } = await initSession(PORT)
     mockBehavior.bgStatus = { status: 'unknown', message: 'PID file not found' }
-    const createRes = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const createRes = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'sleep 100',
       wait: false
     })
@@ -427,7 +427,7 @@ describe('MCP Tasks extension – protocol', () => {
   test('tasks/get keeps working tasks working with a status message', async () => {
     const { sid } = await initSession(PORT)
     mockBehavior.bgStatus = { status: 'running' }
-    const createRes = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const createRes = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'sleep 100',
       wait: false
     })
@@ -447,7 +447,7 @@ describe('MCP Tasks extension – protocol', () => {
   test('tasks/cancel marks the task cancelled and kills the remote process', async () => {
     const { sid } = await initSession(PORT)
     mockBehavior.bgStatus = { status: 'running' }
-    const createRes = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const createRes = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'sleep 100',
       wait: false
     })
@@ -515,7 +515,7 @@ describe('MCP Tasks extension – protocol', () => {
 
   test('sync wait=true path is unaffected by tasks capability', async () => {
     const { sid } = await initSession(PORT)
-    const res = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const res = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'echo hello'
     })
     const result = res.data.result
@@ -555,7 +555,7 @@ describe('MCP Tasks extension – disabled via config', () => {
 
   test('wait=false with client caps errors when the extension is disabled', async () => {
     const { sid } = await initSession(PORT, { withTasksCap: true })
-    const res = await callToolWithCaps(PORT, sid, 'execute_electerm_command', {
+    const res = await callToolWithCaps(PORT, sid, 'execute_bshell_command', {
       command: 'npm run build',
       wait: false
     })

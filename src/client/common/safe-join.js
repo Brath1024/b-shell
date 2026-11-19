@@ -3,7 +3,7 @@
  * (a remote server's directory listing, a drag payload, ...) and keep the
  * result inside the base.
  *
- * The sanitize step is load-bearing, not cosmetic. electerm's `resolve` does no
+ * The sanitize step is load-bearing, not cosmetic. bshell's `resolve` does no
  * normalisation and three of its branches discard the base outright: a leading
  * `/`, a UNC `\\`, and a Windows drive prefix. The drive branch is the easy one
  * to miss because it needs no separator at all — `resolve('/uploads', 'C:x')`

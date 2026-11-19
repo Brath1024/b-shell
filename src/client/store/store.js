@@ -174,7 +174,7 @@ class Store {
       // relabel someone else's endpoint. `nameAI` only fills the gap the URL
       // leaves: getBrand takes the second-to-last hostname label, which a local
       // endpoint does not have — `localhost` throws and `127.0.0.1` yields
-      // "0". Neither is a brand, so a widget that points electerm at a local
+      // "0". Neither is a brand, so a widget that points bshell at a local
       // endpoint names itself there instead of the panel reading "Custom AI
       // Model", or worse, "0".
       const brand = getBrand(baseURLAI).brand

@@ -1,11 +1,11 @@
 /**
  * Per-launch isolation for the opt-in local WebGL lifecycle E2E.
  *
- * `--user-data-dir` only redirects Chromium's profile. electerm keeps its
+ * `--user-data-dir` only redirects Chromium's profile. bshell keeps its
  * config, connection history, widgets and the storage key somewhere else:
  * `src/app/lib/sqlite.js`, `src/app/lib/nedb.js` and
  * `src/app/lib/storage-key.js` all resolve
- * `process.env.DATA_PATH || resolve(app.getPath('appData'), 'electerm')`, and
+ * `process.env.DATA_PATH || resolve(app.getPath('appData'), 'b-shell')`, and
  * `app.getPath('appData')` ignores `--user-data-dir` entirely. A run launched
  * with only the Chromium profile flag therefore writes `rendererType: 'webGL'`
  * into the developer's real config (updateConfig persists via saveUserConfig)
@@ -22,11 +22,11 @@
  * 2. DATA_PATH inside that root, so the app's own database lives there;
  * 3. a per-launch --user-data-dir inside that root;
  * 4. `allowMultiInstance` pre-seeded in the isolated config. The developer may
- *    already run electerm, and the default single-instance path would forward
+ *    already run bshell, and the default single-instance path would forward
  *    our launch to that app and quit. This changes the test's own throwaway
  *    config only -- the app's single-instance logic is untouched. With that
  *    forwarding out of the way, the inherited instance credentials
- *    (electermPort / electermHost / tokenElecterm) and the inherited session
+ *    (bshellPort / bshellHost / tokenBshell) and the inherited session
  *    server environment (wsPort / type, which session-process.js would
  *    otherwise pass on to the session-server child) are dropped from the
  *    launch env so the app's own backend picks a free port, generates its own
@@ -37,7 +37,7 @@
  * Everything else comes from ./app-options-webgl.js, which is itself
  * ./app-options.js minus --disable-gpu. Do not re-list launch arguments here:
  * the shared helper owns the entrypoint, NODE_TEST, the Linux sandbox flags
- * and the explicit ELECTERM_E2E_NO_SANDBOX opt-out.
+ * and the explicit BSHELL_E2E_NO_SANDBOX opt-out.
  */
 const { mkdtempSync, mkdirSync, rmSync, existsSync } = require('fs')
 const { DatabaseSync } = require('node:sqlite')
@@ -47,14 +47,14 @@ const base = require('./app-options-webgl')
 const { userNoEncryptConfigId } = require('../../../app/common/constants')
 const defaultUserName = require('../../../app/common/default-user-name')
 
-const ROOT_PREFIX = 'electerm-webgl-e2e-'
+const ROOT_PREFIX = 'bshell-webgl-e2e-'
 const ownedRoots = new Set()
 
 // The backend child env is decided by child-process.js / session-process.js and
 // has to be produced by them; instance credentials and stale session ports
 // inherited from the parent env would point the test at somebody else's service
 // or bind the port of the previous session.
-//   - electermPort / electermHost / tokenElecterm: child-process.js builds the
+//   - bshellPort / bshellHost / tokenBshell: child-process.js builds the
 //     server child with Object.assign(defaults, cleanEnv), so an inherited value
 //     beats the port it picked.
 //   - wsPort / type: session-process.js:41-52 builds the session-server child
@@ -63,9 +63,9 @@ const ownedRoots = new Set()
 //     session port left in the parent env makes the new session bind the old
 //     port, out of sync with what the frontend expects.
 const INHERITED_INSTANCE_ENV_KEYS = [
-  'electermPort',
-  'electermHost',
-  'tokenElecterm',
+  'bshellPort',
+  'bshellHost',
+  'tokenBshell',
   'wsPort',
   'type'
 ]
@@ -74,13 +74,13 @@ const INHERITED_INSTANCE_ENV_KEYS = [
  * Seed the isolated database with the app's own no-encrypt config row.
  *
  * Same shape src/app/lib/sqlite.js creates: the `data` table lives in
- * electerm_data.db, and `allowMultiInstance` is one of the
+ * bshell_data.db, and `allowMultiInstance` is one of the
  * configNoEncryptFields from src/app/lib/user-config-controller.js.
  */
 function seedIsolatedData (dataPath) {
   const dbFolder = join(dataPath, 'users', defaultUserName)
   mkdirSync(dbFolder, { recursive: true })
-  const db = new DatabaseSync(join(dbFolder, 'electerm_data.db'))
+  const db = new DatabaseSync(join(dbFolder, 'bshell_data.db'))
   try {
     db.exec('CREATE TABLE IF NOT EXISTS data (_id TEXT PRIMARY KEY, data TEXT)')
     db
@@ -105,7 +105,7 @@ function createWebglLaunchOptions () {
   mkdirSync(profilePath, { recursive: true })
   seedIsolatedData(dataPath)
 
-  // The parent process may be running electerm itself (or have inherited its
+  // The parent process may be running bshell itself (or have inherited its
   // environment) and so export the variables below. The backend is assembled by
   // src/app/server/child-process.js and session-process.js with
   // Object.assign(defaults, cleanEnv), where values from the parent env

@@ -156,7 +156,7 @@ describe('waitForOutputIdle', () => {
 })
 
 // The client half of session keepalive — the same switch the session
-// toolbar heartbeat icon and the MCP set_electerm_terminal_keepalive tool
+// toolbar heartbeat icon and the MCP set_bshell_terminal_keepalive tool
 // drive. The server half (writing \n to the PTY) lives in session-server.js.
 describe('session keepalive', () => {
   // Minimal terminal. xterm parses writes asynchronously and exposes the

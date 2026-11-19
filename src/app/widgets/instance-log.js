@@ -51,7 +51,7 @@ let logDir = ''
 // bytes written per instance, so the rotation check does not stat on every line
 const sizes = new Map()
 
-// Same data dir as the db (see lib/db.js): DATA_PATH wins, else appData/electerm.
+// Same data dir as the db (see lib/db.js): DATA_PATH wins, else appData/bshell.
 // Resolved lazily and defensively so this module can be required without
 // electron (unit tests), where it falls back to a temp dir.
 function resolveLogDir () {
@@ -60,9 +60,9 @@ function resolveLogDir () {
   }
   try {
     const { appPath } = require('../common/app-props')
-    return join(appPath, 'electerm', LOG_DIR_NAME)
+    return join(appPath, 'b-shell', LOG_DIR_NAME)
   } catch (e) {
-    return join(os.tmpdir(), 'electerm', LOG_DIR_NAME)
+    return join(os.tmpdir(), 'b-shell', LOG_DIR_NAME)
   }
 }
 

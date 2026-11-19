@@ -39,7 +39,7 @@ function request (urlPath, headers = {}) {
 }
 
 before(async () => {
-  dir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-static-server-'))
+  dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-static-server-'))
   fs.writeFileSync(path.join(dir, 'index.html'), 'hello from fixture')
   fs.mkdirSync(path.join(dir, '.ssh'))
   fs.writeFileSync(path.join(dir, '.ssh', 'id_rsa'), 'private key fixture')

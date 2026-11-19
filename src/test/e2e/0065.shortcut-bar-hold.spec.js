@@ -116,8 +116,8 @@ let profileRoot
 
 test.beforeAll(async () => {
   ensureKnownHostsEntry(TEST_PORT)
-  fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-sc-hold-'))
-  profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-sc-hold-profile-'))
+  fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-sc-hold-'))
+  profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-sc-hold-profile-'))
   sshServer = await startTestSshServer({ port: TEST_PORT, rootDir: fixtureRoot })
 })
 

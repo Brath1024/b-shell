@@ -1,5 +1,5 @@
 /**
- * read themes from https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/electerm
+ * read themes from https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/bshell
  */
 
 exports.listItermThemes = async () => {

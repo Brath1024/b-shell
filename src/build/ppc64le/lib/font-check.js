@@ -45,7 +45,7 @@ const PROBE_JS = `(() => {
   return c.measureText('mmmmmmmmmmlli').width > 0
 })()`
 
-// electerm ships @fontsource/maple-mono inside app.asar, so this one is
+// bshell ships @fontsource/maple-mono inside app.asar, so this one is
 // always available, whatever the state of the system fonts.
 const FALLBACK_FONT = 'Maple Mono'
 
@@ -114,7 +114,7 @@ bundled font contains, so install real fonts to get everything:
   sudo apt-get install -y fontconfig fonts-dejavu-core
   sudo fc-cache -fv
 
-ELECTERM_SAFE_FONT=1 forces this mode on a machine that does have fonts.
+BSHELL_SAFE_FONT=1 forces this mode on a machine that does have fonts.
 ================================================================================
 `
 
@@ -145,7 +145,7 @@ async function resolveFontWorkaround () {
     workaround = {}
     return workaround
   }
-  if (process.env.ELECTERM_SAFE_FONT === '1') {
+  if (process.env.BSHELL_SAFE_FONT === '1') {
     workaround = { defaultFontFamily: safeFontFamily() }
     return workaround
   }

@@ -26,7 +26,7 @@ function writeWidget (id, pkg, files = {}) {
 }
 
 before(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ai-config-test-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ai-config-test-'))
   widgetsRoot = path.join(tmp, 'widgets')
   process.env.DATA_PATH = tmp
   registry = require('../../app/widgets/load-widget')
@@ -88,7 +88,7 @@ describe('sanitizeAIConfig', () => {
       baseURLAI: 'http://localhost:8788/v1',
       debug: 'true',
       theme: 'light',
-      tokenElecterm: 'x'
+      tokenBshell: 'x'
     })
     assert.deepEqual(out, { baseURLAI: 'http://localhost:8788/v1' })
   })
@@ -134,7 +134,7 @@ describe('widget results carry a sanitised aiConfig', () => {
     name: id,
     version: '1.0.0',
     main: 'main.js',
-    electerm: {
+    bshell: {
       name: id,
       type: 'instance'
     }

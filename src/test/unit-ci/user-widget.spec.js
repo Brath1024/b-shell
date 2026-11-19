@@ -34,7 +34,7 @@ const simplePkg = (extra = {}) => ({
 })
 
 before(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-test-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-test-'))
   widgetsRoot = path.join(tmp, 'widgets')
   process.env.DATA_PATH = tmp
   registry = require('../../app/widgets/load-widget')
@@ -50,7 +50,7 @@ describe('user widget registry', () => {
   it('lists a widget from its package.json without running it', () => {
     writeWidget('hello-widget', {
       ...simplePkg(),
-      electerm: {
+      bshell: {
         name: 'Hello Widget',
         type: 'once',
         configs: [{ name: 'text', type: 'string', default: 'hi' }]
@@ -72,7 +72,7 @@ describe('user widget registry', () => {
   it('copies only display strings from a widget manifest i18n block', () => {
     writeWidget('i18n-widget', {
       ...simplePkg(),
-      electerm: {
+      bshell: {
         type: 'once',
         name: 'I18n Widget',
         configs: [{ name: 'query', type: 'string' }],
@@ -103,7 +103,7 @@ describe('user widget registry', () => {
   it('keeps a broken widget visible as an error entry', () => {
     writeWidget('broken-widget', {
       name: 'other-name',
-      electerm: { id: 'not-the-folder-name' }
+      bshell: { id: 'not-the-folder-name' }
     }, { 'index.js': '' })
 
     const widget = registry.listWidgets().find(w => w.id === 'broken-widget')
@@ -125,7 +125,7 @@ describe('user widget registry', () => {
   })
 
   it('reads the ui entry and defaults a ui widget to frontend', () => {
-    writeWidget('ui-widget', { ...simplePkg({ name: 'ui-widget' }), electerm: { ui: 'ui/index.html' } }, {
+    writeWidget('ui-widget', { ...simplePkg({ name: 'ui-widget' }), bshell: { ui: 'ui/index.html' } }, {
       'main.js': '',
       'ui/index.html': '<html><body>hi</body></html>'
     })
@@ -168,7 +168,7 @@ describe('callWidgetFunc', () => {
 
 describe('runWidget', () => {
   it('runs a user frontend widget without a widgetRun', async () => {
-    writeWidget('ui-widget', { ...simplePkg({ name: 'ui-widget' }), electerm: { ui: 'ui/index.html' } }, {
+    writeWidget('ui-widget', { ...simplePkg({ name: 'ui-widget' }), bshell: { ui: 'ui/index.html' } }, {
       'main.js': 'module.exports = {}\n',
       'ui/index.html': '<html></html>'
     })
@@ -189,12 +189,12 @@ describe('config mode metadata', () => {
     writeWidget('default-persist-widget', {
       name: 'default-persist-widget',
       main: 'main.js',
-      electerm: { id: 'default-persist-widget', type: 'frontend', configs: [] }
+      bshell: { id: 'default-persist-widget', type: 'frontend', configs: [] }
     }, { 'main.js': 'module.exports = {}\n' })
     writeWidget('no-persist-widget', {
       name: 'no-persist-widget',
       main: 'main.js',
-      electerm: { id: 'no-persist-widget', type: 'frontend', persist: false, configs: [] }
+      bshell: { id: 'no-persist-widget', type: 'frontend', persist: false, configs: [] }
     }, { 'main.js': 'module.exports = {}\n' })
 
     const widgets = registry.listWidgets()
@@ -208,7 +208,7 @@ describe('config mode metadata', () => {
     writeWidget('form-widget', {
       name: 'form-widget',
       main: 'main.js',
-      electerm: {
+      bshell: {
         id: 'form-widget',
         type: 'frontend',
         submitLabel: 'Search',
@@ -255,7 +255,7 @@ describe('config mode metadata', () => {
     writeWidget('bad-action', {
       name: 'bad-action',
       main: 'main.js',
-      electerm: { id: 'bad-action', type: 'frontend', action: 'run(); whatever' }
+      bshell: { id: 'bad-action', type: 'frontend', action: 'run(); whatever' }
     }, { 'main.js': 'module.exports = {}\n' })
     const widget = registry.listWidgets().find(w => w.id === 'bad-action')
     assert.equal(widget.info.action, 'run')
@@ -268,7 +268,7 @@ describe('import and delete', () => {
     version: '0.1.0',
     description: 'copied whole',
     main: 'main.js',
-    electerm: { id: 'imported-widget', type: 'frontend', ui: 'ui/index.html' }
+    bshell: { id: 'imported-widget', type: 'frontend', ui: 'ui/index.html' }
   }
 
   function makeSource () {
@@ -320,7 +320,7 @@ describe('import and delete', () => {
     writeWidget('incoming-broken', {
       name: 'incoming-broken',
       main: 'missing.js',
-      electerm: { id: 'incoming-broken' }
+      bshell: { id: 'incoming-broken' }
     }, {}, tmp)
     assert.throws(
       () => registry.importWidget(dir),
@@ -348,7 +348,7 @@ describe('widget UI calls', () => {
     writeWidget('state-widget', {
       name: 'state-widget',
       main: 'main.js',
-      electerm: { id: 'state-widget', name: 'State', type: 'instance' }
+      bshell: { id: 'state-widget', name: 'State', type: 'instance' }
     }, {
       'main.js': `
         let starts = 0

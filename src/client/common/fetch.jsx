@@ -6,7 +6,7 @@ function jsonHeader () {
   return {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    token: window.store?.config.tokenElecterm
+    token: window.store?.config.tokenBshell
   }
 }
 

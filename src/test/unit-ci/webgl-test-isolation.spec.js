@@ -7,7 +7,7 @@ const { tmpdir } = require('node:os')
 const { basename, join, resolve } = require('node:path')
 
 // The opt-in WebGL E2E launches the real app twice inside one Playwright
-// worker. Both launches must get their own electerm data root (DATA_PATH) and
+// worker. Both launches must get their own bshell data root (DATA_PATH) and
 // their own Chromium profile, or a crashed/closing app leaks configuration,
 // history and chunk caches into the developer's real ~/.config-ish dir and into
 // the next test. These tests exercise the real factory in a single Node
@@ -44,7 +44,7 @@ describe('createWebglLaunchOptions', () => {
     assert.match(basename(resolve(second.env.DATA_PATH)), /^data$/)
     assert.match(
       basename(resolve(first.env.DATA_PATH, '..')),
-      /^electerm-webgl-e2e-/
+      /^bshell-webgl-e2e-/
     )
     assert.notEqual(
       resolve(first.env.DATA_PATH, '..'),
@@ -78,7 +78,7 @@ describe('createWebglLaunchOptions', () => {
       options.env.DATA_PATH,
       'users',
       defaultUserName,
-      'electerm_data.db'
+      'bshell_data.db'
     )
     assert.equal(existsSync(dbPath), true, 'the isolated data root must be seeded')
 
@@ -134,7 +134,7 @@ describe('cleanupWebglLaunchOptions', () => {
     const root = resolve(options.env.DATA_PATH, '..')
     assert.equal(existsSync(root), true)
 
-    const foreign = mkdtempSync(join(tmpdir(), 'electerm-webgl-not-ours-'))
+    const foreign = mkdtempSync(join(tmpdir(), 'bshell-webgl-not-ours-'))
     try {
       assert.equal(
         iso.cleanupWebglLaunchOptions({ env: { DATA_PATH: join(foreign, 'data') } }),
@@ -153,9 +153,9 @@ describe('cleanupWebglLaunchOptions', () => {
   })
 })
 
-// The parent process (a dev machine already running electerm, or a CI shell
-// that inherited its environment) may have exported electermPort,
-// electermHost and tokenElecterm. src/app/server/child-process.js builds the
+// The parent process (a dev machine already running bshell, or a CI shell
+// that inherited its environment) may have exported bshellPort,
+// bshellHost and tokenBshell. src/app/server/child-process.js builds the
 // backend child env with Object.assign(defaults, cleanEnv), where cleanEnv
 // overrides its own defaults, so the launched app would connect to the
 // developer instance's port (EADDRINUSE) or present the wrong token.
@@ -170,9 +170,9 @@ describe('cleanupWebglLaunchOptions', () => {
 // The factory therefore has to delete those five keys from each launch's env
 // copy while leaving base.env and every other variable untouched.
 describe('inherited session environment', () => {
-  const KEYS = ['electermPort', 'electermHost', 'tokenElecterm', 'wsPort', 'type']
+  const KEYS = ['bshellPort', 'bshellHost', 'tokenBshell', 'wsPort', 'type']
   // Unrelated to isolation; proves the cleanup is not a wholesale env replace.
-  const SENTINEL_KEY = 'ELECTERM_E2E_ISOLATION_SENTINEL'
+  const SENTINEL_KEY = 'BSHELL_E2E_ISOLATION_SENTINEL'
   const SENTINEL_VALUE = 'sentinel-kept'
 
   // The real path has to be loaded while "the parent env already carries these
@@ -213,9 +213,9 @@ describe('inherited session environment', () => {
 
   it('strips the inherited instance and session env from the launch env only', () => {
     const inherited = {
-      electermPort: '39876',
-      electermHost: '127.0.0.1',
-      tokenElecterm: 'inherited-placeholder-token',
+      bshellPort: '39876',
+      bshellHost: '127.0.0.1',
+      tokenBshell: 'inherited-placeholder-token',
       wsPort: '39878',
       type: 'local',
       [SENTINEL_KEY]: SENTINEL_VALUE

@@ -14,14 +14,14 @@ const { session } = require('../../../src/app/server/session-ssh')
 const log = require('../../../src/app/common/log')
 
 const USERNAME = 'tester'
-const PASSWORD = 'electerm-test'
+const PASSWORD = 'bshell-test'
 const OTP = '123456'
-const PASSPHRASE = 'electerm-passphrase'
+const PASSPHRASE = 'bshell-passphrase'
 // the one-line form: password and one-time code in a single answer (#4670)
 const PASSCODE = `${PASSWORD} ${OTP}`
 
 const HOST_KEY = utils.generateKeyPairSync('ed25519', {
-  comment: 'electerm-test-host'
+  comment: 'bshell-test-host'
 })
 
 function parseKey (key, passphrase) {
@@ -43,7 +43,7 @@ function matchesPublicKey (ctx, publicKey) {
 }
 
 function makeTmpDir () {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ssh-test-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ssh-test-'))
 }
 
 function setEnvVar (name, value) {
@@ -82,7 +82,7 @@ function generateClientKey ({ dir, name, type, passphrase, bits }) {
     '-f',
     keyPath,
     '-C',
-    `electerm-${name}`
+    `bshell-${name}`
   )
 
   runCommand('ssh-keygen', args)
@@ -119,7 +119,7 @@ async function startServer (authHandler, forwardTo) {
         sshSession.on('pty', (accept) => accept())
         sshSession.on('shell', (accept) => {
           const stream = accept()
-          stream.write('electerm ready\n')
+          stream.write('bshell ready\n')
         })
       })
       if (forwardTo) {
@@ -239,7 +239,7 @@ function sameRoundKeyboardInteractiveAuth () {
       return ctx.prompt([
         { prompt: 'Password:', echo: false },
         { prompt: 'Verification code:', echo: false }
-      ], 'electerm-test', 'same-round otp', (responses) => {
+      ], 'bshell-test', 'same-round otp', (responses) => {
         if (responses[0] === PASSWORD && responses[1] === OTP) {
           ctx.accept()
         } else {
@@ -260,14 +260,14 @@ function splitRoundKeyboardInteractiveAuth (rounds = []) {
       rounds.push('otp')
       return ctx.prompt([
         { prompt: 'Verification code:', echo: false }
-      ], 'electerm-test', 'otp round', (otpResponses) => {
+      ], 'bshell-test', 'otp round', (otpResponses) => {
         if (otpResponses[0] !== OTP) {
           return ctx.reject(['keyboard-interactive'])
         }
         rounds.push('password')
         ctx.prompt([
           { prompt: 'Password:', echo: false }
-        ], 'electerm-test', 'password round', (passwordResponses) => {
+        ], 'bshell-test', 'password round', (passwordResponses) => {
           if (passwordResponses[0] === PASSWORD) {
             ctx.accept()
           } else {
@@ -874,7 +874,7 @@ describe('session-ssh auth flows', () => {
       // The code round used to be answered by dropping this connection and
       // redoing the whole keyboard-interactive exchange on a second one (hence
       // the old `['otp', 'otp', 'password']`): the server issued the otp
-      // challenge, electerm hung up on it, reconnected without the password and
+      // challenge, bshell hung up on it, reconnected without the password and
       // asked for the otp again. Now the round that only asks for the code is
       // answered where it was issued, so the sequence is one exchange per factor
       // and the otp prompt is shown exactly once.
@@ -1264,7 +1264,7 @@ describe('session-ssh auth flows', () => {
    * The `debug` setting is only useful if it reaches the log: ssh2 writes its
    * protocol trace through log.log (level `info`), which a packaged build's
    * `warn` level drops, so session-ssh.js has to move the level as well as pass
-   * the flag. ELECTERM_DEBUG is the process-visible half of that (the level
+   * the flag. BSHELL_DEBUG is the process-visible half of that (the level
    * itself is pinned in log-debug-level.spec.js, where the packaged policy can
    * be exercised without NODE_ENV=production).
    */
@@ -1283,7 +1283,7 @@ describe('session-ssh auth flows', () => {
     const originalResolvePath = log.transports.file.resolvePath
     const traceDir = makeTmpDir()
     log.transports.file.resolvePath = () => path.join(traceDir, 'main.log')
-    const previous = process.env.ELECTERM_DEBUG
+    const previous = process.env.BSHELL_DEBUG
     let term
     try {
       term = await session({
@@ -1297,7 +1297,7 @@ describe('session-ssh auth flows', () => {
         debug: true
       }, ws)
 
-      assert.equal(process.env.ELECTERM_DEBUG, '1')
+      assert.equal(process.env.BSHELL_DEBUG, '1')
       const trace = fs.readFileSync(path.join(traceDir, 'main.log'), 'utf8')
       assert.match(trace, /Local ident/)
       assert.match(trace, /Remote ident/)
@@ -1305,7 +1305,7 @@ describe('session-ssh auth flows', () => {
       term && term.kill()
       log.transports.file.resolvePath = originalResolvePath
       fs.rmSync(traceDir, { recursive: true, force: true })
-      setEnvVar('ELECTERM_DEBUG', previous)
+      setEnvVar('BSHELL_DEBUG', previous)
       await server.close()
     }
   })

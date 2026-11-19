@@ -2,7 +2,7 @@ const { describe, it, before } = require('node:test')
 const assert = require('node:assert/strict')
 
 // Client-side (ESM) only: a .vv file is loaded by the renderer, both from the
-// bookmark form's "Load .vv file" button and from a path handed to electerm on
+// bookmark form's "Load .vv file" button and from a path handed to bshell on
 // the command line. src/client/common/vv-to-tab.js is the only mapping from a
 // parse result to a tab, so there is no server-side twin to keep in sync.
 
@@ -30,7 +30,7 @@ function runTests (getMod) {
     it('rejects a deep link that happens to end in .vv', () => {
       const { isVvFile } = getMod()
       assert.strictEqual(isVvFile('spice://host/console.vv'), false)
-      assert.strictEqual(isVvFile('electerm://host/x.vv'), false)
+      assert.strictEqual(isVvFile('b-shell://host/x.vv'), false)
     })
   })
 
@@ -68,7 +68,7 @@ function runTests (getMod) {
         'host=pvespiceproxy:6ab1b34d:100:node1:5943::deadbeef',
         'proxy=http://10.0.0.1:3128',
         'tls-port=5943',
-        'host-subject=C=CN,O=electerm spice-lab,CN=127.0.0.1',
+        'host-subject=C=CN,O=bshell spice-lab,CN=127.0.0.1',
         'password=s3cret',
         'title=VM 100',
         'ca=-----BEGIN CERTIFICATE-----\\nMIIB\\n-----END CERTIFICATE-----'
@@ -78,7 +78,7 @@ function runTests (getMod) {
       assert.strictEqual(tab.port, 5943)
       assert.strictEqual(tab.tls, true)
       assert.strictEqual(tab.proxy, 'http://10.0.0.1:3128')
-      assert.strictEqual(tab.hostSubject, 'C=CN,O=electerm spice-lab,CN=127.0.0.1')
+      assert.strictEqual(tab.hostSubject, 'C=CN,O=bshell spice-lab,CN=127.0.0.1')
       assert.strictEqual(tab.password, 's3cret')
       // the file's own title wins over the file name
       assert.strictEqual(tab.title, 'VM 100')

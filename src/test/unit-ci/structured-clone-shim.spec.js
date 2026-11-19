@@ -91,7 +91,7 @@ test('clone() rejects what structuredClone rejects', () => {
 })
 
 test('a terminal with logging on still starts without structuredClone (#4650)', async () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-clone-shim-'))
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-clone-shim-'))
   const file = path.join(dir, 'session.log')
   try {
     const text = await withoutNative(async () => {

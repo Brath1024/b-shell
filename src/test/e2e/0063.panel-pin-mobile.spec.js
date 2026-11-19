@@ -21,7 +21,7 @@ const appOptions = require('./common/app-options')
 test.setTimeout(60000)
 
 test('panel pin and drawer behaviour follow isMobile', async () => {
-  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-panel-pin-'))
+  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-panel-pin-'))
   const app = await electron.launch({
     ...appOptions,
     args: [...appOptions.args, `--user-data-dir=${profileRoot}`],

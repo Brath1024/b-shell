@@ -2,7 +2,7 @@
  * Import a widget from a git host instead of a folder the user already has.
  *
  * What a user pastes:
- *   https://github.com/zxdong262/electerm-ai-auth-widget-example
+ *   https://github.com/zxdong262/bshell-ai-auth-widget-example
  *   https://github.com/owner/repo/tree/main/widgets/foo
  *   https://atomgit.com/owner/repo
  *   owner/repo, owner/repo#dev, owner/repo/widgets/foo
@@ -21,7 +21,7 @@
  * github.com is not reachable everywhere (mainland China, most often), so its
  * one archive request has three addresses behind it, tried in this order:
  *   1. codeload.github.com  the real thing, fastest outside the blocked regions
- *   2. mirror.electerm.org  our own Worker (electerm-mirror); it fetches the
+ *   2. mirror.electerm.org  our own Worker (bshell-mirror); it fetches the
  *                           same archive from a Cloudflare edge
  *   3. cdn.jsdelivr.net     a real CDN, file by file, for when both are dead
  * atomgit has no such chain: it is reachable where github is not, which is the
@@ -48,7 +48,7 @@ const MAX_DEPTH = 3
 // Kept low: atomgit throttles anonymous bursts with a 429.
 const CONCURRENCY = 3
 const TIMEOUT = 30000
-const USER_AGENT = 'electerm'
+const USER_AGENT = 'b-shell'
 
 // Fallbacks for a github archive, in the order they are tried. See the top of
 // this file for why these three.
@@ -547,7 +547,7 @@ function readPkg (dir) {
 
 function isWidgetDir (dir) {
   const pkg = readPkg(dir)
-  return !!(pkg && pkg.electerm && typeof pkg.electerm === 'object')
+  return !!(pkg && pkg.bshell && typeof pkg.bshell === 'object')
 }
 
 /**
@@ -602,13 +602,13 @@ function findWidgetRoot (dir, label = 'the repository') {
     }
     level = next
   }
-  // no `electerm` manifest anywhere: keep a root package.json so the install
+  // no `b-shell` manifest anywhere: keep a root package.json so the install
   // fails in the loader with its own message ("widget entry not found: ...")
   // instead of a misleading "there is no package.json"
   if (readPkg(dir)) {
     return dir
   }
-  fail(`${label} has no package.json, so it is not an electerm widget`)
+  fail(`${label} has no package.json, so it is not an bshell widget`)
 }
 
 /**
@@ -620,7 +620,7 @@ function findWidgetRoot (dir, label = 'the repository') {
 async function fetchWidgetSource (input, opts = {}) {
   const source = parseWidgetSource(input)
   const http = opts.http || createHttp()
-  const root = opts.tmpDir || fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-'))
+  const root = opts.tmpDir || fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-'))
   const cleanup = () => {
     try {
       fs.rmSync(root, { recursive: true, force: true })

@@ -1,5 +1,5 @@
 /**
- * Deep link support for electerm
+ * Deep link support for bshell
  * Handles protocol URLs like ssh://, telnet://, rdp://, vnc://, etc.
  */
 
@@ -13,15 +13,15 @@ const { parseQuickConnect } = require('../common/parse-quick-connect')
 
 /**
  * Protocols registered as OS-level deep link handlers.
- * http/https are intentionally excluded: registering them would make electerm
+ * http/https are intentionally excluded: registering them would make bshell
  * the handler for every clicked web link, hijacking the user's default browser.
  * They remain parseable via quick-connect (normalized to type "web").
  */
-const DEEP_LINK_PROTOCOLS = ['ssh', 'telnet', 'vnc', 'rdp', 'spice', 'serial', 'ftp', 'electerm']
+const DEEP_LINK_PROTOCOLS = ['ssh', 'telnet', 'vnc', 'rdp', 'spice', 'serial', 'ftp', 'b-shell']
 
 /**
- * Register electerm as a handler for supported protocols
- * Note: This makes electerm available as a handler but doesn't force it as default.
+ * Register bshell as a handler for supported protocols
+ * Note: This makes bshell available as a handler but doesn't force it as default.
  * Users can still choose their preferred app in system settings.
  *
  * @param {boolean} force - If true, register even if not packaged (for testing)
@@ -34,11 +34,11 @@ function registerDeepLink (force = false) {
   // Only register in packaged app or when explicitly requested
   const shouldRegister = app.isPackaged ||
                         force ||
-                        process.env.ELECTERM_REGISTER_PROTOCOLS === '1'
+                        process.env.BSHELL_REGISTER_PROTOCOLS === '1'
 
   if (!shouldRegister) {
     log.info('Skipping protocol registration in development mode')
-    log.info('Set ELECTERM_REGISTER_PROTOCOLS=1 or pass force=true to enable')
+    log.info('Set BSHELL_REGISTER_PROTOCOLS=1 or pass force=true to enable')
     return { registered: false, reason: 'development-mode' }
   }
 
@@ -80,7 +80,7 @@ function checkProtocolRegistration () {
 }
 
 /**
- * Unregister electerm as handler for protocols
+ * Unregister bshell as handler for protocols
  * @param {Array<string>} protocols - Optional array of specific protocols to unregister
  * @returns {object} - Status of unregistration
  */
@@ -160,7 +160,7 @@ function setupDeepLinkHandlers () {
   //
   // The 'open-url' event below (macOS only) is the only handler needed here,
   // as it covers the case where the app is opened via a clicked link or
-  // `open -a electerm ssh://...` command, which does NOT go through argv.
+  // `open -a bshell ssh://...` command, which does NOT go through argv.
 }
 
 module.exports = {

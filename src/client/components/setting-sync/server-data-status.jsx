@@ -69,7 +69,7 @@ export default function ServerDataStatus (props) {
   function renderStatus () {
     const {
       lastSyncTime,
-      electermVersion,
+      bshellVersion,
       deviceName = 'unknown'
     } = status
 
@@ -80,7 +80,7 @@ export default function ServerDataStatus (props) {
           <b className='mg1r'>{dayjs(lastSyncTime).format('YYYY-MM-DD HH:mm:ss')}</b>
           <span className='mg1r'>{e('from')}:</span>
           <b className='mg1r'>{deviceName}</b>
-          <b className='mg1r'>(v{electermVersion})</b>
+          <b className='mg1r'>(v{bshellVersion})</b>
           {renderReloadButton()}
         </p>
         {showCompare && <SyncDataCompare syncType={type} />}

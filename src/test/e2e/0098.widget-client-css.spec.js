@@ -4,7 +4,7 @@ const path = require('path')
 
 // Two widgets, installed before the app starts: one that is nothing but a
 // stylesheet, one that has only a UI and restyles the app from it.
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-e2e-widget-css-'))
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-e2e-widget-css-'))
 const write = (id, pkg, files) => {
   const dir = path.join(tmp, 'widgets', id)
   fs.mkdirSync(dir, { recursive: true })
@@ -16,7 +16,7 @@ const write = (id, pkg, files) => {
 write('probe', {
   name: 'probe',
   version: '1.0.0',
-  electerm: {
+  bshell: {
     id: 'probe',
     name: 'Probe',
     type: 'instance',
@@ -29,14 +29,14 @@ write('probe', {
 write('uiprobe', {
   name: 'uiprobe',
   version: '1.0.0',
-  electerm: { id: 'uiprobe', name: 'UI Probe', ui: 'index.html' }
+  bshell: { id: 'uiprobe', name: 'UI Probe', ui: 'index.html' }
 }, {
   'index.html': `<!DOCTYPE html>
 <html><head><meta charset="utf-8"></head><body>
 <div id="done">waiting</div>
 <script>
-  window.electerm.ready.then(function () {
-    window.electerm.css.apply('.uiprobe-marker { color: rgb(1, 2, 3) }')
+  window.bshell.ready.then(function () {
+    window.bshell.css.apply('.uiprobe-marker { color: rgb(1, 2, 3) }')
       .then(function (applied) {
         document.getElementById('done').textContent = 'applied:' + applied
       })
@@ -56,7 +56,7 @@ const extendClient = require('./common/client-extend')
 const { describe } = it
 it.setTimeout(150000)
 
-const cssTag = (id) => `style[data-electerm-widget="${id}"]`
+const cssTag = (id) => `style[data-b-shell-widget="${id}"]`
 
 describe('widget css', function () {
   it('is applied by the host, restored after a reload, and removed on stop', async function () {
@@ -184,7 +184,7 @@ describe('widget css', function () {
 
     let frame = null
     for (let i = 0; i < 40 && !frame; i++) {
-      frame = client.frames().find(f => /electerm-widget:\/\/uiprobe\/index\.html/.test(f.url()))
+      frame = client.frames().find(f => /b-shell-widget:\/\/uiprobe\/index\.html/.test(f.url()))
       if (!frame) {
         await delay(250)
       }
@@ -202,7 +202,7 @@ describe('widget css', function () {
     log('css from the widget UI', fromUi)
     assert.match(String(fromUi), /uiprobe-marker/)
 
-    await frame.evaluate(() => window.electerm.css.remove())
+    await frame.evaluate(() => window.bshell.css.remove())
     await delay(600)
     const removed = await client.evaluate(
       (sel) => !!document.querySelector(sel),

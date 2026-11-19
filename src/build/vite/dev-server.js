@@ -22,7 +22,7 @@ const defaultAIPreset = {
   authHeaderNameAI: 'Authorization: Bearer',
   id: 'ai.electerm.org',
   nameAI: 'ai.electerm.org',
-  siteUrl: 'https://ai.electerm.org?utm=electerm'
+  siteUrl: 'https://ai.electerm.org?utm=bshell'
 }
 
 // const AIDisclamer = 'AI-generated terminal commands can be inaccurate or unsafe, be careful'
@@ -30,6 +30,7 @@ const defaultAIPreset = {
 const base = {
   version: pack.version,
   isDev: !isProd,
+  disableUpgradeCheck: true,
   siteName: pack.name,
   defaultAIPreset
 }
@@ -47,7 +48,7 @@ function redirect (req, res) {
     name
   } = req.params
   const mapper = {
-    electerm: '/src/client/entry/electerm.jsx',
+    bshell: '/src/client/entry/bshell.jsx',
     worker: '/src/client/entry/worker.js'
   }
   res.redirect(mapper[name])

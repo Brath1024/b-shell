@@ -89,7 +89,7 @@ describe('AI agent sftp_read_file', function () {
   let dataDir
 
   it.beforeAll(async () => {
-    sftpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-agent-sftp-'))
+    sftpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-agent-sftp-'))
     fs.writeFileSync(path.join(sftpRoot, 'hello.txt'), 'hello sftp world\n')
     sshServer = await startTestSshServer({ rootDir: sftpRoot, port: TEST_PORT })
     ensureKnownHostsEntry(TEST_PORT)
@@ -104,7 +104,7 @@ describe('AI agent sftp_read_file', function () {
   })
 
   it.beforeEach(async () => {
-    dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-agent-data-'))
+    dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-agent-data-'))
     const appOptions = {
       ...baseAppOptions,
       env: { ...baseAppOptions.env, DATA_PATH: dataDir }

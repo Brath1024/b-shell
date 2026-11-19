@@ -54,7 +54,7 @@ const HANDLED = new Set([
 ])
 
 /**
- * Keys the .vv format defines but electerm cannot honour for a spice session.
+ * Keys the .vv format defines but bshell cannot honour for a spice session.
  * Each becomes a user-visible note instead of being dropped silently.
  */
 const UNSUPPORTED = {

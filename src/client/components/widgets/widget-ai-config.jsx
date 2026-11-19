@@ -1,10 +1,10 @@
 /**
- * "This widget can configure electerm's AI settings" block.
+ * "This widget can configure bshell's AI settings" block.
  *
  * Shown when a widget result carries an `aiConfig` (a run result, so it travels
  * with the instance, or an action result in the config-mode panel). The widget
  * only proposes: the values are listed here and the user applies them. Pointing
- * electerm's AI panel at an endpoint is never something that happened behind
+ * bshell's AI panel at an endpoint is never something that happened behind
  * their back — which is the whole reason this is a button and not a side effect
  * of starting a widget.
  *
@@ -79,11 +79,11 @@ export default auto(function WidgetAIConfig ({ aiConfig, store }) {
   return (
     <div className='wac'>
       <div className='wac-head'>
-        <span className='wac-title'>Electerm AI settings</span>
+        <span className='wac-title'>B-Shell AI settings</span>
         {applied ? <Tag color='green'>in use</Tag> : null}
       </div>
       <p className='wac-desc'>
-        This widget can point electerm's AI panel at itself. Nothing changes until you press the
+        This widget can point bshell's AI panel at itself. Nothing changes until you press the
         button; the values below are exactly what gets written to Settings → AI. A value of
         "none" clears that setting.
       </p>

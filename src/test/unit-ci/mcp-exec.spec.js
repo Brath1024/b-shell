@@ -1,5 +1,5 @@
 /**
- * Unit tests for execute_electerm_command (Phase 1 of electerm#4450)
+ * Unit tests for execute_bshell_command (Phase 1 of bshell#4450)
  *
  * 1. session-common.js execCommand() – pure unit tests with a mock ssh2 client
  * 2. HTTP-level tool wiring – real express server with mocked electron/renderer,
@@ -251,7 +251,7 @@ async function callTool (port, sid, toolName, args) {
   }, sid)
 }
 
-describe('execute_electerm_command – widget config & wiring', () => {
+describe('execute_bshell_command – widget config & wiring', () => {
   const PORT = 30852
   let instance = null
 
@@ -281,17 +281,17 @@ describe('execute_electerm_command – widget config & wiring', () => {
     assert.equal(maxCfg.default, 204800)
   })
 
-  test('tools/list includes execute_electerm_command', async () => {
+  test('tools/list includes execute_bshell_command', async () => {
     const sid = await initSession(PORT)
     const res = await mcpPost(PORT, { jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }, sid)
     assert.equal(res.status, 200)
     const names = res.data.result.tools.map(t => t.name)
-    assert.ok(names.includes('execute_electerm_command'), 'Missing execute_electerm_command')
+    assert.ok(names.includes('execute_bshell_command'), 'Missing execute_bshell_command')
   })
 
   test('blacklisted command is rejected before reaching renderer', async () => {
     const sid = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'execute_electerm_command', { command: 'forbidden-exec --now' })
+    const res = await callTool(PORT, sid, 'execute_bshell_command', { command: 'forbidden-exec --now' })
     const text = res.data.result.content[0].text
     assert.ok(text.includes('blacklist'), `Expected "blacklist" in error text, got: ${text}`)
     assert.equal(res.data.result.isError, true)
@@ -299,7 +299,7 @@ describe('execute_electerm_command – widget config & wiring', () => {
 
   test('built-in blacklist rejects rm -rf /', async () => {
     const sid = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'execute_electerm_command', { command: 'rm -rf /' })
+    const res = await callTool(PORT, sid, 'execute_bshell_command', { command: 'rm -rf /' })
     const text = res.data.result.content[0].text
     assert.ok(
       text.includes('blocked') || text.includes('safety') || text.includes('built-in'),
@@ -310,7 +310,7 @@ describe('execute_electerm_command – widget config & wiring', () => {
 
   test('safe command reaches renderer mock', async () => {
     const sid = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'execute_electerm_command', { command: 'echo hello' })
+    const res = await callTool(PORT, sid, 'execute_bshell_command', { command: 'echo hello' })
     const text = res.data.result.content[0].text
     assert.ok(text.includes('mocked'), `Expected mocked renderer response, got: ${text}`)
   })
@@ -328,7 +328,7 @@ describe('execute_electerm_command – widget config & wiring', () => {
       origSend(channel, payload)
     }
     try {
-      await callTool(PORT, sid, 'execute_electerm_command', { command: 'echo hi', timeoutMs: 5000 })
+      await callTool(PORT, sid, 'execute_bshell_command', { command: 'echo hi', timeoutMs: 5000 })
     } finally {
       mockWin.webContents.send = origSend
     }
@@ -344,7 +344,7 @@ describe('execute_electerm_command – widget config & wiring', () => {
 // 3. Phase 3: mode param, legacy background tools removed
 // ─────────────────────────────────────────────────────────────────────────────
 
-describe('execute_electerm_command – mode param & legacy tool removal', () => {
+describe('execute_bshell_command – mode param & legacy tool removal', () => {
   const PORT = 30853
   let instance = null
 
@@ -365,8 +365,8 @@ describe('execute_electerm_command – mode param & legacy tool removal', () => 
 
   test('schema exposes mode (enum exec|pty) and wait (boolean)', async () => {
     const tools = await listTools()
-    const tool = tools.find(t => t.name === 'execute_electerm_command')
-    assert.ok(tool, 'execute_electerm_command must be registered')
+    const tool = tools.find(t => t.name === 'execute_bshell_command')
+    assert.ok(tool, 'execute_bshell_command must be registered')
     const props = tool.inputSchema.properties
     assert.deepEqual(props.mode.enum, ['exec', 'pty'])
     assert.equal(props.mode.type, 'string')
@@ -383,7 +383,7 @@ describe('execute_electerm_command – mode param & legacy tool removal', () => 
       origSend(channel, payload)
     }
     try {
-      await callTool(PORT, sid, 'execute_electerm_command', { command: 'ls --color', mode: 'pty' })
+      await callTool(PORT, sid, 'execute_bshell_command', { command: 'ls --color', mode: 'pty' })
     } finally {
       mockWin.webContents.send = origSend
     }
@@ -395,26 +395,26 @@ describe('execute_electerm_command – mode param & legacy tool removal', () => 
     const tools = await listTools()
     const names = tools.map(t => t.name)
     for (const name of [
-      'run_electerm_background_command',
-      'get_electerm_background_task_status',
-      'get_electerm_background_task_log',
-      'cancel_electerm_background_task'
+      'run_bshell_background_command',
+      'get_bshell_background_task_status',
+      'get_bshell_background_task_log',
+      'cancel_bshell_background_task'
     ]) {
-      assert.ok(!names.includes(name), `${name} must be removed (superseded by execute_electerm_command + tasks)`)
+      assert.ok(!names.includes(name), `${name} must be removed (superseded by execute_bshell_command + tasks)`)
     }
   })
 
   test('calling a removed legacy tool returns tool-not-found', async () => {
     const sid = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'run_electerm_background_command', { command: 'echo ok' })
+    const res = await callTool(PORT, sid, 'run_bshell_background_command', { command: 'echo ok' })
     assert.ok(res.data.error, 'Expected JSON-RPC error for removed tool')
     assert.equal(res.data.error.code, -32601)
   })
 
-  test('send_electerm_terminal_command description points to execute_electerm_command', async () => {
+  test('send_bshell_terminal_command description points to execute_bshell_command', async () => {
     const tools = await listTools()
-    const tool = tools.find(t => t.name === 'send_electerm_terminal_command')
-    assert.ok(tool.description.includes('execute_electerm_command'),
+    const tool = tools.find(t => t.name === 'send_bshell_terminal_command')
+    assert.ok(tool.description.includes('execute_bshell_command'),
       'send tool description should guide agents to the unified tool')
   })
 
@@ -425,7 +425,7 @@ describe('execute_electerm_command – mode param & legacy tool removal', () => 
       id: 77,
       method: 'tools/call',
       params: {
-        name: 'execute_electerm_command',
+        name: 'execute_bshell_command',
         arguments: { command: 'npm run build', wait: false }
       }
     }, sid)
@@ -545,7 +545,7 @@ describe('MCP server – Host/Origin guard and API key', () => {
         jsonrpc: '2.0',
         id: 9,
         method: 'tools/call',
-        params: { name: 'execute_electerm_command', arguments: { command: 'id' } }
+        params: { name: 'execute_bshell_command', arguments: { command: 'id' } }
       }
     )
     assert.equal(res.status, 403)

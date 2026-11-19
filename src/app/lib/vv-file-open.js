@@ -1,9 +1,9 @@
 /**
- * Open a .vv connection file that the operating system handed to electerm.
+ * Open a .vv connection file that the operating system handed to bshell.
  *
- * Reached when electerm is registered as a handler for .vv (see
+ * Reached when bshell is registered as a handler for .vv (see
  * `fileAssociations` in src/build/electron-builder.json) and the user double-clicks
- * one, or runs `open -a electerm console.vv` on macOS. Windows and Linux do not
+ * one, or runs `open -a bshell console.vv` on macOS. Windows and Linux do not
  * have this event: a file association there launches us with the path as an
  * argument instead, which src/app/lib/command-line.js picks up.
  *

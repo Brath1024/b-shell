@@ -9,7 +9,7 @@ const { TerminalBase } = require('../../app/server/session-base')
 // Writes each chunk through the session log and returns the lines that end
 // up in the log file. session-server.js hands the log a Buffer per flush.
 async function logLines (chunks, addTimeStamp = false) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-log-utf8-'))
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-log-utf8-'))
   const file = path.join(dir, 'session.log')
   const term = new TerminalBase({ cols: 80, rows: 24, logName: 'utf8', sessionLogPath: dir })
   try {

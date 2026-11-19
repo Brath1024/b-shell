@@ -27,7 +27,7 @@ exports.getConfig = async (inited) => {
   delete userConfig._id
   delete userConfig.host
   delete userConfig.terminalTypes
-  delete userConfig.tokenElecterm
+  delete userConfig.tokenBshell
   delete userConfig.hashedPassword
   delete userConfig.salt
   migrateRightClickBehavior(userConfig)
@@ -39,7 +39,7 @@ exports.getConfig = async (inited) => {
     ...userConfig,
     requireAuth,
     port,
-    tokenElecterm: inited ? globalState.get('config').tokenElecterm : generate()
+    tokenBshell: inited ? globalState.get('config').tokenBshell : generate()
   }
   return {
     userConfig,

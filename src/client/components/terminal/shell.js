@@ -30,8 +30,8 @@ import { getPowerShellIntegrationScript } from '../../common/powershell-integrat
 function getBashInlineIntegration () {
   // Each statement is complete and can be joined with semicolons
   return [
-    'if [[ $- == *i* ]] && [[ -z "${ELECTERM_SHELL_INTEGRATION:-}" ]]',
-    'then export ELECTERM_SHELL_INTEGRATION=1',
+    'if [[ $- == *i* ]] && [[ -z "${BSHELL_SHELL_INTEGRATION:-}" ]]',
+    'then export BSHELL_SHELL_INTEGRATION=1',
     '__e_esc() { local v="$1"; v="${v//\\\\/\\\\\\\\}"; v="${v//;/\\\\x3b}"; printf \'%s\' "$v"; }',
     '__e_pre() { local p; [[ "$BASH_COMMAND" == __e_* || "$BASH_COMMAND" == PROMPT_COMMAND=* ]] && return; [[ "$BASH_COMMAND" == "$PROMPT_COMMAND" ]] && return; if [[ -n "${PROMPT_COMMAND:-}" ]]; then local IFS=\';\'; for p in $PROMPT_COMMAND; do p="${p#"${p%%[! ]*}"}"; [[ "$BASH_COMMAND" == "$p" ]] && return; done; fi; [[ "${__e_in:-0}" == "0" ]] && { __e_in=1; printf \'\\e]633;E;%s\\a\\e]633;C\\a\' "$(__e_esc "$BASH_COMMAND")"; }; }',
     '__e_cmd() { local c="$?"; [[ "${__e_in:-0}" == "1" ]] && { printf \'\\e]633;D;%s\\a\' "$c"; __e_in=0; }; printf \'\\e]633;P;Cwd=%s\\a\\e]633;A\\a\' "$(__e_esc "$PWD")"; return "$c"; }',
@@ -52,8 +52,8 @@ function getZshInlineIntegration () {
   // fails silently (stderr is suppressed) and the hooks never run, breaking
   // path following. Appending to the arrays works on every zsh.
   return [
-    'if [[ -o interactive ]] && [[ -z "${ELECTERM_SHELL_INTEGRATION:-}" ]]',
-    'then export ELECTERM_SHELL_INTEGRATION=1',
+    'if [[ -o interactive ]] && [[ -z "${BSHELL_SHELL_INTEGRATION:-}" ]]',
+    'then export BSHELL_SHELL_INTEGRATION=1',
     '__e_esc() { local v="$1"; v="${v//\\\\/\\\\\\\\}"; v="${v//;/\\\\x3b}"; builtin printf \'%s\' "$v"; }',
     '__e_preexec() { __e_cmd="$1"; builtin printf \'\\e]633;E;%s\\a\\e]633;C\\a\' "$(__e_esc "$1")"; }',
     '__e_precmd() { local c="$?"; [[ -n "$__e_cmd" ]] && builtin printf \'\\e]633;D;%s\\a\' "$c"; __e_cmd=""; builtin printf \'\\e]633;P;Cwd=%s\\a\\e]633;A\\a\' "$(__e_esc "$PWD")"; }',
@@ -68,8 +68,8 @@ function getZshInlineIntegration () {
  */
 function getFishInlineIntegration () {
   return [
-    'if status is-interactive; and not set -q ELECTERM_SHELL_INTEGRATION',
-    'set -g ELECTERM_SHELL_INTEGRATION 1',
+    'if status is-interactive; and not set -q BSHELL_SHELL_INTEGRATION',
+    'set -g BSHELL_SHELL_INTEGRATION 1',
     'function __e_esc; echo $argv | string replace -a \'\\\\\' \'\\\\\\\\\' | string replace -a \';\' \'\\\\x3b\'; end',
     'function __e_prompt --on-event fish_prompt; printf \'\\e]633;A\\a\\e]633;P;Cwd=%s\\a\' (__e_esc "$PWD"); end',
     'function __e_preexec --on-event fish_preexec; printf \'\\e]633;E;%s\\a\\e]633;C\\a\' (__e_esc "$argv"); end',
@@ -84,8 +84,8 @@ function getFishInlineIntegration () {
  */
 function getShInlineIntegration () {
   return [
-    'if [ -z "$ELECTERM_SHELL_INTEGRATION" ]',
-    'then export ELECTERM_SHELL_INTEGRATION=1',
+    'if [ -z "$BSHELL_SHELL_INTEGRATION" ]',
+    'then export BSHELL_SHELL_INTEGRATION=1',
     // sh/dash/ash re-evaluate $(...) inside PS1 every time the prompt is
     // shown, but only if the $() stays literal — so PS1 must be assigned
     // single-quoted. printf interprets \033/\a, unlike PS1 backslash
@@ -96,7 +96,7 @@ function getShInlineIntegration () {
     // environment variable and every child shell inherits it — while shell
     // functions are not inherited. A `PS1='$(__e_ps1)'...` prompt therefore
     // dies with "ash: __e_ps1: not found" on every prompt of any nested shell
-    // (ash, su, login, ...), and the exported ELECTERM_SHELL_INTEGRATION
+    // (ash, su, login, ...), and the exported BSHELL_SHELL_INTEGRATION
     // guard stops the child from ever defining the missing function.
     // Inlining keeps it working there too, and printf is an ash builtin so
     // this is cheaper than the old function + sed pair.

@@ -341,7 +341,7 @@ export const themeMixin = {
   /**
    * xterm computes its DOM selection colour as blend(theme.background,
    * selectionBackground). The terminal background is forced transparent
-   * (rgba(0,0,0,0)) so electerm's own CSS background / image shows through,
+   * (rgba(0,0,0,0)) so bshell's own CSS background / image shows through,
    * which makes the blend run over transparent-black. Recompute the selection
    * colours over the real visible background, from the *configured* theme
    * colours — xterm's internal selectionBackgroundTransparent forces opaque

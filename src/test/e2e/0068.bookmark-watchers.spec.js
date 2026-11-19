@@ -30,8 +30,8 @@ test.setTimeout(180000)
 
 test.beforeAll(async () => {
   ensureKnownHostsEntry(TEST_PORT)
-  fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-watcher-fixture-'))
-  profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-watcher-profile-'))
+  fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-watcher-fixture-'))
+  profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-watcher-profile-'))
   sshServer = await startTestSshServer({
     port: TEST_PORT,
     rootDir: fixtureRoot

@@ -21,7 +21,7 @@ const log = require('../common/log')
 
 // resolved lazily so tests (and users) can override via env at any time
 function getNetbirdBin () {
-  return process.env.ELECTERM_NETBIRD_BIN || 'netbird'
+  return process.env.BSHELL_NETBIRD_BIN || 'netbird'
 }
 
 // how long to wait for `netbird ssh detect` before giving up and connecting directly

@@ -42,7 +42,7 @@ const dangerousTabProps = dangerousSessionFields
 // Sessions render (`sizes[batch]` undefined -> cannot destructure height).
 // `addTab` now clamps batch too, but strip here as first line of defense.
 // `keepaliveEnabled` is runtime session state owned by the dedicated
-// set_electerm_terminal_keepalive tool — a tab opened through open_tab
+// set_bshell_terminal_keepalive tool — a tab opened through open_tab
 // must not be able to arrive already "keepalive on" while its terminal is
 // not sending anything.
 const tabInternalProps = [
@@ -1197,9 +1197,9 @@ export default Store => {
     }
 
     const taskId = `bg-${Date.now()}-${++bgTaskCounter}`
-    const logFile = `/tmp/electerm-${taskId}.log`
-    const pidFile = `/tmp/electerm-${taskId}.pid`
-    const exitFile = `/tmp/electerm-${taskId}.exit`
+    const logFile = `/tmp/bshell-${taskId}.log`
+    const pidFile = `/tmp/bshell-${taskId}.pid`
+    const exitFile = `/tmp/bshell-${taskId}.exit`
 
     // Encode command as base64 to avoid all quote-escaping issues.
     // The subshell runs the user's command, captures its exit code, then cleans up the PID file.

@@ -45,7 +45,7 @@ const INFO = {
 }
 
 describe('widget i18n', () => {
-  test('normalizes the locale code electerm stores in window.store', () => {
+  test('normalizes the locale code bshell stores in window.store', () => {
     assert.equal(normalizeLang('zh_cn'), 'zh_cn')
     assert.equal(normalizeLang('zh-CN'), 'zh_cn')
     assert.equal(normalizeLang('EN_us'), 'en_us')

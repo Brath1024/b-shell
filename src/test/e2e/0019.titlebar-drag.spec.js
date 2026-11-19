@@ -12,8 +12,8 @@ const HTMAXBUTTON = 9
 test('Windows keeps the empty titlebar draggable next to a tab with a long title', async () => {
   test.skip(process.platform !== 'win32', 'Windows native caption hit testing')
   test.setTimeout(60000)
-  // Its own app name and data dir, so it runs beside an open electerm
-  const dataDir = mkdtempSync(join(tmpdir(), 'electerm-titlebar-'))
+  // Its own app name and data dir, so it runs beside an open bshell
+  const dataDir = mkdtempSync(join(tmpdir(), 'bshell-titlebar-'))
   const env = { ...process.env, DATA_PATH: dataDir, NODE_TEST: 'yes' }
   delete env.ELECTRON_RUN_AS_NODE
   const app = await electron.launch({

@@ -15,7 +15,7 @@ import { safeGetItemJSON, safeSetItemJSON } from '../common/safe-local-storage'
 import { currentLang, localizeWidgetInfo } from '../common/widget-i18n'
 
 // A widget with its own UI has no generated form: it keeps its config through
-// window.electerm.updateConfig, which lands in localStorage. Autorun should
+// window.bshell.updateConfig, which lands in localStorage. Autorun should
 // start with the latest values (e.g. a provider switched in the widget panel),
 // not with the config snapshot taken when it was first started.
 function savedWidgetConfig (widgetId) {
@@ -27,7 +27,7 @@ export default Store => {
   Store.prototype.listWidgets = async () => {
     const widgets = await window.pre.runGlobalAsync('listWidgets')
     // The manifest is English; a widget may ship its own translations in
-    // electerm.i18n. The language lives here, in the renderer, so apply it
+    // bshell.i18n. The language lives here, in the renderer, so apply it
     // before any panel or list sees the info object.
     const lang = currentLang()
     const localized = widgets.map(widget => ({

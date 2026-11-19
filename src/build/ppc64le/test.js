@@ -70,7 +70,7 @@ const fix = require(join(__dirname, 'lib', 'font-conf-fix.js'))
 
 // ---------------------------------------------------------------- helpers
 const resourcesDir = fs.mkdtempSync(join(os.tmpdir(), 'ppc64le-font-'))
-const bundledConf = join(resourcesDir, 'electerm-fonts.conf')
+const bundledConf = join(resourcesDir, 'bshell-fonts.conf')
 fs.writeFileSync(bundledConf, '<fontconfig/>')
 
 const ZERO_FONTS = {
@@ -94,10 +94,10 @@ function reset () {
   originalCalls = 0
   notices.length = 0
   process.resourcesPath = resourcesDir
-  delete process.env.ELECTERM_FONTCONF
-  delete process.env.ELECTERM_FONT_CONF_RESTARTED
+  delete process.env.BSHELL_FONTCONF
+  delete process.env.BSHELL_FONT_CONF_RESTARTED
   delete process.env.FONTCONFIG_FILE
-  delete process.env.ELECTERM_SAFE_FONT
+  delete process.env.BSHELL_SAFE_FONT
 }
 
 /**
@@ -167,7 +167,7 @@ async function main () {
   const call = spawnCalls[0]
   ok('zero fonts: restarts once', spawnCalls.length === 1 && exitCalls === 1)
   ok('zero fonts: uses the bundled conf', call.opts.env.FONTCONFIG_FILE === bundledConf)
-  ok('zero fonts: marks the restarted process', call.opts.env.ELECTERM_FONT_CONF_RESTARTED === '1')
+  ok('zero fonts: marks the restarted process', call.opts.env.BSHELL_FONT_CONF_RESTARTED === '1')
   ok('zero fonts: drops the socket lock first', socketDrops === 1)
   ok('zero fonts: detached, unref, inherited stdio',
     call.opts.detached === true && call.opts.stdio === 'inherit' && call.opts.env !== process.env)
@@ -178,7 +178,7 @@ async function main () {
   ok('zero fonts: never reaches the web font code', originalCalls === 0)
 
   reset()
-  process.env.ELECTERM_FONT_CONF_RESTARTED = '1'
+  process.env.BSHELL_FONT_CONF_RESTARTED = '1'
   state = await run(wrap(false))
   ok('already restarted: no second restart', spawnCalls.length === 0 && state.value === ZERO_FONTS)
   ok('already restarted: web font fallback announced', logged().includes(WEB_FONT_LINE))
@@ -189,9 +189,9 @@ async function main () {
   ok('FONTCONFIG_FILE set by the user: left alone', spawnCalls.length === 0 && state.value === ZERO_FONTS)
 
   reset()
-  process.env.ELECTERM_SAFE_FONT = '1'
+  process.env.BSHELL_SAFE_FONT = '1'
   state = await run(wrap(false))
-  ok('ELECTERM_SAFE_FONT=1: web font wins', spawnCalls.length === 0 && state.value === ZERO_FONTS)
+  ok('BSHELL_SAFE_FONT=1: web font wins', spawnCalls.length === 0 && state.value === ZERO_FONTS)
 
   reset()
   process.resourcesPath = join(resourcesDir, 'nowhere')
@@ -201,15 +201,15 @@ async function main () {
   reset()
   const ownConf = join(resourcesDir, 'own.conf')
   fs.writeFileSync(ownConf, '<fontconfig/>')
-  process.env.ELECTERM_FONTCONF = ownConf
+  process.env.BSHELL_FONTCONF = ownConf
   await run(wrap(false))
-  ok('ELECTERM_FONTCONF: beats the bundled one', spawnCalls[0].opts.env.FONTCONFIG_FILE === ownConf)
+  ok('BSHELL_FONTCONF: beats the bundled one', spawnCalls[0].opts.env.FONTCONFIG_FILE === ownConf)
 
   reset()
-  process.env.ELECTERM_FONTCONF = join(resourcesDir, 'missing.conf')
+  process.env.BSHELL_FONTCONF = join(resourcesDir, 'missing.conf')
   state = await run(wrap(false))
-  ok('ELECTERM_FONTCONF pointing nowhere: no restart', spawnCalls.length === 0 && state.value === ZERO_FONTS)
-  ok('ELECTERM_FONTCONF pointing nowhere: said so', logged().includes('missing file'))
+  ok('BSHELL_FONTCONF pointing nowhere: no restart', spawnCalls.length === 0 && state.value === ZERO_FONTS)
+  ok('BSHELL_FONTCONF pointing nowhere: said so', logged().includes('missing file'))
 
   reset()
   spawnThrows = true

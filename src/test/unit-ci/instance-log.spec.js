@@ -7,7 +7,7 @@ const fs = require('node:fs')
 const widgetLog = require('../../app/widgets/instance-log')
 
 function tmpDir () {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-log-'))
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-log-'))
 }
 
 function read (file) {

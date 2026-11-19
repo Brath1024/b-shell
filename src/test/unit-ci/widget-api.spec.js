@@ -38,7 +38,7 @@ function writeWidget (id, pkg, files = {}) {
 }
 
 before(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-api-test-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-api-test-'))
   widgetsRoot = path.join(tmp, 'widgets')
   fs.mkdirSync(widgetsRoot, { recursive: true })
   process.env.DATA_PATH = tmp
@@ -66,7 +66,7 @@ describe('widget css', () => {
     writeWidget('derived', {
       name: 'Derived',
       version: '1.0.0',
-      electerm: { id: 'derived', type: 'instance', styles: ['style.css'] }
+      bshell: { id: 'derived', type: 'instance', styles: ['style.css'] }
     }, {
       'style.css': '.terminal-wrapper { padding: 0 }'
     })
@@ -110,7 +110,7 @@ describe('widget api object', () => {
     writeWidget(id, {
       name: id,
       main: 'main.js',
-      electerm: { id, type: 'instance', ...extra }
+      bshell: { id, type: 'instance', ...extra }
     }, {
       'main.js': `module.exports = {
   widgetRun: () => ({
@@ -177,7 +177,7 @@ describe('@electerm/widget-api shim', () => {
     const dir = writeWidget('shimmed', {
       name: 'shimmed',
       main: 'main.js',
-      electerm: { id: 'shimmed' }
+      bshell: { id: 'shimmed' }
     }, {
       'main.js': "const api = require('@electerm/widget-api')\nmodule.exports = { api }"
     })
@@ -199,7 +199,7 @@ describe('@electerm/widget-api shim', () => {
     const dir = writeWidget('typed', {
       name: 'typed',
       main: 'main.js',
-      electerm: { id: 'typed' }
+      bshell: { id: 'typed' }
     }, {
       'main.js': 'module.exports = {}'
     })
@@ -217,7 +217,7 @@ describe('@electerm/widget-api shim', () => {
   })
 })
 
-describe('window.electerm, the widget UI bridge', () => {
+describe('window.bshell, the widget UI bridge', () => {
   // bridge.js is a string shipped to a document the bundler never sees, so it is
   // run as-is in a bare context: that is also how it gets checked for ES5.
   function loadBridge (host = 'probe') {
@@ -238,9 +238,9 @@ describe('window.electerm, the widget UI bridge', () => {
     vm.createContext(ctx)
     vm.runInContext(require('../../app/widgets/bridge'), ctx)
     return {
-      api: win.electerm,
+      api: win.bshell,
       sent,
-      init: data => onMessage({ data: { __electermWidgetHost: true, method: 'init', data } })
+      init: data => onMessage({ data: { __bshellWidgetHost: true, method: 'init', data } })
     }
   }
 
@@ -249,7 +249,7 @@ describe('window.electerm, the widget UI bridge', () => {
     assert.equal(api.id, 'probe')
     assert.equal(typeof api.css.apply, 'function')
     api.css.apply('.terminal { padding: 0 }')
-    assert.equal(sent[0].__electermWidget, true)
+    assert.equal(sent[0].__bshellWidget, true)
     assert.equal(sent[0].method, 'css.apply')
     assert.equal(sent[0].args[0], '.terminal { padding: 0 }')
     api.css.remove()
@@ -265,7 +265,7 @@ describe('window.electerm, the widget UI bridge', () => {
     assert.equal(typeof api.updateConfig, 'function')
   })
 
-  it('hands the widget UI electerm\'s current language with init', () => {
+  it('hands the widget UI bshell\'s current language with init', () => {
     const { api, init } = loadBridge()
     assert.equal(api.language, 'en_us')
     let notified
@@ -281,7 +281,7 @@ describe('require guard', () => {
     const dir = writeWidget('needs-desktop', {
       name: 'needs-desktop',
       main: 'main.js',
-      electerm: { id: 'needs-desktop' }
+      bshell: { id: 'needs-desktop' }
     }, {
       'main.js': "module.exports = () => require('electron')"
     })
@@ -293,7 +293,7 @@ describe('require guard', () => {
     const dir = writeWidget('portable', {
       name: 'portable',
       main: 'main.js',
-      electerm: { id: 'portable' }
+      bshell: { id: 'portable' }
     }, {
       'helper.js': 'module.exports = 42',
       'main.js': "module.exports = { n: require('./helper'), fs: typeof require('fs').readFileSync === 'function' }"
@@ -307,7 +307,7 @@ describe('require guard', () => {
     const dir = writeWidget('escaping', {
       name: 'escaping',
       main: 'main.js',
-      electerm: { id: 'escaping' }
+      bshell: { id: 'escaping' }
     }, {
       'main.js': "module.exports = () => require('../../outside.js')"
     })
@@ -326,7 +326,7 @@ describe('declarative widget (styles only, no server script)', () => {
     writeWidget('css-only', {
       name: 'CSS Only',
       version: '1.0.0',
-      electerm: {
+      bshell: {
         id: 'css-only',
         type: 'instance',
         styles: ['style.css']
@@ -349,7 +349,7 @@ describe('declarative widget (styles only, no server script)', () => {
   it('accepts a widget with a ui but no main, and refuses a style file outside', async () => {
     writeWidget('ui-only', {
       name: 'UI Only',
-      electerm: { id: 'ui-only', ui: 'index.html' }
+      bshell: { id: 'ui-only', ui: 'index.html' }
     }, {
       'index.html': '<html><body>hi</body></html>'
     })
@@ -359,7 +359,7 @@ describe('declarative widget (styles only, no server script)', () => {
 
     writeWidget('bad-style', {
       name: 'Bad',
-      electerm: { id: 'bad-style', type: 'instance', styles: ['../../../etc/passwd.css'] }
+      bshell: { id: 'bad-style', type: 'instance', styles: ['../../../etc/passwd.css'] }
     })
     const broken = loadWidget.listWidgets().find(w => w.id === 'bad-style')
     assert.equal(broken.state, 'error')
@@ -370,7 +370,7 @@ describe('declarative widget (styles only, no server script)', () => {
     writeWidget('empty', {
       name: 'Empty',
       main: 'main.js',
-      electerm: { id: 'empty', type: 'instance' }
+      bshell: { id: 'empty', type: 'instance' }
     }, {
       'main.js': 'module.exports = {}'
     })
@@ -389,7 +389,7 @@ describe('listWidgetInstances', () => {
     writeWidget('running-css', {
       name: 'Running CSS',
       version: '1.0.0',
-      electerm: { id: 'running-css', type: 'instance', styles: ['style.css'] }
+      bshell: { id: 'running-css', type: 'instance', styles: ['style.css'] }
     }, {
       'style.css': '.x { color: red }'
     })
@@ -414,7 +414,7 @@ describe('listWidgetInstances', () => {
       name: 'Running Script',
       version: '1.0.0',
       main: 'main.js',
-      electerm: { id: 'running-script', type: 'instance' }
+      bshell: { id: 'running-script', type: 'instance' }
     }, {
       'main.js': `module.exports = {
   widgetRun: () => ({

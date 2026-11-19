@@ -8,7 +8,7 @@ const path = require('node:path')
 const Module = require('node:module')
 
 // Isolate NeDB files created by migrate scripts into a temp dir
-const tmpDataPath = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-migrate-test-'))
+const tmpDataPath = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-migrate-test-'))
 process.env.DATA_PATH = tmpDataPath
 
 // Stub electron + electron-log so app-side migrate modules load in plain node

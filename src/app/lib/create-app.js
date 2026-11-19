@@ -20,7 +20,7 @@ const { registerWidgetScheme, initWidgetProtocol } = require('../widgets/protoco
 let conf = {}
 
 setupCrashReporter()
-// electerm-widget://<id>/ — the scheme a user widget's own UI is served from.
+// b-shell-widget://<id>/ — the scheme a user widget's own UI is served from.
 // Privileged-scheme registration only takes effect before the app is ready.
 registerWidgetScheme()
 
@@ -65,7 +65,7 @@ exports.createApp = async function () {
       createWindow(conf)
       return
     }
-    // A .vv handed to an ALREADY RUNNING electerm. Windows has no 'open-file'
+    // A .vv handed to an ALREADY RUNNING bshell. Windows has no 'open-file'
     // event: the association launches a second process with the path in argv,
     // which arrives here. Without this the file is silently dropped and the
     // window just comes to the front -- which is what a user double-clicking a

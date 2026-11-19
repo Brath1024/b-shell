@@ -35,14 +35,14 @@ export default function WidgetControl ({ formData, widgetInstancesLength }) {
     )
   }
 
-  // A user widget that ships its own UI (electerm.ui in its package.json)
+  // A user widget that ships its own UI (bshell.ui in its package.json)
   // renders that instead of the generated config form.
   if (widget.info && widget.info.ui) {
     return <CustomWidgetPanel widget={widget} />
   }
 
-  // Config mode: no ui, frontend type — electerm draws the form from
-  // electerm.configs and shows the action's result in the same panel.
+  // Config mode: no ui, frontend type — bshell draws the form from
+  // bshell.configs and shows the action's result in the same panel.
   if (
     widget.builtin === false &&
     widget.info &&

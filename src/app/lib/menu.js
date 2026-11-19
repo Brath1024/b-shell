@@ -157,14 +157,14 @@ function buildMenu () {
           label: e('reportIssue'),
           click () {
             shell
-              .openExternal('https://github.com/electerm/electerm/issues/new')
+              .openExternal('https://gitee.com/Guoqing-Li/b-shell/issues/new')
           }
         },
         {
           label: 'github',
           click () {
             shell
-              .openExternal('https://github.com/electerm/electerm')
+              .openExternal('https://gitee.com/Guoqing-Li/b-shell')
           }
         },
         {

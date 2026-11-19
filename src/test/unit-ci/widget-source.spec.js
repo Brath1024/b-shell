@@ -23,7 +23,7 @@ const {
 let tmp
 
 before(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-source-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-source-'))
 })
 
 after(() => {
@@ -100,7 +100,7 @@ const widgetPkg = JSON.stringify({
   name: 'demo-widget',
   version: '1.0.0',
   main: 'index.js',
-  electerm: { id: 'demo-widget', name: 'Demo', type: 'once' }
+  bshell: { id: 'demo-widget', name: 'Demo', type: 'once' }
 })
 
 describe('parseWidgetSource', () => {

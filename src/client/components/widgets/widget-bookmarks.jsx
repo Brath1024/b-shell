@@ -5,7 +5,7 @@
  *
  *   { bookmarks: { bookmarks: [bookmark], bookmarkGroups?: [group] } }
  *
- * — the same shape as electerm's own bookmark export, so a widget can convert
+ * — the same shape as bshell's own bookmark export, so a widget can convert
  * other tools' session files. A bare `bookmarks: [bookmark]` array is accepted
  * too (with `bookmarkGroups` beside it in the result), because that is what a
  * widget author writes first, and a silently empty block is a bad way to learn

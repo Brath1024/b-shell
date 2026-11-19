@@ -139,19 +139,19 @@ export default class RdpSession extends PureComponent {
   }
 
   buildWsUrl = (port, type = 'rdp', extra = '') => {
-    const { host, tokenElecterm } = this.props.config
+    const { host, tokenBshell } = this.props.config
     const { id } = this.props.tab
     if (window.et.buildWsUrl) {
       return window.et.buildWsUrl(
         host,
         port,
-        tokenElecterm,
+        tokenBshell,
         id,
         type,
         extra
       )
     }
-    return `ws://${host}:${port}/${type}/${id}?token=${tokenElecterm}${extra}`
+    return `ws://${host}:${port}/${type}/${id}?token=${tokenBshell}${extra}`
   }
 
   /**
@@ -899,7 +899,7 @@ export default class RdpSession extends PureComponent {
           />
         </Tooltip>
         <HelpIcon
-          link='https://github.com/electerm/electerm/wiki/RDP-File-Transfer'
+          link='https://gitee.com/Guoqing-Li/b-shell/wiki/RDP-File-Transfer'
           className='mg2r mg1l'
         />
       </>

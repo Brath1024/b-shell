@@ -1,6 +1,6 @@
 /**
  * Config-mode user widgets: the widget ships only package.json configs + a
- * main-process module. electerm draws the form, calls the action, and renders
+ * main-process module. bshell draws the form, calls the action, and renders
  * the returned result (details/table/row buttons/openTab/bookmarks) itself.
  */
 
@@ -16,7 +16,7 @@ test.setTimeout(90000)
 const WIDGETS = path.resolve(process.cwd(), 'src/test/fixtures/widgets')
 
 test('config mode renders the form and the action result', async () => {
-  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-form-e2e-'))
+  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-form-e2e-'))
   const app = await electron.launch({
     ...appOptions,
     args: [...appOptions.args, `--user-data-dir=${profileRoot}`],

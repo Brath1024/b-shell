@@ -42,7 +42,7 @@ export const defaultAIPresets = [
     apiPathAI: '/chat/completions',
     modelAI: 'deepseek-v4-flash',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://go.apimart.ai/gh-electerm'
+    siteUrl: 'https://go.apimart.ai/gh-bshell'
   },
   {
     id: 'ApiSmart',
@@ -52,7 +52,7 @@ export const defaultAIPresets = [
     apiPathAI: '/chat/completions',
     modelAI: 'DEEPSEEK_V4_FLASH',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://apismart.ai/?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://apismart.ai/?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'fluxionai',
@@ -61,7 +61,7 @@ export const defaultAIPresets = [
     apiPathAI: '/chat/completions',
     modelAI: 'deepseek-v4-flash-0731',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://fluxionai.space/register?source=github&campaign=github-sidrune-electerm&promo=SDRELECTERM&aff=7H7DERHU3GFF'
+    siteUrl: 'https://fluxionai.space/register?source=github&campaign=github-sidrune-bshell&promo=SDRBSHELL&aff=7H7DERHU3GFF'
   },
   {
     id: 'atlascloud',
@@ -93,7 +93,7 @@ export const defaultAIPresets = [
     apiPathAI: '/chat/completions',
     modelAI: 'deepseek-chat',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://platform.deepseek.com/api_keys?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://platform.deepseek.com/api_keys?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'openai',
@@ -102,7 +102,7 @@ export const defaultAIPresets = [
     apiPathAI: '/chat/completions',
     modelAI: 'gpt-4o',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://platform.openai.com/api-keys?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://platform.openai.com/api-keys?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'anthropic',
@@ -116,7 +116,7 @@ export const defaultAIPresets = [
       { value: 'claude-opus-4-8' },
       { value: 'claude-haiku-4-5' }
     ],
-    siteUrl: 'https://console.anthropic.com/settings/keys?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://console.anthropic.com/settings/keys?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'openrouter',
@@ -125,7 +125,7 @@ export const defaultAIPresets = [
     apiPathAI: '/chat/completions',
     modelAI: 'openai/gpt-4o-mini',
     authHeaderNameAI: 'Authorization: Bearer',
-    siteUrl: 'https://openrouter.ai/keys?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://openrouter.ai/keys?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'orcarouter',
@@ -183,7 +183,7 @@ export const defaultAIPresets = [
       { value: 'MiniMax-M3.1-Flash' },
       { value: 'MiniMax-M3' }
     ],
-    siteUrl: 'https://platform.minimax.io/user-center/basic-information/interface-key?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://platform.minimax.io/user-center/basic-information/interface-key?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'minimax-cn',
@@ -202,7 +202,7 @@ export const defaultAIPresets = [
       { value: 'MiniMax-M3.1-Flash' },
       { value: 'MiniMax-M3' }
     ],
-    siteUrl: 'https://platform.minimaxi.com/user-center/basic-information/interface-key?utm_source=electerm_app&utm_medium=link&utm_campaign=electerm'
+    siteUrl: 'https://platform.minimaxi.com/user-center/basic-information/interface-key?utm_source=bshell_app&utm_medium=link&utm_campaign=bshell'
   },
   {
     id: 'xai',

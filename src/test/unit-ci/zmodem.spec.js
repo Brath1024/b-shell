@@ -405,7 +405,7 @@ describe('zmodem session', () => {
       const wire = new Wire()
       const s = makeSession(wire)
 
-      const content = Buffer.from('electerm zmodem test payload\n'.repeat(200))
+      const content = Buffer.from('bshell zmodem test payload\n'.repeat(200))
       let remoteFinished = false
 
       // remote sz: initiator sender. `pumpRemoteAll` keeps draining the

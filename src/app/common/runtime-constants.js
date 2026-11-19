@@ -26,8 +26,8 @@ const trayIconPath = resolve(
   __dirname,
   (
     isDev
-      ? '../../../node_modules/@electerm/electerm-resource/tray-icons/electerm-tray.png'
-      : '../assets/images/electerm-tray.png'
+      ? '../../../node_modules/@electerm/electerm-resource/tray-icons/bshell-tray.png'
+      : '../assets/images/bshell-tray.png'
   )
 )
 const extIconPath = isDev

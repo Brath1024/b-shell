@@ -1,6 +1,6 @@
 /**
  * MCP Server Widget
- * Exposes electerm store APIs via Model Context Protocol
+ * Exposes bshell store APIs via Model Context Protocol
  * Runs in main process and uses IPC to communicate with frontend
  * Uses a simple local MCP implementation
  */
@@ -69,7 +69,7 @@ function sanitizeTabArgs (args) {
 
 const widgetInfo = {
   name: 'MCP Server',
-  description: 'Expose electerm APIs via Model Context Protocol (MCP) for AI assistants and external tools.',
+  description: 'Expose bshell APIs via Model Context Protocol (MCP) for AI assistants and external tools.',
   version: '1.0.0',
   author: 'ZHAO Xudong',
   type: 'instance',
@@ -160,19 +160,19 @@ const widgetInfo = {
       name: 'execTimeoutMs',
       type: 'number',
       default: 120000,
-      description: 'Default timeout (ms) for execute_electerm_command. Commands exceeding it return partial output with timedOut=true.'
+      description: 'Default timeout (ms) for execute_bshell_command. Commands exceeding it return partial output with timedOut=true.'
     },
     {
       name: 'execMaxOutputBytes',
       type: 'number',
       default: 204800,
-      description: 'Max characters of stdout/stderr returned by execute_electerm_command. Longer output is tail-truncated with truncated=true.'
+      description: 'Max characters of stdout/stderr returned by execute_bshell_command. Longer output is tail-truncated with truncated=true.'
     },
     {
       name: 'enableTasks',
       type: 'boolean',
       default: true,
-      description: 'Enable the MCP Tasks extension (io.modelcontextprotocol/tasks, SEP-2663). Lets supporting clients run long commands as pollable tasks via execute_electerm_command with wait=false.'
+      description: 'Enable the MCP Tasks extension (io.modelcontextprotocol/tasks, SEP-2663). Lets supporting clients run long commands as pollable tasks via execute_bshell_command with wait=false.'
     },
     {
       name: 'taskTtlMs',
@@ -227,7 +227,7 @@ function apiKeyMatches (provided, expected) {
   return crypto.timingSafeEqual(a, b)
 }
 
-class ElectermMCPServer {
+class BshellMCPServer {
   constructor (config, ctx = {}) {
     this.config = config
     // instance log/event channels, see widgets/instance-log.js — optional so the
@@ -282,7 +282,7 @@ class ElectermMCPServer {
 
   // The effective command rules, in the same shape validateCommand applies:
   // same trimming, same blank-line filtering, same "a non-empty whitelist puts
-  // us in whitelist mode". get_electerm_command_rules returns this verbatim, so
+  // us in whitelist mode". get_bshell_command_rules returns this verbatim, so
   // the parsing lives in one place and what an agent reads cannot drift from
   // what is actually enforced.
   getCommandRules () {
@@ -295,7 +295,7 @@ class ElectermMCPServer {
     return {
       mode: commandWhitelist.length > 0 ? 'whitelist' : 'blacklist',
       // Regex sources: applied with RegExp#test to the whole command string.
-      builtinBlacklist: ElectermMCPServer.BUILTIN_BLACKLIST.map(r => r.source),
+      builtinBlacklist: BshellMCPServer.BUILTIN_BLACKLIST.map(r => r.source),
       commandBlacklist,
       commandWhitelist
     }
@@ -316,7 +316,7 @@ class ElectermMCPServer {
   // and error — in whitelist mode a single miss says nothing about what is
   // allowed.
   static get RULES_HINT () {
-    return 'Call get_electerm_command_rules to see the rules this instance enforces.'
+    return 'Call get_bshell_command_rules to see the rules this instance enforces.'
   }
 
   // Validate a command against whitelist/blacklist rules.
@@ -328,9 +328,9 @@ class ElectermMCPServer {
     } = this.getCommandRules()
 
     // 1. Always-on built-in blacklist
-    for (const pattern of ElectermMCPServer.BUILTIN_BLACKLIST) {
+    for (const pattern of BshellMCPServer.BUILTIN_BLACKLIST) {
       if (pattern.test(command)) {
-        return { allowed: false, reason: `Command blocked by built-in safety rule: ${pattern}. ${ElectermMCPServer.RULES_HINT}` }
+        return { allowed: false, reason: `Command blocked by built-in safety rule: ${pattern}. ${BshellMCPServer.RULES_HINT}` }
       }
     }
 
@@ -338,7 +338,7 @@ class ElectermMCPServer {
     for (const raw of userBlacklist) {
       try {
         if (new RegExp(raw).test(command)) {
-          return { allowed: false, reason: `Command blocked by blacklist pattern: ${raw}. ${ElectermMCPServer.RULES_HINT}` }
+          return { allowed: false, reason: `Command blocked by blacklist pattern: ${raw}. ${BshellMCPServer.RULES_HINT}` }
         }
       } catch (_) {
         // ignore invalid regex in config
@@ -356,7 +356,7 @@ class ElectermMCPServer {
         }
       })
       if (!allowed) {
-        return { allowed: false, reason: `Command not in whitelist. ${ElectermMCPServer.RULES_HINT}` }
+        return { allowed: false, reason: `Command not in whitelist. ${BshellMCPServer.RULES_HINT}` }
       }
     }
 
@@ -484,9 +484,9 @@ class ElectermMCPServer {
     // ==================== Tab/Terminal APIs (always enabled) ====================
 
     server.registerTool(
-      'list_electerm_tabs',
+      'list_bshell_tabs',
       {
-        description: 'List all open electerm terminal tabs',
+        description: 'List all open bshell terminal tabs',
         inputSchema: z.object({})
       },
       async () => {
@@ -496,9 +496,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'get_electerm_active_tab',
+      'get_bshell_active_tab',
       {
-        description: 'Get the currently active electerm tab',
+        description: 'Get the currently active bshell tab',
         inputSchema: z.object({})
       },
       async () => {
@@ -508,9 +508,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'switch_electerm_tab',
+      'switch_bshell_tab',
       {
-        description: 'Switch to a specific electerm tab',
+        description: 'Switch to a specific bshell tab',
         inputSchema: {
           tabId: z.string().describe('Tab ID to switch to')
         }
@@ -522,9 +522,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'close_electerm_tab',
+      'close_bshell_tab',
       {
-        description: 'Close a specific electerm tab',
+        description: 'Close a specific bshell tab',
         inputSchema: {
           tabId: z.string().describe('Tab ID to close')
         }
@@ -536,9 +536,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'reload_electerm_tab',
+      'reload_bshell_tab',
       {
-        description: 'Reload/reconnect an electerm tab',
+        description: 'Reload/reconnect an bshell tab',
         inputSchema: {
           tabId: z.string().optional().describe('Tab ID to reload (default: active tab)')
         }
@@ -551,9 +551,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'duplicate_electerm_tab',
+      'duplicate_bshell_tab',
       {
-        description: 'Duplicate an electerm tab',
+        description: 'Duplicate an bshell tab',
         inputSchema: {
           tabId: z.string().describe('Tab ID to duplicate')
         }
@@ -565,9 +565,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'open_electerm_local_terminal',
+      'open_bshell_local_terminal',
       {
-        description: 'Open a new electerm local terminal tab',
+        description: 'Open a new bshell local terminal tab',
         inputSchema: z.object({})
       },
       async () => {
@@ -577,9 +577,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'send_electerm_terminal_command',
+      'send_bshell_terminal_command',
       {
-        description: 'Send a command to the active electerm terminal. For non-interactive commands, prefer execute_electerm_command — it returns structured stdout/stderr/exitCode in one call instead of requiring send + wait + read.',
+        description: 'Send a command to the active bshell terminal. For non-interactive commands, prefer execute_bshell_command — it returns structured stdout/stderr/exitCode in one call instead of requiring send + wait + read.',
         inputSchema: {
           command: z.string().describe('Command to send'),
           tabId: z.string().optional().describe('Optional: specific tab ID'),
@@ -600,9 +600,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'get_electerm_terminal_selection',
+      'get_bshell_terminal_selection',
       {
-        description: 'Get the current text selection in electerm terminal',
+        description: 'Get the current text selection in bshell terminal',
         inputSchema: {
           tabId: z.string().optional().describe('Optional: specific tab ID')
         }
@@ -615,9 +615,9 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'get_electerm_terminal_output',
+      'get_bshell_terminal_output',
       {
-        description: 'Get recent electerm terminal output/buffer content',
+        description: 'Get recent bshell terminal output/buffer content',
         inputSchema: {
           tabId: z.string().optional().describe('Optional: specific tab ID'),
           lines: z.number().optional().describe('Number of lines to return (default: 50)')
@@ -632,10 +632,10 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'wait_for_electerm_terminal_idle',
+      'wait_for_bshell_terminal_idle',
       {
         description: 'Wait until the active terminal stops producing output, then return its content. ' +
-          'Use this after send_electerm_terminal_command to know when the command has finished. ' +
+          'Use this after send_bshell_terminal_command to know when the command has finished. ' +
           'The terminal is considered idle when no data has arrived for ~4 seconds. ' +
           'Returns output and elapsed time; timedOut=true if the command was still running at the timeout.',
         inputSchema: {
@@ -659,7 +659,7 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'get_electerm_terminal_status',
+      'get_bshell_terminal_status',
       {
         description: 'Get the current status of a terminal tab. Returns whether it is actively receiving data (running), idle (no data for 4+ seconds), or has a password prompt, plus whether session keepalive is on. Also returns the last 20 lines of terminal output. This is a lightweight, non-blocking check ideal for monitoring long-running commands.',
         inputSchema: {
@@ -675,11 +675,11 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'set_electerm_terminal_keepalive',
+      'set_bshell_terminal_keepalive',
       {
         description: 'Turn session keepalive on or off for a terminal session. ' +
-          'While on, electerm writes a newline to the session whenever it has been idle, resetting shell idle timeouts so the connection is not killed. ' +
-          'Use it before long work on a session nobody is typing into, e.g. a large electerm_sftp_upload / electerm_sftp_download. ' +
+          'While on, bshell writes a newline to the session whenever it has been idle, resetting shell idle timeouts so the connection is not killed. ' +
+          'Use it before long work on a session nobody is typing into, e.g. a large bshell_sftp_upload / bshell_sftp_download. ' +
           'Returns the resulting state as `keepalive`.',
         inputSchema: {
           enabled: z.boolean().describe('true to start sending keepalive, false to stop'),
@@ -696,7 +696,7 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'cancel_electerm_terminal_command',
+      'cancel_bshell_terminal_command',
       {
         description: 'Cancel the currently running command in a terminal by sending Ctrl+C. Use this to interrupt a long-running or stuck command.',
         inputSchema: {
@@ -712,12 +712,12 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'execute_electerm_command',
+      'execute_bshell_command',
       {
         description: 'Execute a non-interactive shell command and return a structured result: { stdout, stderr, exitCode, durationMs, timedOut, truncated, mode, tabId }. ' +
           'On SSH tabs this uses a dedicated exec channel (mode="exec") with real stdout/stderr/exit code capture — no terminal buffer parsing needed. ' +
           'On other tabs it falls back to sentinel-based PTY capture (mode="pty", stderr merged into stdout). ' +
-          'Prefer this over send_electerm_terminal_command + wait_for_electerm_terminal_idle for regular commands like git status, docker ps, npm test. ' +
+          'Prefer this over send_bshell_terminal_command + wait_for_bshell_terminal_idle for regular commands like git status, docker ps, npm test. ' +
           'For interactive programs (vim, top, ssh) use the terminal send/read tools instead. ' +
           'For long-running commands pass wait=false: runs in the background and returns an MCP task handle (poll with tasks/get, stop with tasks/cancel). Requires the MCP Tasks extension.',
         inputSchema: {
@@ -755,7 +755,7 @@ class ElectermMCPServer {
             args: { command: args.command, tabId: args.tabId }
           })
           const task = self.taskManager.create({
-            toolName: 'execute_electerm_command',
+            toolName: 'execute_bshell_command',
             meta: {
               bgTaskId: bg.taskId,
               tabId: bg.tabId,
@@ -794,9 +794,9 @@ class ElectermMCPServer {
     // command is refused outright. Registered unconditionally (never behind a
     // config switch) so it is available whenever the command tools are.
     server.registerTool(
-      'get_electerm_command_rules',
+      'get_bshell_command_rules',
       {
-        description: 'Get the command rules enforced by send_electerm_terminal_command and execute_electerm_command, so a command can be checked before it is sent. ' +
+        description: 'Get the command rules enforced by send_bshell_terminal_command and execute_bshell_command, so a command can be checked before it is sent. ' +
           'Returns { mode, builtinBlacklist, commandBlacklist, commandWhitelist }. Entries are regular expression sources tested against the command string with RegExp#test. For example, "^ls" matches command strings starting with "ls". ' +
           'The built-in and configured blacklists take precedence over the whitelist. A non-empty whitelist requires the command to match at least one whitelist entry. Configured patterns are returned even if invalid. Invalid blacklist entries are skipped, and invalid whitelist entries never match. ' +
           'These are the rules the running instance started with — editing the widget config takes effect only after a restart. They guard against accidents, not a determined bypass: an allowed command still runs with the session user\'s full rights on the remote host.',
@@ -811,7 +811,7 @@ class ElectermMCPServer {
     // ==================== Direct Tab Open APIs (always enabled) ====================
 
     server.registerTool(
-      'open_electerm_tab_ssh',
+      'open_bshell_tab_ssh',
       {
         description: 'Open a new SSH terminal tab directly with connection parameters (no bookmark created)',
         inputSchema: sshBookmarkSchema
@@ -826,7 +826,7 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'open_electerm_tab_telnet',
+      'open_bshell_tab_telnet',
       {
         description: 'Open a new Telnet terminal tab directly with connection parameters (no bookmark created)',
         inputSchema: telnetBookmarkSchema
@@ -841,7 +841,7 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'open_electerm_tab_serial',
+      'open_bshell_tab_serial',
       {
         description: 'Open a new Serial terminal tab directly with connection parameters (no bookmark created)',
         inputSchema: serialBookmarkSchema
@@ -856,7 +856,7 @@ class ElectermMCPServer {
     )
 
     server.registerTool(
-      'open_electerm_tab_local',
+      'open_bshell_tab_local',
       {
         description: 'Open a new Local terminal tab directly with connection parameters (no bookmark created)',
         inputSchema: localBookmarkSchema
@@ -873,9 +873,9 @@ class ElectermMCPServer {
     // ==================== Bookmark APIs ====================
     if (this.config.enableBookmarks) {
       server.registerTool(
-        'list_electerm_bookmarks',
+        'list_bshell_bookmarks',
         {
-          description: 'List all electerm SSH/terminal bookmarks',
+          description: 'List all bshell SSH/terminal bookmarks',
           inputSchema: {}
         },
         async (args) => {
@@ -890,9 +890,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'get_electerm_bookmark',
+        'get_bshell_bookmark',
         {
-          description: 'Get a specific electerm bookmark by ID',
+          description: 'Get a specific bshell bookmark by ID',
           inputSchema: {
             id: z.string().describe('Bookmark ID')
           }
@@ -904,9 +904,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'add_electerm_bookmark_ssh',
+        'add_bshell_bookmark_ssh',
         {
-          description: 'Add a new SSH bookmark to electerm',
+          description: 'Add a new SSH bookmark to bshell',
           inputSchema: sshBookmarkSchema
         },
         async (args) => {
@@ -919,9 +919,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'add_electerm_bookmark_telnet',
+        'add_bshell_bookmark_telnet',
         {
-          description: 'Add a new Telnet bookmark to electerm',
+          description: 'Add a new Telnet bookmark to bshell',
           inputSchema: telnetBookmarkSchema
         },
         async (args) => {
@@ -934,9 +934,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'add_electerm_bookmark_serial',
+        'add_bshell_bookmark_serial',
         {
-          description: 'Add a new Serial bookmark to electerm',
+          description: 'Add a new Serial bookmark to bshell',
           inputSchema: serialBookmarkSchema
         },
         async (args) => {
@@ -949,9 +949,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'add_electerm_bookmark_local',
+        'add_bshell_bookmark_local',
         {
-          description: 'Add a new Local terminal bookmark to electerm',
+          description: 'Add a new Local terminal bookmark to bshell',
           inputSchema: localBookmarkSchema
         },
         async (args) => {
@@ -964,9 +964,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'edit_electerm_bookmark',
+        'edit_bshell_bookmark',
         {
-          description: 'Edit an existing electerm bookmark',
+          description: 'Edit an existing bshell bookmark',
           inputSchema: {
             id: z.string().describe('Bookmark ID to edit'),
             updates: z.record(z.any()).describe('Fields to update')
@@ -979,9 +979,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'delete_electerm_bookmark',
+        'delete_bshell_bookmark',
         {
-          description: 'Delete an electerm bookmark',
+          description: 'Delete an bshell bookmark',
           inputSchema: {
             id: z.string().describe('Bookmark ID to delete')
           }
@@ -993,9 +993,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'open_electerm_bookmark',
+        'open_bshell_bookmark',
         {
-          description: 'Open an electerm bookmark in a new tab',
+          description: 'Open an bshell bookmark in a new tab',
           inputSchema: {
             id: z.string().describe('Bookmark ID to open')
           }
@@ -1010,9 +1010,9 @@ class ElectermMCPServer {
     // ==================== Bookmark Group APIs ====================
     if (this.config.enableBookmarkGroups) {
       server.registerTool(
-        'list_electerm_bookmark_groups',
+        'list_bshell_bookmark_groups',
         {
-          description: 'List all electerm bookmark groups/folders',
+          description: 'List all bshell bookmark groups/folders',
           inputSchema: z.object({})
         },
         async () => {
@@ -1022,9 +1022,9 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'add_electerm_bookmark_group',
+        'add_bshell_bookmark_group',
         {
-          description: 'Add a new electerm bookmark group',
+          description: 'Add a new bshell bookmark group',
           inputSchema: {
             title: z.string().describe('Group title'),
             parentId: z.string().optional().describe('Optional parent group ID')
@@ -1040,7 +1040,7 @@ class ElectermMCPServer {
     // ==================== SFTP APIs ====================
     if (this.config.enableSftp) {
       server.registerTool(
-        'electerm_sftp_list',
+        'bshell_sftp_list',
         {
           description: 'List files and folders in a remote directory on the SSH-connected tab',
           inputSchema: {
@@ -1055,7 +1055,7 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'electerm_sftp_stat',
+        'bshell_sftp_stat',
         {
           description: 'Get file or directory stat/info on the remote SSH server',
           inputSchema: {
@@ -1070,7 +1070,7 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'electerm_sftp_read_file',
+        'bshell_sftp_read_file',
         {
           description: 'Read the content of a remote file on the SSH server',
           inputSchema: {
@@ -1089,7 +1089,7 @@ class ElectermMCPServer {
       // paths. Opt-in, like the settings tools.
       if (this.config.enableSftpWrite) {
         server.registerTool(
-          'electerm_sftp_del_file_or_folder',
+          'bshell_sftp_del_file_or_folder',
           {
             description: 'Delete a file or folder on the remote SSH server',
             inputSchema: {
@@ -1104,7 +1104,7 @@ class ElectermMCPServer {
         )
 
         server.registerTool(
-          'electerm_sftp_upload',
+          'bshell_sftp_upload',
           {
             description: 'Upload a local file or folder to the remote SSH server using the SFTP transfer panel',
             inputSchema: {
@@ -1125,7 +1125,7 @@ class ElectermMCPServer {
         )
 
         server.registerTool(
-          'electerm_sftp_download',
+          'bshell_sftp_download',
           {
             description: 'Download a remote file or folder from the SSH server to a local path using the SFTP transfer panel',
             inputSchema: {
@@ -1146,7 +1146,7 @@ class ElectermMCPServer {
         )
 
         server.registerTool(
-          'electerm_zmodem_upload',
+          'bshell_zmodem_upload',
           {
             description: 'Upload local files to the remote SSH server using trzsz (trz) or rzsz (rz). The SSH tab must have the chosen protocol installed.',
             inputSchema: {
@@ -1162,7 +1162,7 @@ class ElectermMCPServer {
         )
 
         server.registerTool(
-          'electerm_zmodem_download',
+          'bshell_zmodem_download',
           {
             description: 'Download remote files from the SSH server using trzsz (tsz) or rzsz (sz). The SSH tab must have the chosen protocol installed.',
             inputSchema: {
@@ -1180,7 +1180,7 @@ class ElectermMCPServer {
       }
 
       server.registerTool(
-        'electerm_sftp_transfer_list',
+        'bshell_sftp_transfer_list',
         {
           description: 'Get the list of all currently active/pending SFTP file transfers',
           inputSchema: z.object({})
@@ -1192,7 +1192,7 @@ class ElectermMCPServer {
       )
 
       server.registerTool(
-        'electerm_sftp_transfer_history',
+        'bshell_sftp_transfer_history',
         {
           description: 'Get the history of completed/failed SFTP file transfers',
           inputSchema: z.object({})
@@ -1207,9 +1207,9 @@ class ElectermMCPServer {
     // ==================== Settings APIs ====================
     if (this.config.enableSettings) {
       server.registerTool(
-        'get_electerm_settings',
+        'get_bshell_settings',
         {
-          description: 'Get current electerm application settings',
+          description: 'Get current bshell application settings',
           inputSchema: undefined
         },
         async () => {
@@ -1252,7 +1252,7 @@ class ElectermMCPServer {
 
     // Create MCP server
     this.mcpServer = new McpServer({
-      name: 'electerm-mcp-server',
+      name: 'bshell-mcp-server',
       version: widgetInfo.version,
       taskManager: this.taskManager
     })
@@ -1268,7 +1268,7 @@ class ElectermMCPServer {
     // from an attacker's domain can point that domain at 127.0.0.1 (DNS
     // rebinding) and then talk to us same-origin, so CORS never applies and
     // omitting Access-Control-Allow-Origin protects nothing — the page can
-    // call execute_electerm_command and get a shell. What is left is:
+    // call execute_bshell_command and get a shell. What is left is:
     //   1. the Host it claims to be talking to, which a rebound page cannot
     //      make loopback-looking while still being same-origin with itself;
     //   2. any Origin header at all — no browser client is supported, local
@@ -1545,7 +1545,7 @@ class ElectermMCPServer {
 
 function widgetRun (instanceConfig, ctx = {}) {
   const config = { ...getDefaultConfig(), ...instanceConfig }
-  const mcpServer = new ElectermMCPServer(config, ctx)
+  const mcpServer = new BshellMCPServer(config, ctx)
 
   return {
     instanceId: mcpServer.instanceId,
@@ -1557,5 +1557,5 @@ function widgetRun (instanceConfig, ctx = {}) {
 module.exports = {
   widgetInfo,
   widgetRun,
-  _ElectermMCPServer: ElectermMCPServer
+  _BshellMCPServer: BshellMCPServer
 }

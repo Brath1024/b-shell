@@ -4,7 +4,7 @@ const assert = require('node:assert/strict')
 // Drives src/client/common/transfer.js against a fake worker, the way
 // src/test/unit-ci/worker-once-dispatch.spec.js drives the worker itself.
 //
-// Regression guard for electerm-web#31: a transfer socket is not persistent,
+// Regression guard for bshell-web#31: a transfer socket is not persistent,
 // and the server destroys the transfer as soon as it closes, so a dropped
 // websocket used to leave the page with a pending `transfer:end`/`transfer:err`
 // entry that clearOnces() simply deleted -- no end, no error, and a panel row

@@ -36,7 +36,7 @@ class TerminalSerial extends TerminalBase {
     this.rxConverter = createRxConverter(rxLineEnding)
     this.view = new SerialView({ rows: this.initOptions.rows })
     this.framer = null
-    // control lines as electerm set them: port.set() always sets all, and
+    // control lines as bshell set them: port.set() always sets all, and
     // the os may open the port with others, so they are set right away
     this.signals = { dtr: true, rts: true, brk: false }
     await new Promise((resolve, reject) => {

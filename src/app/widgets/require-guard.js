@@ -16,7 +16,7 @@
  * This is a platform-independence boundary, not a sandbox: a widget that wants
  * to escape can still use `process.binding` or spawn a process. What it buys is
  * that the desktop-only surface stops being reachable by accident, and that the
- * failure reads as "this widget needs desktop electerm" instead of
+ * failure reads as "this widget needs desktop bshell" instead of
  * "Cannot find module 'electron'" from inside somebody else's code.
  */
 

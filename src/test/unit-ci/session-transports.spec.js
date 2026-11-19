@@ -20,9 +20,9 @@ const sessionTelnet = require('../../../src/app/server/session-telnet')
 
 const FTP_USERNAME = 'test'
 const FTP_PASSWORD = 'test123'
-const SERIAL_PATH = '/dev/electerm-test'
+const SERIAL_PATH = '/dev/bshell-test'
 const TELNET_USERNAME = 'tester'
-const TELNET_PASSWORD = 'electerm-test'
+const TELNET_PASSWORD = 'bshell-test'
 
 function makeTmpDir (prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix))
@@ -34,7 +34,7 @@ async function getFreePort (start = 30000, end = 39999) {
 }
 
 async function startFtpServer () {
-  const root = makeTmpDir('electerm-ftp-test-')
+  const root = makeTmpDir('bshell-ftp-test-')
   const port = await getFreePort(31000, 31999)
   const server = new FtpSrv({
     url: `ftp://127.0.0.1:${port}`,
@@ -118,7 +118,7 @@ async function startTelnetServer (eol = '\r\n') {
         if (stage === 'password') {
           if (line === TELNET_PASSWORD) {
             stage = 'shell'
-            socket.write(`Welcome to electerm${eol}$ `)
+            socket.write(`Welcome to bshell${eol}$ `)
           } else {
             socket.write(`Login failed${eol}`)
             socket.end()
@@ -386,9 +386,9 @@ describe('session-telnet transport flows', () => {
     assert.equal(globalState.getSession(term.pid), term)
 
     const banner = await waitForText(term.port, (output) => {
-      return output.includes('Welcome to electerm')
+      return output.includes('Welcome to bshell')
     })
-    assert.match(banner, /welcome to electerm/i)
+    assert.match(banner, /welcome to bshell/i)
 
     const responsePromise = waitForText(term.port, (output) => {
       return output.includes('echo:status')
@@ -432,7 +432,7 @@ describe('session-telnet transport flows', () => {
 
     // The device ends every line with a bare CR. Without the conversion the
     // next line is printed on top of this one - the #4649 symptom
-    await output.waitFor(t => t.includes('Welcome to electerm\r\n'))
+    await output.waitFor(t => t.includes('Welcome to bshell\r\n'))
 
     // Enter arrives from the renderer as a CR; the device wants CRLF
     term.write('status\r')

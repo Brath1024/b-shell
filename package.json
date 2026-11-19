@@ -1,7 +1,8 @@
 {
-  "name": "electerm",
+  "name": "b-shell",
+  "productName": "b-shell",
   "version": "5.11.8",
-  "description": "Open-sourced terminal/ssh/sftp/telnet/serialport/RDP/VNC/Spice/ftp client(Linux, Mac, Windows, Android, HarmonyOS, iOS).",
+  "description": "b-shell - Brath 终端管理工具(Windows/macOS)，基于 Electerm 二次开发，支持 SSH/SFTP/Telnet/串口/RDP/VNC/Spice/FTP，并内置 Xshell 配置一键导入。",
   "main": "app.js",
   "scripts": {
     "app": "node src/build/bin/app",
@@ -29,27 +30,37 @@
     "r": "./src/build/bin/release",
     "w": "./src/build/bin/web-release",
     "t": "./node_modules/.bin/electron work/app/app.js",
-    "lock": "npm i --package-lock-only"
+    "lock": "npm i --package-lock-only",
+    "dist:win": "npm run b && npm run pb && electron-builder --win --x64",
+    "dist:mac": "npm run b && npm run pb && electron-builder --mac",
+    "dist:linux": "npm run b && npm run pb && electron-builder --linux"
   },
   "license": "MIT",
   "languageRepo": "https://github.com/electerm/electerm-locales",
   "privacyNoticeLink": "https://github.com/electerm/electerm/wiki/privacy-notice",
   "knownIssuesLink": "https://github.com/electerm/electerm/wiki/Know-issues",
-  "sponsorLink": "https://electerm.org/sponsor-electerm",
+  "sponsorLink": "https://gitee.com/Guoqing-Li/b-shell",
+  "forkedFrom": "https://github.com/electerm/electerm",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electerm/electerm.git"
+    "url": "git+https://gitee.com/Guoqing-Li/b-shell.git"
   },
   "author": {
     "name": "ZHAO Xudong",
     "email": "zxdong@gmail.com",
     "url": "https://github.com/zxdong262"
   },
+  "contributors": [
+    {
+      "name": "Brath",
+      "email": "brath@126.com"
+    }
+  ],
   "bugs": {
-    "url": "https://github.com/electerm/electerm/issues"
+    "url": "https://gitee.com/Guoqing-Li/b-shell/issues"
   },
-  "homepage": "https://electerm.org",
-  "releases": "https://github.com/electerm/electerm/releases",
+  "homepage": "https://gitee.com/Guoqing-Li/b-shell",
+  "releases": "https://gitee.com/Guoqing-Li/b-shell/releases",
   "engines": {
     "node": ">=16.0.0"
   },

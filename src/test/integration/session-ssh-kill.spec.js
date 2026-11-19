@@ -38,7 +38,7 @@ const {
 const { createTrustingWs, waitFor } = require('./lib/ssh-session-harness')
 
 // keep the developer's ~/.ssh/known_hosts out of it
-process.env.HOME = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ssh-kill-'))
+process.env.HOME = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ssh-kill-'))
 
 const KILL_PORT = 22240
 
@@ -65,7 +65,7 @@ const liveClients = (server) => server._clients.size
  * reaped or left behind.
  */
 function writeStubProxy () {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-ssh-kill-proxy-'))
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-ssh-kill-proxy-'))
   const pidFile = path.join(dir, 'proxy.pid')
   const bin = path.join(dir, 'stub-proxy')
   fs.writeFileSync(bin, `#!/usr/bin/env node

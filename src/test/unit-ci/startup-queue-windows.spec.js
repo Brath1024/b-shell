@@ -211,7 +211,7 @@ describe('Windows startup directory', () => {
       args: ['-NoProfile', '-File', 'C:\\setup.ps1']
     })
     assert.equal(sent.length, 2)
-    assert.match(sent[0], /ELECTERM_SHELL_INTEGRATION/)
+    assert.match(sent[0], /BSHELL_SHELL_INTEGRATION/)
     assert.equal(sent[1], "Set-Location -LiteralPath 'D:\\work'\r")
   })
 

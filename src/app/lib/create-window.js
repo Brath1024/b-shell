@@ -104,12 +104,12 @@ exports.createWindow = async function (userConfig) {
     console.error('init app server failed:', err)
     try {
       dialog.showErrorBox(
-        'electerm',
-        `electerm could not start its local backend service.\n\n${err?.message || err}\n\n` +
+        'b-shell',
+        `bshell could not start its local backend service.\n\n${err?.message || err}\n\n` +
         'This is usually a port problem. On Windows a port can be reserved by ' +
         'Hyper-V/WSL2/Docker Desktop, and security software can block it too.\n\n' +
-        'Try starting electerm with another port, e.g.\n' +
-        'electerm.exe -sp 40975'
+        'Try starting bshell with another port, e.g.\n' +
+        'b-shell.exe -sp 40975'
       )
     } catch (_) {}
     app.quit()

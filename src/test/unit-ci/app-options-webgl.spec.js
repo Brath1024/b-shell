@@ -37,8 +37,8 @@ function readOptions (envOverrides = {}) {
   // sandbox variable it copies through ...process.env), so the defaults
   // asserted below are the helper's, not this machine's.
   for (const key of [
-    'ELECTERM_E2E_NO_SANDBOX',
-    'ELECTERM_E2E_USER_DATA',
+    'BSHELL_E2E_NO_SANDBOX',
+    'BSHELL_E2E_USER_DATA',
     'ELECTRON_DISABLE_SANDBOX'
   ]) {
     if (!(key in envOverrides)) {
@@ -80,7 +80,7 @@ describe('app-options-webgl', () => {
     const dir = userDataDirArg(first.webgl.args)
     assert.ok(dir, 'the WebGL helper must inherit --user-data-dir')
     assert.equal(dir, userDataDirArg(first.base.args))
-    assert.match(dir, /--user-data-dir=.+electerm-e2e-/)
+    assert.match(dir, /--user-data-dir=.+bshell-e2e-/)
 
     // Not a hardcoded path: a separate module load (here: a separate process)
     // mints a separate dir. Per-launch isolation is a different contract, owned
@@ -104,7 +104,7 @@ describe('app-options-webgl', () => {
     assert.equal(plain.base.args.includes('--no-sandbox'), isLinux)
     assert.equal(plain.webgl.env.ELECTRON_DISABLE_SANDBOX, isLinux ? '1' : undefined)
 
-    const noSandbox = readOptions({ ELECTERM_E2E_NO_SANDBOX: '1' })
+    const noSandbox = readOptions({ BSHELL_E2E_NO_SANDBOX: '1' })
     assert.equal(noSandbox.base.args.includes('--no-sandbox'), true)
     assert.equal(noSandbox.webgl.args.includes('--no-sandbox'), true)
     assert.deepEqual(
@@ -114,9 +114,9 @@ describe('app-options-webgl', () => {
     assert.equal(noSandbox.webgl.env.NODE_TEST, 'yes')
   })
 
-  it('reuses an explicit ELECTERM_E2E_USER_DATA dir when asked to', () => {
+  it('reuses an explicit BSHELL_E2E_USER_DATA dir when asked to', () => {
     const shared = resolve(root, '.tmp-app-options-webgl-noop')
-    const { base, webgl } = readOptions({ ELECTERM_E2E_USER_DATA: shared })
+    const { base, webgl } = readOptions({ BSHELL_E2E_USER_DATA: shared })
     assert.equal(userDataDirArg(base.args), `--user-data-dir=${shared}`)
     assert.equal(userDataDirArg(webgl.args), `--user-data-dir=${shared}`)
   })

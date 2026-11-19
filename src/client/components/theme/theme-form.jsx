@@ -151,7 +151,7 @@ export default function ThemeForm (props) {
 
   function renderSrc (type) {
     if (type === 'iterm') {
-      const url = `https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/electerm/${encodeURIComponent(themeName)}.txt`
+      const url = `https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/bshell/${encodeURIComponent(themeName)}.txt`
       return (
         <FormItem>
           <span className='mg1r'>src:</span>

@@ -137,17 +137,17 @@ async function test (serverUrl, username, password, proxy, skipVerify) {
 }
 
 /**
- * Upload electerm data to WebDAV server
+ * Upload bshell data to WebDAV server
  */
 async function upload (serverUrl, username, password, data, proxy, skipVerify) {
   const client = createClient(serverUrl, username, password, proxy, skipVerify)
-  const basePath = '/electerm'
+  const basePath = '/bshell'
 
   try {
     log.info(`[WebDAV] upload: starting to ${serverUrl}${basePath}`)
     log.info(`[WebDAV] upload: data keys = [${Object.keys(data).join(', ')}]`)
 
-    // Ensure electerm directory exists
+    // Ensure bshell directory exists
     await ensureDir(client, basePath)
 
     // Upload each file
@@ -169,11 +169,11 @@ async function upload (serverUrl, username, password, data, proxy, skipVerify) {
 }
 
 /**
- * Download electerm data from WebDAV server
+ * Download bshell data from WebDAV server
  */
 async function download (serverUrl, username, password, proxy, skipVerify) {
   const client = createClient(serverUrl, username, password, proxy, skipVerify)
-  const basePath = '/electerm'
+  const basePath = '/bshell'
 
   try {
     log.info(`[WebDAV] download: starting from ${serverUrl}${basePath}`)
@@ -192,7 +192,7 @@ async function download (serverUrl, username, password, proxy, skipVerify) {
       'addressBookmarks.json',
       'workspaces.json',
       'userConfig.json',
-      'electerm-status.json',
+      'bshell-status.json',
       'settings.order.json',
       'bookmarks.order.json',
       'bookmarkGroups.order.json',

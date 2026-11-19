@@ -127,7 +127,7 @@ async function testEditFolderPermission (client, folderType) {
 }
 
 async function testFileInfoModal (client, fileType, closeMethod) {
-  const fname = `${fileType}-test-electerm-${nanoid()}`
+  const fname = `${fileType}-test-bshell-${nanoid()}`
 
   // Create a new folder
   await client.withContextMenu(

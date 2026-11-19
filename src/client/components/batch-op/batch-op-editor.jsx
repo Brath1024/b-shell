@@ -38,49 +38,49 @@ const workflowExample = `[
     "action": "command",
     "afterDelay": 500,
     "prevDelay": 500,
-    "command": "mkdir -p /tmp/electerm-batch-op && rm -f /tmp/electerm-batch-op/test_5m_file.bin /tmp/electerm-batch-op/test_log.log && (fallocate -l 5M /tmp/electerm-batch-op/test_5m_file.bin || dd if=/dev/zero of=/tmp/electerm-batch-op/test_5m_file.bin bs=1M count=5) && echo '[LOG] Created 5M test file at $(date)' >> /tmp/electerm-batch-op/test_log.log"
+    "command": "mkdir -p /tmp/bshell-batch-op && rm -f /tmp/bshell-batch-op/test_5m_file.bin /tmp/bshell-batch-op/test_log.log && (fallocate -l 5M /tmp/bshell-batch-op/test_5m_file.bin || dd if=/dev/zero of=/tmp/bshell-batch-op/test_5m_file.bin bs=1M count=5) && echo '[LOG] Created 5M test file at $(date)' >> /tmp/bshell-batch-op/test_log.log"
   },
   {
     "name": "Log creation",
     "action": "command",
-    "command": "ls -la /tmp/electerm-batch-op/test_5m_file.bin >> /tmp/electerm-batch-op/test_log.log 2>&1 && echo '[LOG] File size logged at $(date)' >> /tmp/electerm-batch-op/test_log.log"
+    "command": "ls -la /tmp/bshell-batch-op/test_5m_file.bin >> /tmp/bshell-batch-op/test_log.log 2>&1 && echo '[LOG] File size logged at $(date)' >> /tmp/bshell-batch-op/test_log.log"
   },
   {
     "name": "Download 5M File",
     "action": "sftp_download",
     "afterDelay": 200,
-    "remotePath": "/tmp/electerm-batch-op/test_5m_file.bin",
-    "localPath": "/tmp/electerm-batch-op-local.bin"
+    "remotePath": "/tmp/bshell-batch-op/test_5m_file.bin",
+    "localPath": "/tmp/bshell-batch-op-local.bin"
   },
   {
     "name": "Log after download",
     "action": "command",
     "afterDelay": 200,
-    "command": "echo '[LOG] Download complete at $(date)' >> /tmp/electerm-batch-op/test_log.log"
+    "command": "echo '[LOG] Download complete at $(date)' >> /tmp/bshell-batch-op/test_log.log"
   },
   {
     "name": "Delete Remote 5M File",
     "action": "command",
     "afterDelay": 200,
-    "command": "rm /tmp/electerm-batch-op/test_5m_file.bin && echo '[LOG] Deleted remote 5M file at $(date)' >> /tmp/electerm-batch-op/test_log.log"
+    "command": "rm /tmp/bshell-batch-op/test_5m_file.bin && echo '[LOG] Deleted remote 5M file at $(date)' >> /tmp/bshell-batch-op/test_log.log"
   },
   {
     "name": "Upload Downloaded File to Remote",
     "action": "sftp_upload",
     "afterDelay": 200,
-    "localPath": "/tmp/electerm-batch-op-local.bin",
-    "remotePath": "/tmp/electerm-batch-op/test_5m_file_uploaded.bin"
+    "localPath": "/tmp/bshell-batch-op-local.bin",
+    "remotePath": "/tmp/bshell-batch-op/test_5m_file_uploaded.bin"
   },
   {
     "name": "Log after upload",
     "action": "command",
     "afterDelay": 200,
-    "command": "echo '[LOG] Upload complete at $(date)' >> /tmp/electerm-batch-op/test_log.log"
+    "command": "echo '[LOG] Upload complete at $(date)' >> /tmp/bshell-batch-op/test_log.log"
   },
   {
     "name": "Verify and clean up",
     "action": "command",
-    "command": "ls -la /tmp/electerm-batch-op/test_5m_file_uploaded.bin >> /tmp/electerm-batch-op/test_log.log 2>&1 && rm -f /tmp/electerm-batch-op/test_5m_file*.bin && echo '[LOG] Cleaned up at $(date)' >> /tmp/electerm-batch-op/test_log.log"
+    "command": "ls -la /tmp/bshell-batch-op/test_5m_file_uploaded.bin >> /tmp/bshell-batch-op/test_log.log 2>&1 && rm -f /tmp/bshell-batch-op/test_5m_file*.bin && echo '[LOG] Cleaned up at $(date)' >> /tmp/bshell-batch-op/test_log.log"
   }
 ]`
 
@@ -136,7 +136,7 @@ export default function BatchOpEditor ({ widget }) {
 
   const handleEditWithSystemEditor = useCallback(async () => {
     const id = generate()
-    const tempPath = window.pre.resolve(window.pre.tempDir, `electerm-batch-op-${id}.json`)
+    const tempPath = window.pre.resolve(window.pre.tempDir, `bshell-batch-op-${id}.json`)
     await window.fs.writeFile(tempPath, value)
     window.pre.runGlobalAsync('watchFile', tempPath)
     window.fs.openFile(tempPath).catch(window.store.onError)
@@ -151,7 +151,7 @@ export default function BatchOpEditor ({ widget }) {
 
   const handleEditWithCustom = useCallback(async (editorCommand) => {
     const id = generate()
-    const tempPath = window.pre.resolve(window.pre.tempDir, `electerm-batch-op-${id}.json`)
+    const tempPath = window.pre.resolve(window.pre.tempDir, `bshell-batch-op-${id}.json`)
     await window.fs.writeFile(tempPath, value)
     window.pre.runGlobalAsync('watchFile', tempPath)
     await window.pre.runGlobalAsync('openFileWithEditor', tempPath, editorCommand)

@@ -88,7 +88,7 @@ const openSocket = async (wsId) => {
       action: 'create',
       persist: false,
       type: 'common',
-      args: ['common', wsId, '', { host: '127.0.0.1', port: 65535, tokenElecterm: 't' }]
+      args: ['common', wsId, '', { host: '127.0.0.1', port: 65535, tokenBshell: 't' }]
     }
   })
   await delay()

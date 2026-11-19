@@ -22,7 +22,7 @@
  * `api.css` is deliberately platform-neutral: it edits the running instance's
  * css and the renderer applies it (see ./css-bus.js). A widget that only
  * restyles the app therefore needs no platform knowledge at all — and a widget
- * that has a UI does not even need this module: window.electerm.css does it in
+ * that has a UI does not even need this module: window.bshell.css does it in
  * the client.
  *
  * Everything is JSON-serialisable or a string; nothing here hands a widget a
@@ -84,7 +84,7 @@ function electronBackend () {
     },
     notify ({ title, message }) {
       new Notification({
-        title: title || 'electerm',
+        title: title || 'b-shell',
         body: message || ''
       }).show()
     },
@@ -266,7 +266,7 @@ function createWidgetApi (widgetId) {
       const conf = opts && typeof opts === 'object'
         ? opts
         : { message: String(opts == null ? '' : opts) }
-      return backendCall('notify', 'notify', 'use window.electerm in a widget UI for a client-side notice', conf)
+      return backendCall('notify', 'notify', 'use window.bshell in a widget UI for a client-side notice', conf)
     },
     openExternal (url) {
       return backendCall('openExternal', 'openExternal', 'open the link from the widget UI instead', String(url))
@@ -281,10 +281,10 @@ function createWidgetApi (widgetId) {
     },
     dialog: {
       open (opts) {
-        return backendCall('dialog', 'dialogOpen', 'use a widget UI with window.electerm.openDialog', opts || {})
+        return backendCall('dialog', 'dialogOpen', 'use a widget UI with window.bshell.openDialog', opts || {})
       },
       save (opts) {
-        return backendCall('dialog', 'dialogSave', 'use a widget UI with window.electerm.saveDialog', opts || {})
+        return backendCall('dialog', 'dialogSave', 'use a widget UI with window.bshell.saveDialog', opts || {})
       }
     },
     secret: {
@@ -321,7 +321,7 @@ function createWidgetApi (widgetId) {
 
 // The shim written into a widget folder calls this. Set at load so it exists
 // before any widget module is evaluated.
-globalThis.__electermWidgetApiFactory = createWidgetApi
+globalThis.__bshellWidgetApiFactory = createWidgetApi
 
 module.exports = {
   createWidgetApi,

@@ -32,7 +32,7 @@ describe('ssh known_hosts verification', () => {
   })
 
   test('treats same-type key changes as mismatches', async () => {
-    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'electerm-known-hosts-'))
+    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'bshell-known-hosts-'))
     try {
       const knownHostsPath = join(tempDir, 'known_hosts')
       const originalKey = createHostKey('original')
@@ -56,7 +56,7 @@ describe('ssh known_hosts verification', () => {
   })
 
   test('writes and re-reads a non-default port entry', async () => {
-    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'electerm-known-hosts-'))
+    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'bshell-known-hosts-'))
     try {
       const knownHostsPath = join(tempDir, 'known_hosts')
       const hostKey = createHostKey('port-2222')
@@ -83,7 +83,7 @@ describe('ssh known_hosts verification', () => {
   })
 
   test('removeKnownHost removes matching entry', async () => {
-    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'electerm-known-hosts-'))
+    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'bshell-known-hosts-'))
     try {
       const knownHostsPath = join(tempDir, 'known_hosts')
       const key1 = createHostKey('host1')
@@ -126,7 +126,7 @@ describe('ssh known_hosts verification', () => {
   })
 
   test('replaceKnownHost updates a changed key', async () => {
-    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'electerm-known-hosts-'))
+    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'bshell-known-hosts-'))
     try {
       const knownHostsPath = join(tempDir, 'known_hosts')
       const originalKey = createHostKey('original')
@@ -189,7 +189,7 @@ describe('ssh known_hosts verification', () => {
   })
 
   test('ignores @cert-authority entries instead of reporting a mismatch', async () => {
-    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'electerm-known-hosts-'))
+    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'bshell-known-hosts-'))
     try {
       const knownHostsPath = join(tempDir, 'known_hosts')
       const caKey = createHostKey('ca').toString('base64')
@@ -222,7 +222,7 @@ describe('ssh known_hosts verification', () => {
   })
 
   test('replaceKnownHost keeps @cert-authority entries', async () => {
-    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'electerm-known-hosts-'))
+    const tempDir = await fs.promises.mkdtemp(join(os.tmpdir(), 'bshell-known-hosts-'))
     try {
       const knownHostsPath = join(tempDir, 'known_hosts')
       const caKey = createHostKey('ca').toString('base64')

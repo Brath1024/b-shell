@@ -1,14 +1,14 @@
 /**
- * The renderer half of widgets that restyle electerm.
+ * The renderer half of widgets that restyle bshell.
  *
  * A widget's server script never touches a DOM (it may not require electron at
  * all, see app/widgets/require-guard.js). It calls api.css.apply(), the css is
  * kept on the running instance, and this module turns it into one
- * <style data-electerm-widget="<id>"> tag in the app document — the same thing
+ * <style data-b-shell-widget="<id>"> tag in the app document — the same thing
  * on the desktop and in a browser.
  *
  * A widget UI goes one step further and applies css itself
- * (window.electerm.css, see app/widgets/bridge.js and custom-widget-panel.jsx):
+ * (window.bshell.css, see app/widgets/bridge.js and custom-widget-panel.jsx):
  * no node process, no manifest, no round trip.
  *
  * Two entry points for the host's own pushes:
@@ -20,8 +20,8 @@
  * its stylesheet does not stack <style> tags, and Stop removes the one it owns.
  */
 
-const DOM_ID_PREFIX = 'electerm-widget-style-'
-const ATTR = 'data-electerm-widget'
+const DOM_ID_PREFIX = 'b-shell-widget-style-'
+const ATTR = 'data-b-shell-widget'
 
 // `@import` in a widget stylesheet would fetch over the network from inside the
 // app document; the app's own custom-css field has the same rule.

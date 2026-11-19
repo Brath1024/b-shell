@@ -161,7 +161,7 @@ describe('safeJoin', () => {
   })
 
   // Pins the deliberate cost of reusing the cross-platform sanitizer: names that
-  // are perfectly legal on Linux are rewritten, because electerm does not know
+  // are perfectly legal on Linux are rewritten, because bshell does not know
   // the target's OS and every other transfer path sanitizes the same way. If
   // this ever becomes a problem, the fix is a separate validator that only
   // rejects escaping names — not a looser sanitizer here.

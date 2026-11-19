@@ -11,7 +11,7 @@ import React from 'react'
 import { Alert } from 'antd'
 
 export const WIDGET_NODE_WARNING =
-  "A widget's main.js runs inside electerm's main process with full Node permissions — it can read files and run commands. An instance widget that declares autoRun starts automatically after install. Only install widgets whose source you trust."
+  "A widget's main.js runs inside bshell's main process with full Node permissions — it can read files and run commands. An instance widget that declares autoRun starts automatically after install. Only install widgets whose source you trust."
 
 export default function WidgetTrustWarning ({ className = '' }) {
   return (

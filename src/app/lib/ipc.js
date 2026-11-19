@@ -26,6 +26,7 @@ const { listItermThemes } = require('./iterm-theme')
 const installSrc = require('./install-src')
 const { getConfig } = require('./get-config')
 const loadSshConfig = require('./ssh-config')
+const { loadXshellSessions } = require('./xshell-import')
 const {
   listWidgets,
   listWidgetInstances,
@@ -162,7 +163,7 @@ async function initAppServer () {
     config
   } = await getConfig(globalState.get('serverInited'))
   // must happen before the server child is forked: it opens its own log level
-  // from the inherited ELECTERM_DEBUG (see ../server/child-process.js)
+  // from the inherited BSHELL_DEBUG (see ../server/child-process.js)
   log.setDebugMode(!!config.debug)
   const {
     langs,
@@ -191,9 +192,9 @@ async function initAppServer () {
 }
 
 // The app renderer is a plain window on http://127.0.0.1:<port>; devtools, the
-// widget iframes (electerm-widget://) and about:blank are webContents too, and
+// widget iframes (b-shell-widget://) and about:blank are webContents too, and
 // styling any of those would be pointless or wrong.
-const NON_APP_SCHEME = /^(devtools|electerm-widget|chrome|chrome-extension|about|data):/i
+const NON_APP_SCHEME = /^(devtools|b-shell-widget|chrome|chrome-extension|about|data):/i
 
 function appWindows () {
   return webContents.getAllWebContents().filter(wc => (
@@ -282,6 +283,7 @@ function initIpc () {
     checkPassword,
     lookup,
     loadSshConfig,
+    loadXshellSessions,
     init,
     listSerialPorts,
     loadFontList,
@@ -356,11 +358,11 @@ function initIpc () {
     initCommandLine,
     // No renderer-supplied options: the main process owns platform/execPath.
     // `packaged` is the guard against a dev run, where execPath is Electron.
-    getElectermCommandStatus: () =>
+    getBshellCommandStatus: () =>
       getCommandStatus({ packaged: app.isPackaged }),
-    installElectermCommand: () =>
+    installBshellCommand: () =>
       installCommand({ packaged: app.isPackaged }),
-    uninstallElectermCommand: () =>
+    uninstallBshellCommand: () =>
       uninstallCommand({ packaged: app.isPackaged }),
     watchFile,
     unwatchFile,

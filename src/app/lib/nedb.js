@@ -41,14 +41,14 @@ function createDb (appPath, defaultUserName, { enc, dec } = {}) {
     }
   }
 
-  const appDataPath = process.env.DATA_PATH || resolve(appPath, 'electerm')
+  const appDataPath = process.env.DATA_PATH || resolve(appPath, 'b-shell')
 
   if (!fs.existsSync(appDataPath)) {
     fs.mkdirSync(appDataPath, { recursive: true })
   }
 
   const reso = (name) => {
-    return resolve(appDataPath, 'users', defaultUserName, `electerm.${name}.nedb`)
+    return resolve(appDataPath, 'users', defaultUserName, `bshell.${name}.nedb`)
   }
   const tables = [
     'bookmarks',

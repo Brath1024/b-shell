@@ -727,7 +727,7 @@ export default class FileSection extends React.Component {
       const id = generate()
       const safeName = sanitizeFilename(name)
       tempPath = window.pre.resolve(
-        window.pre.tempDir, `electerm-temp-${id}-${safeName}`
+        window.pre.tempDir, `bshell-temp-${id}-${safeName}`
       )
       // Defense-in-depth: verify the resolved path stays within tempDir
       if (!tempPath.startsWith(window.pre.tempDir + window.pre.sep)) {
@@ -753,7 +753,7 @@ export default class FileSection extends React.Component {
       const id = generate()
       const safeName = sanitizeFilename(name)
       tempPath = window.pre.resolve(
-        window.pre.tempDir, `electerm-temp-${id}-${safeName}`
+        window.pre.tempDir, `bshell-temp-${id}-${safeName}`
       )
       // Defense-in-depth: verify the resolved path stays within tempDir
       if (!tempPath.startsWith(window.pre.tempDir + window.pre.sep)) {

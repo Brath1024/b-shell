@@ -115,7 +115,7 @@ function toOpenAIToolCall ({ id, name, arguments: args }) {
 // DeepSeek V4 thinking mode validates the replayed history: every assistant
 // turn has to carry `reasoning_content`, and the request is rejected with
 // "The reasoning_content in the thinking mode must be passed back to the API"
-// when one does not. electerm only ever saves the final text of an answer, so
+// when one does not. bshell only ever saves the final text of an answer, so
 // a rebuilt conversation has nothing to replay -- an empty string is what the
 // API accepts, and it loses nothing: the docs only require the real reasoning
 // for turns that performed tool calls, and those are not part of the saved

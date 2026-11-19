@@ -33,8 +33,8 @@ const { trzszManager } = require('./trzsz')
 const { xmodemManager } = require('./xmodem')
 
 const {
-  tokenElecterm,
-  electermHost,
+  tokenBshell,
+  bshellHost,
   wsPort,
   type
 } = process.env
@@ -47,7 +47,7 @@ function markConnected () {
 
 function verify (req) {
   const { token: to } = req.query
-  if (to !== tokenElecterm) {
+  if (to !== tokenBshell) {
     throw new Error('not valid request')
   }
 }
@@ -712,8 +712,8 @@ process.on('message', async (message) => {
 
 const runServer = function () {
   return new Promise((resolve, reject) => {
-    const server = app.listen(wsPort, electermHost, () => {
-      log.info('session server', 'runs on', electermHost, wsPort)
+    const server = app.listen(wsPort, bshellHost, () => {
+      log.info('session server', 'runs on', bshellHost, wsPort)
       resolve()
     })
     // a listen failure used to become an uncaughtException, leaving the parent
@@ -733,7 +733,7 @@ async function main () {
   try {
     await runServer()
   } catch (err) {
-    log.error('session server', 'failed to listen on', `${electermHost}:${wsPort}`, err.message)
+    log.error('session server', 'failed to listen on', `${bshellHost}:${wsPort}`, err.message)
     try {
       process.send({
         serverInited: false,

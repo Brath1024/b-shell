@@ -15,7 +15,7 @@
  *
  * Usage:
  *   node src/build/bin/inject-polyfills.js                 # real target version
- *   ELECTERM_ELECTRON_VERSION=22 node .../inject-polyfills.js   # simulate legacy
+ *   BSHELL_ELECTRON_VERSION=22 node .../inject-polyfills.js   # simulate legacy
  *   node .../inject-polyfills.js --dry-run                 # report only
  */
 
@@ -60,7 +60,7 @@ const POLYFILLS = [
 ]
 
 function electronMajorVersion (root = ROOT) {
-  const fromEnv = process.env.ELECTERM_ELECTRON_VERSION
+  const fromEnv = process.env.BSHELL_ELECTRON_VERSION
   const raw = fromEnv || readPinnedElectron(root)
   const match = /(\d+)/.exec(String(raw || ''))
   return match ? Number(match[1]) : null

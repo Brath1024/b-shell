@@ -1,11 +1,11 @@
 /**
- * Unit tests for the MCP get_electerm_command_rules tool.
+ * Unit tests for the MCP get_bshell_command_rules tool.
  *
  * HTTP-level only — a real express server with a mocked electron + renderer
  * bridge, same pattern as mcp-keepalive.spec.js. The point under test is that
  * the reported rules are the rules enforcement actually uses (both sides share
  * getCommandRules()), so the tests compare the reported lists against what
- * send_electerm_terminal_command rejects.
+ * send_bshell_terminal_command rejects.
  */
 
 const { test, describe, before, after } = require('node:test')
@@ -24,7 +24,7 @@ const mockIpcMain = {
 }
 
 // Everything the widget sends over the mcp-request channel. A rejected command
-// must never show up here — that is what "filtered before it leaves electerm"
+// must never show up here — that is what "filtered before it leaves bshell"
 // means, asserted rather than assumed.
 const rendererCalls = []
 const mockWin = {
@@ -112,11 +112,11 @@ async function listTools (port) {
 
 async function readRules (port) {
   const sid = await initSession(port)
-  const res = await callTool(port, sid, 'get_electerm_command_rules', {})
+  const res = await callTool(port, sid, 'get_bshell_command_rules', {})
   return JSON.parse(res.data.result.content[0].text)
 }
 
-describe('get_electerm_command_rules – blacklist mode', () => {
+describe('get_bshell_command_rules – blacklist mode', () => {
   const PORT = 30864
   // Deliberately messy: a blank line and surrounding whitespace must be
   // normalised the same way the enforcement path normalises them.
@@ -140,8 +140,8 @@ describe('get_electerm_command_rules – blacklist mode', () => {
 
   test('is registered as a zero-argument tool', async () => {
     const tools = await listTools(PORT)
-    const tool = tools.find(t => t.name === 'get_electerm_command_rules')
-    assert.ok(tool, 'get_electerm_command_rules must be registered')
+    const tool = tools.find(t => t.name === 'get_bshell_command_rules')
+    assert.ok(tool, 'get_bshell_command_rules must be registered')
     assert.deepEqual(tool.inputSchema.properties, {})
     assert.deepEqual(tool.inputSchema.required, undefined)
     assert.match(tool.description, /blacklist/i)
@@ -164,7 +164,7 @@ describe('get_electerm_command_rules – blacklist mode', () => {
   test('the reported blacklist is the one enforcement applies', async () => {
     const sid = await initSession(PORT)
     rendererCalls.length = 0
-    const res = await callTool(PORT, sid, 'send_electerm_terminal_command', {
+    const res = await callTool(PORT, sid, 'send_bshell_terminal_command', {
       command: 'forbidden-exec touch /tmp/x'
     })
     assert.equal(res.data.result.isError, true)
@@ -177,7 +177,7 @@ describe('get_electerm_command_rules – blacklist mode', () => {
 
   test('built-in rules still apply', async () => {
     const sid = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'send_electerm_terminal_command', {
+    const res = await callTool(PORT, sid, 'send_bshell_terminal_command', {
       command: 'mkfs.ext4 /dev/sdb1'
     })
     assert.equal(res.data.result.isError, true)
@@ -190,18 +190,18 @@ describe('get_electerm_command_rules – blacklist mode', () => {
   test('every rejection names the rules tool', async () => {
     const sid = await initSession(PORT)
     for (const command of ['mkfs.ext4 /dev/sdb1', 'forbidden-exec touch /tmp/x']) {
-      const res = await callTool(PORT, sid, 'send_electerm_terminal_command', { command })
+      const res = await callTool(PORT, sid, 'send_bshell_terminal_command', { command })
       assert.equal(res.data.result.isError, true)
       assert.match(
         JSON.parse(res.data.result.content[0].text).error,
-        /get_electerm_command_rules/,
+        /get_bshell_command_rules/,
         'a rejection must tell the agent where the rules are'
       )
     }
   })
 })
 
-describe('get_electerm_command_rules – whitelist mode', () => {
+describe('get_bshell_command_rules – whitelist mode', () => {
   const PORT = 30865
   let instance = null
 
@@ -228,12 +228,12 @@ describe('get_electerm_command_rules – whitelist mode', () => {
 
   test('a command matching no whitelist entry is rejected', async () => {
     const sid = await initSession(PORT)
-    const res = await callTool(PORT, sid, 'execute_electerm_command', { command: 'reboot' })
+    const res = await callTool(PORT, sid, 'execute_bshell_command', { command: 'reboot' })
     assert.equal(res.data.result.isError, true)
     const { error } = JSON.parse(res.data.result.content[0].text)
     assert.match(error, /not in whitelist/)
     // whitelist mode is where a bare rejection teaches an agent the least —
     // it has to be told the rules are readable.
-    assert.match(error, /get_electerm_command_rules/)
+    assert.match(error, /get_bshell_command_rules/)
   })
 })

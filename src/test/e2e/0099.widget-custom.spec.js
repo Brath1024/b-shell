@@ -1,7 +1,7 @@
 /**
  * Custom (user) widgets: import a folder into DATA_PATH/widgets, list it next to
- * the built-ins, and render the widget's own UI in electerm-widget://<id>/ with
- * the window.electerm bridge wired to the host.
+ * the built-ins, and render the widget's own UI in b-shell-widget://<id>/ with
+ * the window.bshell bridge wired to the host.
  */
 
 const { _electron: electron, test } = require('@playwright/test')
@@ -16,7 +16,7 @@ test.setTimeout(90000)
 const WIDGETS = path.resolve(process.cwd(), 'src/test/fixtures/widgets')
 
 test('custom widget UI talks to the host', async () => {
-  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-e2e-'))
+  const profileRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-e2e-'))
   const app = await electron.launch({
     ...appOptions,
     args: [...appOptions.args, `--user-data-dir=${profileRoot}`],
@@ -92,7 +92,7 @@ test('custom widget UI talks to the host', async () => {
         return a ? a.getAttribute('href') : ''
       })
     }
-    assert.equal(helpHref, 'https://github.com/electerm/electerm/wiki/User-widget-guide')
+    assert.equal(helpHref, 'https://gitee.com/Guoqing-Li/b-shell/wiki/User-widget-guide')
     const row = page.locator('.item-type-widgets .item-list-unit', { hasText: 'Hello UI' })
     assert.equal(await row.count(), 1)
     const builtinRow = page.locator('.item-type-widgets .item-list-unit', { hasText: 'SSH Server' })
@@ -120,7 +120,7 @@ test('custom widget UI talks to the host', async () => {
 
     const frame = await (async () => {
       for (let i = 0; i < 100; i++) {
-        const f = page.frames().find(fr => fr.url().startsWith('electerm-widget://hello-ui/'))
+        const f = page.frames().find(fr => fr.url().startsWith('b-shell-widget://hello-ui/'))
         if (f) {
           return f
         }
@@ -128,13 +128,13 @@ test('custom widget UI talks to the host', async () => {
       }
       throw new Error('widget frame missing: ' + page.frames().map(f => f.url()).join(' | '))
     })()
-    assert.match(frame.url(), /electerm-widget:\/\/hello-ui\/ui\/index\.html/)
+    assert.match(frame.url(), /b-shell-widget:\/\/hello-ui\/ui\/index\.html/)
     assert.equal(await page.locator('.cwp-frame').count(), 1)
 
     // 4. theme variables and init data arrive through the bridge
     await frame.waitForFunction(() => document.body.textContent.includes('bridge ready'))
     const init = await frame.evaluate(() => ({
-      id: window.electerm.id,
+      id: window.bshell.id,
       out: document.getElementById('out').textContent,
       background: window.getComputedStyle(document.body).backgroundColor,
       mainVar: window.getComputedStyle(document.documentElement).getPropertyValue('--main').trim()
@@ -144,19 +144,19 @@ test('custom widget UI talks to the host', async () => {
     assert.ok(init.mainVar, 'theme variables are forwarded')
     assert.notEqual(init.background, 'rgba(0, 0, 0, 0)', 'widget inherits a real background')
 
-    // 5. window.electerm.call reaches the main-process module
+    // 5. window.bshell.call reaches the main-process module
     await frame.click('#greet')
     await frame.waitForFunction(() => document.getElementById('out').textContent.includes('Hello'))
     assert.equal(await frame.textContent('#out'), 'Hello, world!')
 
     // arguments and errors survive the boundary
-    await frame.fill('#name', 'electerm')
+    await frame.fill('#name', 'b-shell')
     await frame.click('#upper')
-    await frame.waitForFunction(() => document.getElementById('out').textContent === 'ELECTERM')
+    await frame.waitForFunction(() => document.getElementById('out').textContent === 'BSHELL')
 
     await frame.evaluate(async () => {
       try {
-        await window.electerm.call('notExported')
+        await window.bshell.call('notExported')
         document.getElementById('out').textContent = 'NO ERROR'
       } catch (err) {
         document.getElementById('out').textContent = 'rejected: ' + err.message
@@ -182,7 +182,7 @@ test('custom widget UI talks to the host', async () => {
 
     const vaultFrame = await (async () => {
       for (let i = 0; i < 100; i++) {
-        const f = page.frames().find(fr => fr.url().startsWith('electerm-widget://vault-demo/'))
+        const f = page.frames().find(fr => fr.url().startsWith('b-shell-widget://vault-demo/'))
         if (f) {
           return f
         }
@@ -190,7 +190,7 @@ test('custom widget UI talks to the host', async () => {
       }
       throw new Error('vault frame missing')
     })()
-    await vaultFrame.waitForFunction(() => window.electerm)
+    await vaultFrame.waitForFunction(() => window.bshell)
     await vaultFrame.click('#pick')
     await vaultFrame.waitForFunction(() => document.getElementById('key').value === '/tmp/demo.key')
     await vaultFrame.fill('#server', 'https://passbolt.local')
@@ -200,8 +200,8 @@ test('custom widget UI talks to the host', async () => {
     await vaultFrame.waitForFunction(() => document.querySelectorAll('#results li').length === 2)
 
     // 6. config is the widget's own store, never the app config: a widget page
-    //    must not be able to read or rewrite electerm settings
-    const savedConfig = await vaultFrame.evaluate(() => window.electerm.getConfig())
+    //    must not be able to read or rewrite bshell settings
+    const savedConfig = await vaultFrame.evaluate(() => window.bshell.getConfig())
     assert.equal(savedConfig.demoServerUrl, 'https://passbolt.local')
     assert.equal(await page.evaluate(() => window.store.config.demoServerUrl), undefined)
     assert.equal(

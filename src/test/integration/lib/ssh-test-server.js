@@ -38,7 +38,7 @@ const TEST_USERNAME = 'mcpit'
 const TEST_PASSWORD = 'mcpit-pass'
 const TEST_PORT = 22022
 
-// electerm verifies host keys against ~/.ssh/known_hosts and asks the user
+// bshell verifies host keys against ~/.ssh/known_hosts and asks the user
 // (UI prompt) on unknown hosts — a prompt would hang an automated test run.
 // Seed the fixed test entry once; it stays valid across runs because both
 // the host key and the port are fixed.
@@ -139,7 +139,7 @@ function emulateMonitorCommand (command) {
     ].join('\n') + '\n'
   }
   if (/^uname\s/.test(command.trim())) {
-    return 'Linux electerm-fixture 5.15.0-generic x86_64\n'
+    return 'Linux bshell-fixture 5.15.0-generic x86_64\n'
   }
   if (command.trim() === 'who') {
     return 'mcpit  pts/0  2026-09-11 08:00 (10.0.0.9)\n'
@@ -168,7 +168,7 @@ function attachExec (stream, command) {
 function attachShell (stream) {
   let buf = ''
   const prompt = () => stream.write('\n$ ')
-  stream.write('Welcome to the electerm MCP integration test shell')
+  stream.write('Welcome to the bshell MCP integration test shell')
   prompt()
   stream.on('data', (data) => {
     const s = data.toString()

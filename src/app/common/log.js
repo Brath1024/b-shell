@@ -17,7 +17,7 @@ if (log.transports?.ipc) {
 // ate the whole SSH protocol trace: session-ssh.js hands ssh2
 // `connectOptions.debug = log.log`, and log.log is level `info`, so with the
 // `debug` setting on the app asked ssh2 for a trace that could never reach
-// ~/.config/electerm/logs/main.log -- exactly the evidence an "old switch
+// ~/.config/bshell/logs/main.log -- exactly the evidence an "old switch
 // refuses to connect" report needs (Local ident / Remote ident / the kex line).
 // Debug mode therefore has to move the level as well as the flag.
 const DEBUG_LEVEL = 'debug'
@@ -26,7 +26,7 @@ const PROD_LEVEL = 'warn'
 // Inherited by the forked server process (see ../server/child-process.js), which
 // then opens up at load time; a session opened later follows the setting too
 // (../server/session-ssh.js), so no restart is needed.
-const DEBUG_ENV = 'ELECTERM_DEBUG'
+const DEBUG_ENV = 'BSHELL_DEBUG'
 
 /**
  * @param {boolean} [dev] defaults to isDev, injectable for the same reason as

@@ -1,12 +1,12 @@
 /**
- * .vv connection file -> electerm Spice tab options
+ * .vv connection file -> bshell Spice tab options
  *
  * Kept apart from parse-vv.js on purpose: parse-vv.js knows the file format
- * and nothing about electerm, this module knows electerm's Spice tab shape and
+ * and nothing about bshell, this module knows bshell's Spice tab shape and
  * nothing about the format. Staying free of window/api access is what makes it
  * unit-testable, and it is shared by both entry points for a .vv file --
- * the bookmark form's "Load .vv file" button and a file handed to electerm
- * from outside (`electerm /path/to/console.vv`).
+ * the bookmark form's "Load .vv file" button and a file handed to bshell
+ * from outside (`bshell /path/to/console.vv`).
  *
  * Deliberately imports nothing: constants.js pulls in the logo .png files and
  * `window`, which would make this unimportable under `node --test`.

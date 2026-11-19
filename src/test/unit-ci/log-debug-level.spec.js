@@ -7,13 +7,13 @@
  * trace was filtered out before it could be written: the "old switch / router
  * will not connect" reports arrived with `connection lost before handshake`
  * (or a kex/cipher failure) and nothing in
- * ~/.config/electerm/logs/main.log to say how far the handshake got.
+ * ~/.config/bshell/logs/main.log to say how far the handshake got.
  *
  * Pins, in order:
  *   1. the packaged default still drops an info-level line (no accidental
  *      verbose-by-default release)
  *   2. debug mode lets it through, and tells forked children to do the same
- *      via ELECTERM_DEBUG (../server/child-process.js reads it)
+ *      via BSHELL_DEBUG (../server/child-process.js reads it)
  *   3. switching debug off restores the packaged level
  *   4. dev is never filtered
  *
@@ -23,7 +23,7 @@
  */
 
 process.env.NODE_ENV = 'development'
-delete process.env.ELECTERM_DEBUG
+delete process.env.BSHELL_DEBUG
 
 const { describe, test, before, after } = require('node:test')
 const assert = require('node:assert/strict')
@@ -33,9 +33,9 @@ const { tmpdir } = require('node:os')
 
 const log = require('../../app/common/log')
 
-const dir = mkdtempSync(join(tmpdir(), 'electerm-log-level-'))
+const dir = mkdtempSync(join(tmpdir(), 'bshell-log-level-'))
 const logFile = join(dir, 'main.log')
-// never touch the developer's real ~/.config/electerm/logs/main.log
+// never touch the developer's real ~/.config/bshell/logs/main.log
 log.transports.file.resolvePath = () => logFile
 
 const written = () => {
@@ -76,7 +76,7 @@ describe('debug setting controls the log level', () => {
     assert.equal(log.transports.file.level, 'debug')
     assert.equal(log.transports.console.level, 'debug')
     assert.equal(
-      process.env.ELECTERM_DEBUG,
+      process.env.BSHELL_DEBUG,
       '1',
       'the forked server process opens its level from this env var'
     )
@@ -92,7 +92,7 @@ describe('debug setting controls the log level', () => {
   test('switching debug off restores the packaged level', () => {
     log.setDebugMode(false, PACKAGED)
     assert.equal(log.transports.file.level, 'warn')
-    assert.equal(process.env.ELECTERM_DEBUG, '')
+    assert.equal(process.env.BSHELL_DEBUG, '')
     const before = written()
     log.log('Local ident: after switching off')
     assert.equal(written(), before)
@@ -105,12 +105,12 @@ describe('debug setting controls the log level', () => {
     assert.equal(log.isDebugMode(), true)
   })
 
-  test('the child agrees with the parent through ELECTERM_DEBUG', () => {
+  test('the child agrees with the parent through BSHELL_DEBUG', () => {
     log.setDebugMode(false, PACKAGED)
     assert.equal(log.isDebugMode(PACKAGED), false)
-    process.env.ELECTERM_DEBUG = '1'
+    process.env.BSHELL_DEBUG = '1'
     assert.equal(log.isDebugMode(PACKAGED), true)
-    process.env.ELECTERM_DEBUG = ''
+    process.env.BSHELL_DEBUG = ''
     assert.equal(log.isDebugMode(PACKAGED), false)
   })
 })

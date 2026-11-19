@@ -6,7 +6,7 @@ const log = require('../common/log')
 const rp = require('axios')
 const { createProxyAgent } = require('../lib/proxy-agent')
 const {
-  electermSync
+  bshellSync
 } = require('electerm-sync')
 const doWebdavSync = require('./webdav-sync')
 
@@ -31,7 +31,7 @@ async function doSync (type, func, args, token, proxy) {
   if (type === 'cloud') {
     args[0] = ''
   }
-  return electermSync(axiosInst, type, func, args, token)
+  return bshellSync(axiosInst, type, func, args, token)
     .then(r => {
       return r
     })

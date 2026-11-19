@@ -26,7 +26,7 @@ module.exports = (config, env, sysLocale) => {
   let extraCaFile
   const systemCAs = getSystemCAs()
   if (systemCAs) {
-    extraCaFile = join(tmpdir(), `electerm-system-ca-${Date.now()}.pem`)
+    extraCaFile = join(tmpdir(), `bshell-system-ca-${Date.now()}.pem`)
     writeFileSync(extraCaFile, systemCAs)
   }
 
@@ -34,21 +34,21 @@ module.exports = (config, env, sysLocale) => {
   const cleanEnv = Object.assign({}, env)
   delete cleanEnv.ELECTRON_RUN_AS_NODE
   // set below from config, so an inherited value cannot contradict it
-  delete cleanEnv.ELECTERM_DEBUG
+  delete cleanEnv.BSHELL_DEBUG
 
   // start server
   const child = fork(resolve(__dirname, './server.js'), {
     env: Object.assign(
       {
         LANG: `${sysLocale.replace(/-/, '_')}.UTF-8`,
-        electermPort: config.port,
-        electermHost: config.host,
+        bshellPort: config.port,
+        bshellHost: config.host,
         requireAuth: config.requireAuth || '',
-        tokenElecterm: config.tokenElecterm,
+        tokenBshell: config.tokenBshell,
         sshKeysPath: env.sshKeysPath,
         // the child opens its log level from this at load time (../common/log.js),
         // so the ssh2 protocol trace is captured from the first session on
-        ELECTERM_DEBUG: config.debug ? '1' : '',
+        BSHELL_DEBUG: config.debug ? '1' : '',
         NODE_OPTIONS: nodeOpts || undefined,
         NODE_EXTRA_CA_CERTS: extraCaFile || undefined
       },

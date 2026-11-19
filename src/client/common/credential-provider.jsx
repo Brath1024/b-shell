@@ -3,7 +3,7 @@
  *
  * A user widget names two main-process exports in its package.json:
  *
- *   "electerm": { "credentialProvider": { "get": "getCredentials", "save": "saveCredentials" } }
+ *   "bshell": { "credentialProvider": { "get": "getCredentials", "save": "saveCredentials" } }
  *
  * Only a bookmark that opts in is ever passed on: `usePasswordManager` in the
  * bookmark form (ssh, telnet, rdp, vnc, spice, ftp), and only while it has no

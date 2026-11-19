@@ -1,23 +1,23 @@
 /**
- * The script every custom widget UI gets: window.electerm.
+ * The script every custom widget UI gets: window.bshell.
  *
- * Served by the electerm-widget:// protocol and injected into the widget's
+ * Served by the b-shell-widget:// protocol and injected into the widget's
  * html, so a widget author writes a normal web page and calls the host through
  * this object. Everything crossing the boundary is JSON-serialisable and the
  * host answers over postMessage (the widget document is its own origin, so it
  * cannot touch the app's window).
  *
  * `css` is answered in the renderer, by the host panel, without a round trip to
- * the node side: restyling electerm is a DOM change in the document the user is
+ * the node side: restyling bshell is a DOM change in the document the user is
  * looking at, so a widget that only changes styles needs no server script at all
- * (`electerm.styles` in the manifest, or this, from its own UI).
+ * (`bshell.styles` in the manifest, or this, from its own UI).
  *
  * Kept as a plain string (ES5, no imports) because it is shipped as-is to a
  * document the bundler never sees.
  */
 
 const bridgeSource = `(function () {
-  if (window.electerm) {
+  if (window.bshell) {
     return
   }
   var pending = {}
@@ -32,7 +32,7 @@ const bridgeSource = `(function () {
       var reqId = ++seq
       pending[reqId] = { resolve: resolve, reject: reject }
       parent.postMessage({
-        __electermWidget: true,
+        __bshellWidget: true,
         reqId: reqId,
         method: method,
         args: args || []
@@ -51,22 +51,22 @@ const bridgeSource = `(function () {
     if (init.colorScheme) {
       document.documentElement.style.colorScheme = init.colorScheme
     }
-    // electerm's UI language, from window.store.config.language in the host.
+    // bshell's UI language, from window.store.config.language in the host.
     // A widget UI can pick its own strings without reaching into the app.
     if (init.language) {
-      window.electerm.language = init.language
+      window.bshell.language = init.language
     }
-    // The host can send init again when the user changes electerm's language.
+    // The host can send init again when the user changes bshell's language.
     // A widget UI that wants to retranslate in place sets this callback.
-    if (window.electerm && typeof window.electerm.onLanguageChange === 'function') {
-      window.electerm.onLanguageChange(window.electerm.language)
+    if (window.bshell && typeof window.bshell.onLanguageChange === 'function') {
+      window.bshell.onLanguageChange(window.bshell.language)
     }
     readyResolve(init)
   }
 
   window.addEventListener('message', function (evt) {
     var data = evt.data
-    if (!data || data.__electermWidgetHost !== true) {
+    if (!data || data.__bshellWidgetHost !== true) {
       return
     }
     if (data.method === 'init') {
@@ -81,14 +81,14 @@ const bridgeSource = `(function () {
     if (data.ok) {
       item.resolve(data.result)
     } else {
-      item.reject(new Error(data.error || 'electerm widget call failed'))
+      item.reject(new Error(data.error || 'bshell widget call failed'))
     }
   })
 
-  window.electerm = {
-    // the protocol host is the widget id: electerm-widget://<id>/<ui>
+  window.bshell = {
+    // the protocol host is the widget id: b-shell-widget://<id>/<ui>
     id: location.host,
-    // electerm locale code (en_us, zh_cn, ...), updated by the host's init
+    // bshell locale code (en_us, zh_cn, ...), updated by the host's init
     language: 'en_us',
     ready: ready,
     // call a function exported by the widget's main-process module
@@ -121,7 +121,7 @@ const bridgeSource = `(function () {
       return request('log', Array.prototype.slice.call(arguments))
     },
     // Restyle the app from the widget's own UI: no main.js needed for a widget
-    // that only changes how electerm looks. The host applies it and keeps the
+    // that only changes how bshell looks. The host applies it and keeps the
     // stylesheet for as long as the widget runs.
     css: {
       apply: function (css) {

@@ -3,7 +3,7 @@
  *
  * A local terminal prints file paths that mean nothing to the web-link addon:
  * `D:\work\project\a.ts`, `src\a.ts`, `/var/log/syslog`. Windows Terminal opens
- * the containing folder on ctrl+click; electerm had no local path link at all,
+ * the containing folder on ctrl+click; bshell had no local path link at all,
  * and the one path it could be asked to reveal resolved against the *process*
  * cwd, which is the home directory (or the desktop, launched from a shortcut)
  * rather than the shell's directory (#4737).

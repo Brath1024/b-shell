@@ -24,7 +24,7 @@ export default function AppDrag (props) {
     }
   }
 
-  // Every window electerm draws its own title bar for is either frameless
+  // Every window bshell draws its own title bar for is either frameless
   // (macOS/Linux) or a Windows window with the controls overlay; both have a
   // native drag region, so the OS handles the drag here.
   const props0 = {

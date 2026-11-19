@@ -5,16 +5,24 @@ import {
   ExportOutlined,
   CodeOutlined,
   MenuOutlined,
-  EditOutlined
+  EditOutlined,
+  WindowsOutlined
 } from '@ant-design/icons'
 import { Button, Space, Dropdown, Flex } from 'antd'
+import { useState } from 'react'
 import copy from 'json-deep-copy'
 import time from '../../common/time'
 import download from '../../common/download'
 import Upload from '../common/upload'
+import XshellImportModal from '../xshell-import'
 import { beforeBookmarkUpload } from './bookmark-upload'
 
 const e = window.translate
+
+const xshellLabel = (() => {
+  const lang = (window.getLang && window.getLang()) || ''
+  return /^zh/i.test(lang) ? '从 Xshell 导入' : 'Import from Xshell'
+})()
 
 export default function BookmarkToolbar (props) {
   const {
@@ -26,6 +34,8 @@ export default function BookmarkToolbar (props) {
     bookmarks
   } = props
   const beforeUpload = beforeBookmarkUpload
+  const [xshellOpen, setXshellOpen] = useState(false)
+  const closeXshell = () => setXshellOpen(false)
 
   const handleDownload = () => {
     const txt = JSON.stringify({
@@ -75,6 +85,11 @@ export default function BookmarkToolbar (props) {
       label: e('loadSshConfigs'),
       onClick: onSshConfigs,
       icon: <CodeOutlined />
+    },
+    {
+      label: xshellLabel,
+      onClick: () => setXshellOpen(true),
+      icon: <WindowsOutlined />
     }
   ]
 
@@ -120,6 +135,13 @@ export default function BookmarkToolbar (props) {
             <Button onClick={onSshConfigs}>
               <CodeOutlined />
             </Button>
+            <Button
+              onClick={() => setXshellOpen(true)}
+              title={xshellLabel}
+              className='xshell-import-btn'
+            >
+              <WindowsOutlined />
+            </Button>
           </Space.Compact>
         </div>
         <div>
@@ -128,6 +150,7 @@ export default function BookmarkToolbar (props) {
           </Dropdown>
         </div>
       </Flex>
+      <XshellImportModal open={xshellOpen} onClose={closeXshell} />
     </div>
   )
 }

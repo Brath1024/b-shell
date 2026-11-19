@@ -12,7 +12,7 @@ const {
 const log = require('./log')
 
 /**
- * Common file and folder operations for electerm SFTP tests
+ * Common file and folder operations for bshell SFTP tests
  */
 /**
  * Creates a new file in the specified type of file list (local/remote)

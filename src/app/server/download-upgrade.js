@@ -16,32 +16,10 @@ const globalState = require('./global-state')
 
 rp.defaults.proxy = false
 
-// GitHub and atomgit serve release assets from the same path shape:
-//   https://github.com/electerm/electerm/releases/download/<tag>/<file>
-//   https://atomgit.com/electerm/electerm/releases/download/<tag>/<file>
-// so only the two trailing segments (tag, file name) need carrying over.
-// The asset itself only exists on atomgit for the newest release: the sync
-// workflow empties every older release to stay under the attachment quota.
-function getAtomgitUrl (url) {
-  const arr = url.split('/')
-  const len = arr.length
-  return `https://atomgit.com/electerm/electerm/releases/download/${arr[len - 2]}/${arr[len - 1]}`
-}
-
+// b-shell publishes release assets on Gitee only; there are no third-party
+// mirrors configured, so downloads use the asset url reported by the feed.
 function getUrl (url, mirror) {
-  if (mirror === 'gh-proxy') {
-    return `https://mirror.electerm.org/${url}`
-  } if (mirror === 'sourceforge') {
-    const arr = url.split('/')
-    const len = arr.length
-    return `https://master.dl.sourceforge.net/project/electerm.mirror/${arr[len - 2]}/${arr[len - 1]}?viasf=1`
-  } else if (mirror === 'r2') {
-    return `https://electerm-store.html5beta.com/r/${url.split('/').pop()}`
-  } else if (mirror === 'atomgit') {
-    return getAtomgitUrl(url)
-  } else {
-    return url
-  }
+  return url
 }
 
 function getReleaseInfo (
@@ -77,12 +55,12 @@ class Upgrade {
       mirror
     } = this.options
     const agent = createProxyAgent(proxy)
-    const releaseInfoUrl = `${packInfo.homepage}/data/electerm-github-release.json?_=${+new Date()}`
+    const releaseInfoUrl = `${packInfo.homepage}/data/bshell-github-release.json?_=${+new Date()}`
     const filter = r => {
       return r.name.endsWith(installSrc)
     }
     // if (isWin) {
-    //   filter = r => /electerm-\d+\.\d+\.\d+-win-x64\.tar\.gz/.test(r.name)
+    //   filter = r => /bshell-\d+\.\d+\.\d+-win-x64\.tar\.gz/.test(r.name)
     // } else if (isArm) {
     //   filter = r => {
     //     return /arm64\.dmg$/.test(r.name)

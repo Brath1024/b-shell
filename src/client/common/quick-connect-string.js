@@ -2,7 +2,7 @@
  * Quick Connect String Serializer
  *
  * The inverse of ./parse-quick-connect.js: turn a bookmark (session config)
- * into the string form the quick connect box and the electerm:// deep link
+ * into the string form the quick connect box and the b-shell:// deep link
  * accept, so the two stay round-trippable.
  *
  *   protocol://[username[:password]@]host[:port]?opts={...}

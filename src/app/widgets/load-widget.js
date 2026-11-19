@@ -120,7 +120,7 @@ function prepareUserWidget (widgetId) {
   ensureApiModule(resolveUserWidgetDir(widgetId), widgetId)
 }
 
-// The css of a declarative widget: every file in `electerm.styles`, in order.
+// The css of a declarative widget: every file in `bshell.styles`, in order.
 function declaredStyles (widgetId, info) {
   const dir = resolveUserWidgetDir(widgetId)
   const parts = []
@@ -262,7 +262,7 @@ function hasRunningInstance (widgetId) {
   return false
 }
 
-// A widget that is nothing but stylesheets: the manifest lists them, electerm
+// A widget that is nothing but stylesheets: the manifest lists them, bshell
 // reads and applies them, and there is no server script to require (see
 // ./user-widget.js readWidget). Same lifecycle as any other instance, so the
 // panel's Run/Stop and the auto-run list work unchanged.
@@ -344,7 +344,7 @@ async function runWidget (widgetId, config) {
 
   // The widget reports through this context; it is handed the instance log
   // before it knows its own instanceId (see instance-log.js createContext).
-  // A widget that forwards AI traffic decides its own upstream proxy: electerm
+  // A widget that forwards AI traffic decides its own upstream proxy: bshell
   // only supplies the agent factory, so no proxy value leaks into widget config.
   const ctx = widgetLog.createContext()
   ctx.createProxyAgent = createProxyAgent

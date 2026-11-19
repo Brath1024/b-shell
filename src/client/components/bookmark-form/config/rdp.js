@@ -26,7 +26,7 @@ const rdpConfig = {
         {
           type: 'wiki',
           name: 'rdp-limitation-warning',
-          link: 'https://github.com/electerm/electerm/wiki/RDP-limitation'
+          link: 'https://gitee.com/Guoqing-Li/b-shell/wiki/RDP-limitation'
         },
         commonFields.category,
         commonFields.colorTitle,

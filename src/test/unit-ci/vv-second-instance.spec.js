@@ -1,6 +1,6 @@
 /**
  * The .vv path a WINDOWS user takes: double-clicking console.vv while
- * electerm is already running.
+ * bshell is already running.
  *
  * Windows has no 'open-file' event. The file association starts a second
  * process whose argv carries the path, and that process forwards it to the
@@ -34,15 +34,15 @@ describe('second instance .vv dispatch', () => {
     const { findVvFile } = getVvFile()
     // what electron hands to 'second-instance': argv of the NEW process
     assert.strictEqual(
-      findVvFile(['C:\\Program Files\\electerm\\electerm.exe', 'C:\\tmp\\console.vv']),
+      findVvFile(['C:\\Program Files\\bshell\\b-shell.exe', 'C:\\tmp\\console.vv']),
       path.resolve('C:\\tmp\\console.vv')
     )
   })
 
   it('still returns null when the second instance carries no .vv', () => {
     const { findVvFile } = getVvFile()
-    // an ordinary `electerm user@host` second instance must not be hijacked
-    assert.strictEqual(findVvFile(['electerm.exe', 'root@example.com']), null)
+    // an ordinary `bshell user@host` second instance must not be hijacked
+    assert.strictEqual(findVvFile(['b-shell.exe', 'root@example.com']), null)
   })
 
   it('create-app forwards a .vv from second-instance to the renderer', () => {

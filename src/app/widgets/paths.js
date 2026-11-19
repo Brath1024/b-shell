@@ -2,7 +2,7 @@
  * Where user-installed widgets live: <data dir>/widgets/<id>/.
  *
  * The data dir is the same one the db uses (see lib/db.js): DATA_PATH wins,
- * else appData/electerm. Resolved lazily and defensively, because these modules
+ * else appData/bshell. Resolved lazily and defensively, because these modules
  * are also required from unit tests where electron is not loaded.
  */
 
@@ -19,9 +19,9 @@ function getDataDir () {
   }
   try {
     const { appPath } = require('../common/app-props')
-    return path.join(appPath, 'electerm')
+    return path.join(appPath, 'b-shell')
   } catch (e) {
-    return path.join(os.tmpdir(), 'electerm')
+    return path.join(os.tmpdir(), 'b-shell')
   }
 }
 

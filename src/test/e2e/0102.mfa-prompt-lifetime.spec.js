@@ -24,7 +24,7 @@ const appOptions = require('./common/app-options')
 test.setTimeout(180000)
 
 const USER = 'tester'
-const PASSWORD = 'electerm-test'
+const PASSWORD = 'bshell-test'
 const OTP = '123456'
 
 // the keyboard-interactive `name`, which the dialog renders as its title
@@ -89,7 +89,7 @@ async function startMfaServer () {
 
 test('an unanswered MFA prompt closes itself and stops the reconnect loop', async () => {
   const server = await startMfaServer()
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-mfa-e2e-'))
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-mfa-e2e-'))
   const app = await electron.launch({
     ...appOptions,
     args: [...appOptions.args, `--user-data-dir=${path.join(root, 'userdata')}`],

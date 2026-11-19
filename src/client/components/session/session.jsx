@@ -469,7 +469,7 @@ export default class SessionWrapper extends Component {
       return
     }
     // The flag lives on the tab (not in this component's state) so the
-    // toolbar icon and the MCP set_electerm_terminal_keepalive tool share
+    // toolbar icon and the MCP set_bshell_terminal_keepalive tool share
     // one source of truth — an MCP-driven change must light the icon up.
     const enabled = term.toggleKeepalive()
     this.editTab({ keepaliveEnabled: enabled })

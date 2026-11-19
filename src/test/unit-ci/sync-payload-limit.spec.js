@@ -1,5 +1,5 @@
 /**
- * Unit tests for the electerm-cloud sync upload cap
+ * Unit tests for the bshell-cloud sync upload cap
  * (src/client/common/sync-payload-limit.js).
  *
  * The server refuses a payload above its cap with a 413, and that surfaces in
@@ -42,7 +42,7 @@ before(async () => {
  * Shaped like the real upload body (the gist wrapper electerm-sync PUTs).
  */
 function asciiPayload (totalBytes) {
-  const prefix = '{"description":"sync electerm data","files":{"bookmarks.json":{"content":"'
+  const prefix = '{"description":"sync bshell data","files":{"bookmarks.json":{"content":"'
   const suffix = '"}}}'
   const fill = 'x'.repeat(totalBytes - prefix.length - suffix.length)
   return JSON.parse(prefix + fill + suffix)
@@ -50,7 +50,7 @@ function asciiPayload (totalBytes) {
 
 /** The same, but the filler is CJK — 3 bytes per character on the wire. */
 function cjkPayload (totalBytes) {
-  const prefix = '{"description":"sync electerm data","files":{"bookmarks.json":{"content":"'
+  const prefix = '{"description":"sync bshell data","files":{"bookmarks.json":{"content":"'
   const suffix = '"}}}'
   const chars = Math.floor((totalBytes - prefix.length - suffix.length) / 3)
   const fill = '服'.repeat(chars)
@@ -58,8 +58,8 @@ function cjkPayload (totalBytes) {
 }
 
 describe('sync payload limit: constants', () => {
-  test('the cap is 280KB, matching electerm-cloud', () => {
-    // electerm-cloud/src/server/control/sync-limits.ts. The server publishes
+  test('the cap is 280KB, matching bshell-cloud', () => {
+    // bshell-cloud/src/server/control/sync-limits.ts. The server publishes
     // this as X-Sync-Max-KB; if that ever disagrees, this is the number that
     // makes the client refuse uploads the server would have accepted.
     assert.equal(maxSyncPayloadKb, 280)
@@ -152,10 +152,10 @@ describe('sync payload limit: checkSyncPayloadSize', () => {
       })
     }
     const body = {
-      description: 'sync electerm data',
+      description: 'sync bshell data',
       files: {
         'bookmarks.json': { content: JSON.stringify(bms) },
-        'electerm-status.json': { content: '{}' }
+        'bshell-status.json': { content: '{}' }
       }
     }
     const r = checkSyncPayloadSize(body)

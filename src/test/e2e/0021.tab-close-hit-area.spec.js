@@ -5,10 +5,10 @@ const { join, resolve } = require('node:path')
 
 test('the full tab close button closes exactly one tab', async () => {
   test.setTimeout(60000)
-  const dataDir = mkdtempSync(join(tmpdir(), 'electerm-tab-close-'))
+  const dataDir = mkdtempSync(join(tmpdir(), 'bshell-tab-close-'))
   const env = { ...process.env, DATA_PATH: dataDir, NODE_TEST: 'yes' }
-  // 从 electerm 终端运行测试时，不能继承宿主后端及会话服务的端口。
-  for (const key of ['ELECTRON_RUN_AS_NODE', 'electermPort', 'electermHost', 'tokenElecterm', 'requireAuth', 'wsPort', 'type']) {
+  // 从 bshell 终端运行测试时，不能继承宿主后端及会话服务的端口。
+  for (const key of ['ELECTRON_RUN_AS_NODE', 'bshellPort', 'bshellHost', 'tokenBshell', 'requireAuth', 'wsPort', 'type']) {
     delete env[key]
   }
   if (process.platform === 'linux') {

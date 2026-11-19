@@ -8,7 +8,7 @@
  * built-in widget (components/widgets/widget-form.jsx). Both keep the values the
  * user last ran a widget with, under `widget-config-<id>`, so a widget that is
  * always started with the same host / port / directory does not have to be
- * filled in again. A user widget can opt out with `electerm.persist: false`
+ * filled in again. A user widget can opt out with `bshell.persist: false`
  * (see app/widgets/user-widget.js).
  *
  * Never remembered, and never restored: a `password` field and a generated

@@ -1,7 +1,7 @@
 /**
  * x11 helpers
  *
- * electerm does not render x11 itself, it only forwards the protocol through
+ * bshell does not render x11 itself, it only forwards the protocol through
  * the ssh channel, so a local x server (XQuartz / VcXsrv / X.org) must be
  * running and reachable. When it is not, remote GUI apps hang or die without
  * any visible reason, so we probe the display up front and hand the user a
@@ -119,7 +119,7 @@ function x11CookieHint (platform = process.platform) {
   if (platform === 'darwin') {
     // XQuartz ships xauth at /opt/X11/bin, which is not on the PATH of apps
     // launched from Finder/Dock
-    return `${base} XQuartz puts xauth in /opt/X11/bin, start electerm from a shell that has it on PATH, or turn off "Authenticate connections" in XQuartz settings.`
+    return `${base} XQuartz puts xauth in /opt/X11/bin, start bshell from a shell that has it on PATH, or turn off "Authenticate connections" in XQuartz settings.`
   }
   return `${base} Check with "xauth list", or open access with "xhost +localhost".`
 }

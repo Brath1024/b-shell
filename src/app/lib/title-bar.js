@@ -1,5 +1,5 @@
 /**
- * BrowserWindow chrome for the three title bar modes electerm can run in.
+ * BrowserWindow chrome for the three title bar modes bshell can run in.
  * Pure — the platform is passed in — so it can be unit tested outside Electron.
  */
 
@@ -25,7 +25,7 @@ const titleBarOverlayHeight = 36
  *   min/max/close, which Windows draws over the tab bar through
  *   `titleBarOverlay`. The renderer recolors them from the UI theme
  *   (setTitleBarOverlay, see components/main/title-bar-overlay.js).
- * - no system title bar, macOS/Linux: frameless and transparent, electerm draws
+ * - no system title bar, macOS/Linux: frameless and transparent, bshell draws
  *   its own title bar and window controls in the tab bar
  * - system title bar, macOS/Linux: a real frame with the native title bar
  *

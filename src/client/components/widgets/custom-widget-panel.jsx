@@ -1,11 +1,11 @@
 /**
  * Custom widget UI panel.
  *
- * A user widget that ships `electerm.ui` (see widgets/user-widget.js) gets its
+ * A user widget that ships `bshell.ui` (see widgets/user-widget.js) gets its
  * own document instead of the generated config form. The desktop app serves it
- * from electerm-widget://<id>/..., the web app from /api/widget-ui/<id>/... —
+ * from b-shell-widget://<id>/..., the web app from /api/widget-ui/<id>/... —
  * either way it ends up on an origin of its own, and talks to the host only
- * through window.electerm, which the host injects into the page
+ * through window.bshell, which the host injects into the page
  * (widgets/bridge.js). Everything here is the host half of that conversation:
  * answer the calls, hand over the theme.
  */
@@ -29,7 +29,7 @@ const e = window.translate
 const MAX_WIDGET_CSS = 512 * 1024
 
 // Reopening the settings panel remounts this component. An explicit Stop must
-// survive that until the next app launch, when "Start with electerm" applies.
+// survive that until the next app launch, when "Start with bshell" applies.
 const stoppedByUser = new Set()
 
 // A widget's own key/value store, the same one config-mode widgets persist to
@@ -74,7 +74,7 @@ function themePayload () {
     cssVars,
     colorScheme: isColorDark(cssVars['--main']) ? 'dark' : 'light',
     // The widget document cannot see window.store; hand it the locale so it
-    // can pick its own strings (window.electerm.language).
+    // can pick its own strings (window.bshell.language).
     language: window.store.config.language || 'en_us'
   }
 }
@@ -89,7 +89,7 @@ async function handleCall (widgetId, method, args, onOffer, defaultAutoRun) {
       const result = await window.pre.runGlobalAsync('callWidgetFunc', widgetId, name, ...rest)
       // The main process already whitelisted this offer (load-widget.js).
       // Rendering it in the host panel instead of the iframe keeps "point
-      // electerm at this endpoint" a deliberate click on a host-owned button.
+      // bshell at this endpoint" a deliberate click on a host-owned button.
       if (result && result.aiConfig && onOffer) {
         onOffer(result.aiConfig)
       }
@@ -129,7 +129,7 @@ async function handleCall (widgetId, method, args, onOffer, defaultAutoRun) {
     case 'log':
       console.log(`[widget:${widgetId}]`, ...args)
       return null
-    // window.electerm.css: the widget restyles electerm from its own UI, so a
+    // window.bshell.css: the widget restyles bshell from its own UI, so a
     // widget that only changes how the app looks needs no server script and no
     // round trip: the change lands in this document, where css means something.
     // It lasts as long as the window does; a widget that wants it on every
@@ -175,7 +175,7 @@ export default auto(function CustomWidgetPanel ({ widget }) {
   // reinstall replaces files in place.
   const uiBase = window.et.isWebApp
     ? webUrl(`/api/widget-ui/${id}`)
-    : `electerm-widget://${id}`
+    : `b-shell-widget://${id}`
   const src = `${uiBase}/${ui}${nonce ? `?r=${nonce}` : ''}`
 
   useEffect(() => {
@@ -187,7 +187,7 @@ export default auto(function CustomWidgetPanel ({ widget }) {
         return
       }
       const data = evt.data
-      if (!data || data.__electermWidget !== true) {
+      if (!data || data.__bshellWidget !== true) {
         return
       }
       const reply = (payload) => {
@@ -195,7 +195,7 @@ export default auto(function CustomWidgetPanel ({ widget }) {
           return
         }
         frame.contentWindow.postMessage({
-          __electermWidgetHost: true,
+          __bshellWidgetHost: true,
           reqId: data.reqId,
           ...payload
         }, '*')
@@ -213,7 +213,7 @@ export default auto(function CustomWidgetPanel ({ widget }) {
 
   // An instance widget that ships its own UI has no generated run form, so the
   // panel owns starting it. The same path serves the explicit Run button and
-  // the manifest's `electerm.autoRun`; a failed start is shown here instead of
+  // the manifest's `bshell.autoRun`; a failed start is shown here instead of
   // only in the console, where the widget later fails with "not running".
   async function run () {
     if (working) {
@@ -268,7 +268,7 @@ export default auto(function CustomWidgetPanel ({ widget }) {
   }
 
   useEffect(() => {
-    // "Start with electerm" is the user's switch, not a manifest decision:
+    // "Start with bshell" is the user's switch, not a manifest decision:
     // turning it off means the panel no longer starts the widget on its own.
     const autoRun = info.autoRun && readWidgetConfig(id).autoRun !== false
     if (info.type !== 'instance' || !autoRun || running || stoppedByUser.has(id)) {
@@ -285,7 +285,7 @@ export default auto(function CustomWidgetPanel ({ widget }) {
       return
     }
     frame.contentWindow.postMessage({
-      __electermWidgetHost: true,
+      __bshellWidgetHost: true,
       method: 'init',
       data: {
         id,

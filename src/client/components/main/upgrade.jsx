@@ -26,16 +26,12 @@ const {
 } = packInfo
 
 const downloadMirrorList = [
-  'github',
-  'gh-proxy',
-  'atomgit',
-  'sourceforge',
-  'r2'
+  'gitee'
 ]
 
 export default class Upgrade extends PureComponent {
   state = {
-    mirror: downloadMirrorList[1]
+    mirror: downloadMirrorList[0]
   }
 
   downloadTimer = null
@@ -130,7 +126,7 @@ export default class Upgrade extends PureComponent {
           ...newTerm(undefined, true),
           runScripts: [
             {
-              script: 'npm install -g electerm',
+              script: 'npm install -g b-shell',
               delay: 500
             }
           ]

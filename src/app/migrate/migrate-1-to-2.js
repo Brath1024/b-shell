@@ -8,7 +8,7 @@ const { appPath, defaultUserName } = require('../common/app-props')
 const log = require('../common/log')
 
 const reso = (name) => {
-  return resolve(appPath, 'electerm', 'users', defaultUserName, `electerm.${name}.nedb`)
+  return resolve(appPath, 'b-shell', 'users', defaultUserName, `bshell.${name}.nedb`)
 }
 
 const tables = [

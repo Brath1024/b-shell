@@ -102,7 +102,7 @@ export const configMixin = {
   warnSftpFollowUnsupported () {
     message.warning(
       <span>
-        Fish shell/windows shell is not supported for SFTP follow SSH path feature. See: <ExternalLink to='https://github.com/electerm/electerm/wiki/Warning-about-sftp-follow-ssh-path-function'>wiki</ExternalLink>
+        Fish shell/windows shell is not supported for SFTP follow SSH path feature. See: <ExternalLink to='https://gitee.com/Guoqing-Li/b-shell/wiki/Warning-about-sftp-follow-ssh-path-function'>wiki</ExternalLink>
       </span>
       , 7)
   }

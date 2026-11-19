@@ -1,5 +1,5 @@
 /**
- * electerm-widget:// in both shapes it ships in:
+ * b-shell-widget:// in both shapes it ships in:
  *
  * - src/app/widgets/protocol.js — the Electron >= 25 implementation, which is
  *   the only one in the sources;
@@ -69,7 +69,7 @@ const WIDGET_FILES = {
 }
 
 before(() => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-widget-protocol-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'b-shell-widget-protocol-'))
   tmpData = path.join(tmp, 'data')
   process.env.DATA_PATH = tmpData
   writeWidget(tmpData, 'hello-ui', WIDGET_FILES)
@@ -85,7 +85,7 @@ after(() => {
 
 describe('resolveWidgetRequest', () => {
   it('serves the widget html with the bridge injected first in head', () => {
-    const res = proto.resolveWidgetRequest('electerm-widget://hello-ui/ui/index.html')
+    const res = proto.resolveWidgetRequest('b-shell-widget://hello-ui/ui/index.html')
     assert.equal(res.status, 200)
     assert.match(res.mimeType, /^text\/html/)
     const html = res.body.toString('utf8')
@@ -93,36 +93,36 @@ describe('resolveWidgetRequest', () => {
   })
 
   it('serves the bridge script itself', () => {
-    const res = proto.resolveWidgetRequest('electerm-widget://hello-ui/__bridge.js')
+    const res = proto.resolveWidgetRequest('b-shell-widget://hello-ui/__bridge.js')
     assert.equal(res.status, 200)
     assert.match(res.mimeType, /^text\/javascript/)
-    assert.match(res.body.toString('utf8'), /window\.electerm/)
+    assert.match(res.body.toString('utf8'), /window\.bshell/)
   })
 
   it('hands static files over with a mime type the callback protocol can use', () => {
-    const js = proto.resolveWidgetRequest('electerm-widget://hello-ui/ui/app.js')
+    const js = proto.resolveWidgetRequest('b-shell-widget://hello-ui/ui/app.js')
     assert.equal(js.status, 200)
     assert.equal(js.mimeType, 'text/javascript; charset=utf-8')
     assert.ok(js.file.endsWith(path.join('ui', 'app.js')))
 
-    const css = proto.resolveWidgetRequest('electerm-widget://hello-ui/ui/style.css')
+    const css = proto.resolveWidgetRequest('b-shell-widget://hello-ui/ui/style.css')
     assert.equal(css.mimeType, 'text/css; charset=utf-8')
 
-    const svg = proto.resolveWidgetRequest('electerm-widget://hello-ui/ui/logo.svg')
+    const svg = proto.resolveWidgetRequest('b-shell-widget://hello-ui/ui/logo.svg')
     assert.equal(svg.mimeType, 'image/svg+xml')
 
-    const unknown = proto.resolveWidgetRequest('electerm-widget://hello-ui/ui/data.weird')
+    const unknown = proto.resolveWidgetRequest('b-shell-widget://hello-ui/ui/data.weird')
     assert.equal(unknown.mimeType, 'application/octet-stream')
   })
 
   it('rejects everything it should', () => {
     const cases = [
-      'electerm-widget://hello-ui/',
-      'electerm-widget://hello-ui/../secret.txt',
-      'electerm-widget://hello-ui/ui/../../secret.txt',
-      'electerm-widget://Bad_Id/ui/index.html',
-      'electerm-widget://hello-ui/ui/missing.js',
-      'electerm-widget://hello-ui/ui',
+      'b-shell-widget://hello-ui/',
+      'b-shell-widget://hello-ui/../secret.txt',
+      'b-shell-widget://hello-ui/ui/../../secret.txt',
+      'b-shell-widget://Bad_Id/ui/index.html',
+      'b-shell-widget://hello-ui/ui/missing.js',
+      'b-shell-widget://hello-ui/ui',
       'not a url'
     ]
     cases.forEach(u => {
@@ -139,12 +139,12 @@ describe('modern adapter (Electron >= 25)', () => {
     })
     p.initWidgetProtocol()
     assert.equal(calls.length, 1)
-    assert.equal(calls[0][0], 'electerm-widget')
+    assert.equal(calls[0][0], 'b-shell-widget')
   })
 
   it('answers with a Response carrying the type from the resolver', async () => {
     const res = await proto.serveWidgetFile({
-      url: 'electerm-widget://hello-ui/ui/index.html'
+      url: 'b-shell-widget://hello-ui/ui/index.html'
     })
     assert.equal(res.status, 200)
     assert.equal(res.headers.get('content-type'), 'text/html; charset=utf-8')
@@ -153,7 +153,7 @@ describe('modern adapter (Electron >= 25)', () => {
 
   it('reports a miss as a 404 Response', async () => {
     const res = await proto.serveWidgetFile({
-      url: 'electerm-widget://hello-ui/ui/missing.js'
+      url: 'b-shell-widget://hello-ui/ui/missing.js'
     })
     assert.equal(res.status, 404)
   })
@@ -167,7 +167,7 @@ describe('modern adapter (Electron >= 25)', () => {
       }
     })
     const res = await p.serveWidgetFile({
-      url: 'electerm-widget://hello-ui/ui/app.js'
+      url: 'b-shell-widget://hello-ui/ui/app.js'
     })
     assert.deepEqual(res, { fromNet: true })
     assert.equal(seen.length, 1)
@@ -191,15 +191,15 @@ describe('legacy adapter (Electron < 25)', () => {
     const calls = []
     legacy.initWidgetProtocol(
       { registerBufferProtocol: (scheme, handler) => calls.push([scheme, handler]) },
-      'electerm-widget',
+      'b-shell-widget',
       resolve
     )
     assert.equal(calls.length, 1)
-    assert.equal(calls[0][0], 'electerm-widget')
+    assert.equal(calls[0][0], 'b-shell-widget')
   })
 
   it('calls back with a bare mime type plus charset, and the data', () => {
-    const got = serve('electerm-widget://hello-ui/ui/index.html')
+    const got = serve('b-shell-widget://hello-ui/ui/index.html')
     // Electron 22 treats "text/html; charset=utf-8" as plain text: the charset
     // has to be its own field or the widget html is never parsed.
     assert.equal(got.mimeType, 'text/html')
@@ -209,13 +209,13 @@ describe('legacy adapter (Electron < 25)', () => {
   })
 
   it('keeps the charset off binary assets', () => {
-    const got = serve('electerm-widget://hello-ui/ui/logo.svg')
+    const got = serve('b-shell-widget://hello-ui/ui/logo.svg')
     assert.equal(got.mimeType, 'image/svg+xml')
     assert.equal('charset' in got, false)
   })
 
   it('reports a missing file as a net error, not as an empty 200', () => {
-    assert.deepEqual(serve('electerm-widget://hello-ui/ui/missing.js'), { error: -6 })
+    assert.deepEqual(serve('b-shell-widget://hello-ui/ui/missing.js'), { error: -6 })
   })
 
   it('survives a resolver that throws', () => {
@@ -388,10 +388,10 @@ describe('build-time injection', () => {
     const app = require(patched)
     app.initWidgetProtocol()
     assert.equal(calls.length, 1)
-    assert.equal(calls[0][0], 'electerm-widget')
+    assert.equal(calls[0][0], 'b-shell-widget')
 
     let got
-    calls[0][1]({ url: 'electerm-widget://hello-ui/ui/index.html' }, res => {
+    calls[0][1]({ url: 'b-shell-widget://hello-ui/ui/index.html' }, res => {
       got = res
     })
     assert.equal(got.mimeType, 'text/html')

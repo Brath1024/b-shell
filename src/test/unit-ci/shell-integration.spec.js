@@ -79,7 +79,7 @@ describe('PowerShell shell integration', () => {
     // `eval '...'` is bash syntax, not PowerShell
     assert.equal(cmd.includes("eval '"), false)
     assert.equal(cmd.endsWith('\r'), true)
-    assert.match(cmd, /ELECTERM_SHELL_INTEGRATION/)
+    assert.match(cmd, /BSHELL_SHELL_INTEGRATION/)
     assert.match(cmd, /633;P;Cwd=/)
     assert.match(cmd, /633;A/)
     // the path is escaped the way OSC 633 expects (`\` -> `\\`, `;` -> `\x3b`)

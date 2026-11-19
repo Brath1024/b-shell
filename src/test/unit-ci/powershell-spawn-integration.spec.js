@@ -121,8 +121,8 @@ describe('the injected script', () => {
   // Both halves matter: the OSC 633 pair is what the tracker reads, and the
   // script must not run twice when a nested shell inherits the environment.
   test('guards itself and reports the live cwd', () => {
-    assert.match(script, /ELECTERM_SHELL_INTEGRATION/)
-    assert.match(script, /^\s*if\(-not \$env:ELECTERM_SHELL_INTEGRATION\)\{/)
+    assert.match(script, /BSHELL_SHELL_INTEGRATION/)
+    assert.match(script, /^\s*if\(-not \$env:BSHELL_SHELL_INTEGRATION\)\{/)
     assert.ok(script.includes('[Console]::Write('), 'writes to the pty')
     assert.ok(script.includes("]633;P;Cwd='"), 'reports the cwd')
     assert.ok(script.includes("]633;A'"), 'reports the prompt')

@@ -34,10 +34,10 @@ export function disposeWebglAddon ({
  * version already registers its own `webglcontextlost` listener (which calls
  * preventDefault) and its 3s onContextLoss timer when the renderer is
  * constructed; this listener deliberately does not replace or reimplement that
- * upstream policy — it exists so electerm learns about the loss synchronously.
+ * upstream policy — it exists so bshell learns about the loss synchronously.
  * On loss we dispose the addon in the same tick, and that dispose clears
  * xterm's timer and removes its listener. A restored context can still leave
- * the renderer permanently black, so electerm tears the addon down and rebuilds
+ * the renderer permanently black, so bshell tears the addon down and rebuilds
  * the terminal instead of waiting for a restore.
  *
  * xterm exposes no public loss event, so this reads the same private

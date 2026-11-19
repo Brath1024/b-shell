@@ -4,7 +4,7 @@ const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
 
-// Password manager widgets: `electerm.credentialProvider` in package.json,
+// Password manager widgets: `bshell.credentialProvider` in package.json,
 // listed with the widget, called through callWidgetFunc. Only a bookmark with
 // `usePasswordManager` is ever handed to them.
 
@@ -13,20 +13,20 @@ let registry
 let userWidget
 let utils
 
-function writeWidget (id, electerm, main) {
+function writeWidget (id, bshell, main) {
   const dir = path.join(tmp, 'widgets', id)
   fs.mkdirSync(dir, { recursive: true })
   fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({
     name: id,
     version: '1.0.0',
     main: 'main.js',
-    electerm: { type: 'frontend', ...electerm }
+    bshell: { type: 'frontend', ...bshell }
   }))
   fs.writeFileSync(path.join(dir, 'main.js'), main)
 }
 
 before(async () => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'electerm-credential-provider-test-'))
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bshell-credential-provider-test-'))
   process.env.DATA_PATH = tmp
   registry = require('../../app/widgets/load-widget')
   userWidget = require('../../app/widgets/user-widget')

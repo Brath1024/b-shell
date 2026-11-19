@@ -10,9 +10,9 @@ import { webglCircuitStates } from './terminal-webgl-circuit-breaker.mjs'
  * returns before it reads anything off the terminal, so nothing is serialised,
  * stringified or written to electron-log. A shipped app can turn the same
  * `[terminal-render] {...}` lines back on for a bug report by running
- * `localStorage.electermRenderDebug = '1'` and reloading.
+ * `localStorage.bshellRenderDebug = '1'` and reloading.
  */
-const debugStorageKey = 'electermRenderDebug'
+const debugStorageKey = 'bshellRenderDebug'
 
 function readDebugFlag () {
   try {

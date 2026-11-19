@@ -103,19 +103,19 @@ export default class SpiceSession extends PureComponent {
   }
 
   buildWsUrl = (port, type = 'spice', extra = '') => {
-    const { host, tokenElecterm } = this.props.config
+    const { host, tokenBshell } = this.props.config
     const { id } = this.props.tab
     if (window.et.buildWsUrl) {
       return window.et.buildWsUrl(
         host,
         port,
-        tokenElecterm,
+        tokenBshell,
         id,
         type,
         extra
       )
     }
-    return `ws://${host}:${port}/${type}/${id}?token=${tokenElecterm}${extra}`
+    return `ws://${host}:${port}/${type}/${id}?token=${tokenBshell}${extra}`
   }
 
   calcCanvasSize = () => {
