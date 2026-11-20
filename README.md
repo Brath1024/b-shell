@@ -25,7 +25,7 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 
 ## 下载与安装
 
-最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载。GitHub 镜像只同步源码，不提供发行包。
+最新版本在 [Gitee 发行版](https://gitee.com/Guoqing-Li/b-shell/releases) 下载，官网：[bshell.brath.cn](https://bshell.brath.cn/)。GitHub 镜像只同步源码，不提供发行包。
 
 当前版本 **5.11.8-bshell.3**：<https://gitee.com/Guoqing-Li/b-shell/releases/tag/v5.11.8-bshell.3>
 
@@ -34,7 +34,7 @@ b-shell 是一个开源终端 / SSH / SFTP / Telnet / 串口 / RDP / VNC 客户�
 | 平台 | 产物 |
 | --- | --- |
 | Windows x64（免安装，推荐） | `b-shell-5.11.8-bshell.3-win-x64-portable.7z`（87.8 MB，单文件）—— 用 7-Zip 解压到任意目录，双击 `b-shell.exe` |
-| macOS | `b-shell-<version>-mac-*.dmg` |
+| macOS（Apple Silicon / Intel） | 官网 [`-mac-arm64.dmg`](https://bshell.brath.cn/downloads/b-shell-5.11.8-bshell.3-mac-arm64.dmg)（116 MiB）/ [`-mac-x64.dmg`](https://bshell.brath.cn/downloads/b-shell-5.11.8-bshell.3-mac-x64.dmg)（120 MiB），双击挂载后拖进「应用程序」；发行版另挂同源 `-mac-arm64.7z` / `-mac-x64.7z` |
 | Linux | `b-shell-<version>-linux-*.AppImage` / `.deb` |
 
 Windows 上的 7-Zip / Bandizip / NanaZip 均可解压 `.7z`。校验和见发行版说明。
